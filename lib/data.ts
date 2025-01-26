@@ -1,4 +1,5 @@
 const data = {
+  // Controls for all headers at the site
   headerMenus: [
     {
       name: "Today's Deal",
@@ -31,6 +32,31 @@ const data = {
     {
       name: 'Help',
       href: '/page/help',
+    },
+  ],
+
+  // Controls for all banners at the site
+  carousels: [
+    {
+      title: 'Welcome',
+      buttonCaption: 'Shop',
+      image: '/images/banner1.png',
+      url: '/',
+      isPublished: true,
+    },
+    {
+      title: 'Best Sellers',
+      buttonCaption: 'Shop Now',
+      image: '/images/banner2.png',
+      url: '/search?category=T-Shirts',
+      isPublished: true,
+    },
+    {
+      title: 'Best Deals',
+      buttonCaption: 'Shop Now',
+      image: '/images/banner3.png',
+      url: '/search?category=Wrist Watches',
+      isPublished: true,
     },
   ],
 }
