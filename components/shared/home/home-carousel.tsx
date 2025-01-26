@@ -47,9 +47,6 @@ export function HomeCarousel({
                   className='object-cover'
                   priority
                 />
-
-                {/* Skipping 1st carrousel as its the site logo */}
-                { item.image !== '/images/banner1.png' &&
                 <div className='absolute w-1/3 left-16 md:left-32 top-1/2 transform -translate-y-1/2'>
                   <h2 className='text-xl md:text-6xl font-bold mb-4 text-primary'>
                     {item.title}
@@ -58,8 +55,6 @@ export function HomeCarousel({
                     {item.buttonCaption}
                   </Button>
                 </div>
-                }
-
               </div>
             </Link>
           </CarouselItem>
