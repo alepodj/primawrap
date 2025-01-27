@@ -72,13 +72,13 @@ export default async function Page() {
       <div className='md:p-4 md:space-y-4 bg-border'>
         <HomeCard cards={cards} />
 
-        <Card className='w-full rounded-none'>
+        <Card className='w-full rounded-md'>
           <CardContent className='p-4 items-center gap-3'>
             <ProductSlider title={"Today's Deals"} products={todaysDeals} />
           </CardContent>
         </Card>
 
-        <Card className='w-full rounded-none'>
+        <Card className='w-full rounded-md'>
           <CardContent className='p-4 items-center gap-3'>
             <ProductSlider
               title='Best Selling Products'
