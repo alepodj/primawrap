@@ -6,3 +6,7 @@ export const APP_DESCRIPTION =
   'Prima Wrap is your first choice in gift packaging, printed bags, boxes, cello, gift wrap, ribbons and bows, gift accessories, tissue, wedding supplies by David Tutura™ and Victoria Lynn™and more'
 
 export const PAGE_SIZE = Number(process.env.PAGE_SIZE || 9)
+
+export const FREE_SHIPPING_MIN_PRICE = Number(
+  process.env.FREE_SHIPPING_MIN_PRICE || 35
+)
