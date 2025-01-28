@@ -150,7 +150,7 @@ export const formatDateTime = (dateString: Date) => {
   }
 }
 
-// Format id
+// Format id (Not used)
 export function formatId(id: string) {
   return `..${id.substring(id.length - 6)}`
 }
