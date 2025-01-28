@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-
+import '@/lib/db/models/user.model'
 import { sendPurchaseReceipt } from '@/emails'
 import Order from '@/lib/db/models/order.model'
 
@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'charge.succeeded') {
     const charge = event.data.object
+    console.log(charge)
     const orderId = charge.metadata.orderId
     const email = charge.billing_details.email
     const pricePaidInCents = charge.amount
