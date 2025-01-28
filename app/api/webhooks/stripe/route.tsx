@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-// import '@/lib/db/models/user.model'
+import '@/lib/db/models/user.model'
 import { sendPurchaseReceipt } from '@/emails'
 import Order from '@/lib/db/models/order.model'
 import { connectToDatabase } from '@/lib/db'
