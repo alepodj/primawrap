@@ -1,6 +1,15 @@
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Prima Wrap'
+
+export const SERVER_URL =
+  process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+
+export const SENDER_EMAIL = process.env.SENDER_EMAIL || 'onboarding@resend.dev'
+
+export const SENDER_NAME = process.env.SENDER_NAME || APP_NAME
+
 export const APP_SLOGAN =
   process.env.NEXT_PUBLIC_APP_SLOGAN || 'Family Owned, Quality Driven'
+
 export const APP_DESCRIPTION =
   process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
   'Prima Wrap is your first choice in gift packaging, printed bags, boxes, cello, gift wrap, ribbons and bows, gift accessories, tissue, wedding supplies by David Tutura™ and Victoria Lynn™and more'
@@ -32,6 +41,7 @@ export const AVAILABLE_PAYMENT_METHODS = [
     isDefault: false,
   },
 ]
+
 export const DEFAULT_PAYMENT_METHOD =
   process.env.DEFAULT_PAYMENT_METHOD || 'Stripe'
 
