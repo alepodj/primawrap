@@ -118,7 +118,7 @@ export default async function PurchaseReceiptEmail({
                   </Column>
                   <Column className='align-top'>
                     <Text className='mx-2 my-0'>
-                      {item.name} x {item.quantity}
+                      {' '}{item.quantity} x {item.name}
                     </Text>
                   </Column>
                   <Column align='right' className='align-top'>

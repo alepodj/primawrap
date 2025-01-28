@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import '@/lib/db/models/user.model'
+// import '@/lib/db/models/user.model'
 import { sendPurchaseReceipt } from '@/emails'
 import Order from '@/lib/db/models/order.model'
+import { connectToDatabase } from '@/lib/db'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
@@ -15,10 +16,10 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'charge.succeeded') {
     const charge = event.data.object
-    console.log(charge)
     const orderId = charge.metadata.orderId
     const email = charge.billing_details.email
     const pricePaidInCents = charge.amount
+    await connectToDatabase()
     const order = await Order.findById(orderId).populate('user', 'email')
     if (order == null) {
       return new NextResponse('Bad Request', { status: 400 })
