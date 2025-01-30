@@ -1,34 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import data from '@/lib/data'
 import { connectToDatabase } from '.'
+import User from './models/user.model'
 import Product from './models/product.model'
+import Review from './models/review.model'
 import { cwd } from 'process'
 import { loadEnvConfig } from '@next/env'
-import User from './models/user.model'
-import Review from './models/review.model'
 import Order from './models/order.model'
-import { IOrderInput, OrderItem, ShippingAddress } from '@/types'
 import {
   calculateFutureDate,
   calculatePastDate,
   generateId,
   round2,
 } from '../utils'
-import { AVAILABLE_DELIVERY_DATES } from '../constants'
 import WebPage from './models/web-page.model'
+import Setting from './models/setting.model'
+import { OrderItem, IOrderInput, ShippingAddress } from '@/types'
 
 loadEnvConfig(cwd())
 
 const main = async () => {
   try {
-    const { products, users, reviews, webPages } = data
+    const { users, products, reviews, webPages, settings } = data
     await connectToDatabase(process.env.MONGODB_URI)
 
     await User.deleteMany()
     const createdUser = await User.insertMany(users)
 
+    await Setting.deleteMany()
+    const createdSetting = await Setting.insertMany(settings)
+
+    await WebPage.deleteMany()
+    await WebPage.insertMany(webPages)
+
     await Product.deleteMany()
-    const createdProducts = await Product.insertMany(products)
+    const createdProducts = await Product.insertMany(
+      products.map((x) => ({ ...x, _id: undefined }))
+    )
 
     await Review.deleteMany()
     const rws = []
@@ -64,17 +72,13 @@ const main = async () => {
         )
       )
     }
-
     const createdOrders = await Order.insertMany(orders)
-
-    await WebPage.deleteMany()
-    await WebPage.insertMany(webPages)
-
     console.log({
       createdUser,
       createdProducts,
       createdReviews,
       createdOrders,
+      createdSetting,
       message: 'Seeded database successfully',
     })
     process.exit(0)
@@ -90,6 +94,7 @@ const generateOrder = async (
   products: any
 ): Promise<IOrderInput> => {
   const product1 = await Product.findById(products[i % products.length])
+
   const product2 = await Product.findById(
     products[
       i % products.length >= products.length - 1
@@ -105,9 +110,7 @@ const generateOrder = async (
     ]
   )
 
-  if (!product1 || !product2 || !product3) {
-    throw new Error('Product not found')
-  }
+  if (!product1 || !product2 || !product3) throw new Error('Product not found')
 
   const items = [
     {
@@ -126,22 +129,22 @@ const generateOrder = async (
       product: product2._id,
       name: product2.name,
       slug: product2.slug,
-      quantity: 1,
+      quantity: 2,
       image: product2.images[0],
-      category: product2.category,
+      category: product1.category,
       price: product2.price,
-      countInStock: product2.countInStock,
+      countInStock: product1.countInStock,
     },
     {
       clientId: generateId(),
       product: product3._id,
       name: product3.name,
       slug: product3.slug,
-      quantity: 1,
+      quantity: 3,
       image: product3.images[0],
-      category: product3.category,
+      category: product1.category,
       price: product3.price,
-      countInStock: product3.countInStock,
+      countInStock: product1.countInStock,
     },
   ]
 
@@ -162,48 +165,46 @@ const generateOrder = async (
     ...calcDeliveryDateAndPriceForSeed({
       items: items,
       shippingAddress: data.users[i % users.length].address,
-      deliveryDataIndex: i % 2,
+      deliveryDateIndex: i % 2,
     }),
   }
-
   return order
 }
 
 export const calcDeliveryDateAndPriceForSeed = ({
   items,
-  deliveryDataIndex,
+  deliveryDateIndex,
 }: {
-  deliveryDataIndex?: number
+  deliveryDateIndex?: number
   items: OrderItem[]
   shippingAddress?: ShippingAddress
 }) => {
+  const { availableDeliveryDates } = data.settings[0]
   const itemsPrice = round2(
     items.reduce((acc, item) => acc + item.price * item.quantity, 0)
   )
 
   const deliveryDate =
-    AVAILABLE_DELIVERY_DATES[
-      deliveryDataIndex === undefined
-        ? AVAILABLE_DELIVERY_DATES.length - 1
-        : deliveryDataIndex
+    availableDeliveryDates[
+      deliveryDateIndex === undefined
+        ? availableDeliveryDates.length - 1
+        : deliveryDateIndex
     ]
 
   const shippingPrice = deliveryDate.shippingPrice
 
   const taxPrice = round2(itemsPrice * 0.15)
-
   const totalPrice = round2(
     itemsPrice +
       (shippingPrice ? round2(shippingPrice) : 0) +
       (taxPrice ? round2(taxPrice) : 0)
   )
-
   return {
-    AVAILABLE_DELIVERY_DATES,
+    availableDeliveryDates,
     deliveryDateIndex:
-      deliveryDataIndex === undefined
-        ? AVAILABLE_DELIVERY_DATES.length - 1
-        : deliveryDataIndex,
+      deliveryDateIndex === undefined
+        ? availableDeliveryDates.length - 1
+        : deliveryDateIndex,
     itemsPrice,
     shippingPrice,
     taxPrice,

@@ -2,20 +2,66 @@
 
 import { Cart, IOrderList, OrderItem, ShippingAddress } from '@/types'
 import { formatError, round2 } from '../utils'
-import { AVAILABLE_DELIVERY_DATES, PAGE_SIZE } from '../constants'
 import { connectToDatabase } from '../db'
 import { auth } from '@/auth'
 import { OrderInputSchema } from '../validator'
 import Order, { IOrder } from '../db/models/order.model'
-import { paypal } from '../paypal'
-import { sendAskReviewOrderItems, sendPurchaseReceipt } from '@/emails'
 import { revalidatePath } from 'next/cache'
+import { sendAskReviewOrderItems, sendPurchaseReceipt } from '@/emails'
+import { paypal } from '../paypal'
 import { DateRange } from 'react-day-picker'
-import User from '../db/models/user.model'
 import Product from '../db/models/product.model'
+import User from '../db/models/user.model'
 import mongoose from 'mongoose'
+import { getSetting } from './setting.actions'
 
-//Update order to paid
+// CREATE
+export const createOrder = async (clientSideCart: Cart) => {
+  try {
+    await connectToDatabase()
+    const session = await auth()
+    if (!session) throw new Error('User not authenticated')
+    // recalculate price and delivery date on the server
+    const createdOrder = await createOrderFromCart(
+      clientSideCart,
+      session.user.id!
+    )
+    return {
+      success: true,
+      message: 'Order placed successfully',
+      data: { orderId: createdOrder._id.toString() },
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
+export const createOrderFromCart = async (
+  clientSideCart: Cart,
+  userId: string
+) => {
+  const cart = {
+    ...clientSideCart,
+    ...calcDeliveryDateAndPrice({
+      items: clientSideCart.items,
+      shippingAddress: clientSideCart.shippingAddress,
+      deliveryDateIndex: clientSideCart.deliveryDateIndex,
+    }),
+  }
+
+  const order = OrderInputSchema.parse({
+    user: userId,
+    items: cart.items,
+    shippingAddress: cart.shippingAddress,
+    paymentMethod: cart.paymentMethod,
+    itemsPrice: cart.itemsPrice,
+    shippingPrice: cart.shippingPrice,
+    taxPrice: cart.taxPrice,
+    totalPrice: cart.totalPrice,
+    expectedDeliveryDate: cart.expectedDeliveryDate,
+  })
+  return await Order.create(order)
+}
+
 export async function updateOrderToPaid(orderId: string) {
   try {
     await connectToDatabase()
@@ -24,11 +70,9 @@ export async function updateOrderToPaid(orderId: string) {
     }>('user', 'name email')
     if (!order) throw new Error('Order not found')
     if (order.isPaid) throw new Error('Order is already paid')
-    //Locally hosted MongoDB
     order.isPaid = true
     order.paidAt = new Date()
     await order.save()
-    //MongoDB Atlas Service
     if (!process.env.MONGODB_URI?.startsWith('mongodb://localhost'))
       await updateProductStock(order._id)
     if (order.user.email) await sendPurchaseReceipt({ order })
@@ -38,8 +82,6 @@ export async function updateOrderToPaid(orderId: string) {
     return { success: false, message: formatError(err) }
   }
 }
-
-// Update product stock
 const updateProductStock = async (orderId: string) => {
   const session = await mongoose.connection.startSession()
 
@@ -74,8 +116,6 @@ const updateProductStock = async (orderId: string) => {
     throw error
   }
 }
-
-// Deliver order
 export async function deliverOrder(orderId: string) {
   try {
     await connectToDatabase()
@@ -95,7 +135,7 @@ export async function deliverOrder(orderId: string) {
   }
 }
 
-// Delete order
+// DELETE
 export async function deleteOrder(id: string) {
   try {
     await connectToDatabase()
@@ -111,7 +151,8 @@ export async function deleteOrder(id: string) {
   }
 }
 
-// Get all orders
+// GET ALL ORDERS
+
 export async function getAllOrders({
   limit,
   page,
@@ -119,7 +160,10 @@ export async function getAllOrders({
   limit?: number
   page: number
 }) {
-  limit = limit || PAGE_SIZE
+  const {
+    common: { pageSize },
+  } = await getSetting()
+  limit = limit || pageSize
   await connectToDatabase()
   const skipAmount = (Number(page) - 1) * limit
   const orders = await Order.find()
@@ -133,8 +177,153 @@ export async function getAllOrders({
     totalPages: Math.ceil(ordersCount / limit),
   }
 }
+export async function getMyOrders({
+  limit,
+  page,
+}: {
+  limit?: number
+  page: number
+}) {
+  const {
+    common: { pageSize },
+  } = await getSetting()
+  limit = limit || pageSize
+  await connectToDatabase()
+  const session = await auth()
+  if (!session) {
+    throw new Error('User is not authenticated')
+  }
+  const skipAmount = (Number(page) - 1) * limit
+  const orders = await Order.find({
+    user: session?.user?.id,
+  })
+    .sort({ createdAt: 'desc' })
+    .skip(skipAmount)
+    .limit(limit)
+  const ordersCount = await Order.countDocuments({ user: session?.user?.id })
 
-// Get order summary
+  return {
+    data: JSON.parse(JSON.stringify(orders)),
+    totalPages: Math.ceil(ordersCount / limit),
+  }
+}
+export async function getOrderById(orderId: string): Promise<IOrder> {
+  await connectToDatabase()
+  const order = await Order.findById(orderId)
+  return JSON.parse(JSON.stringify(order))
+}
+
+export async function createPayPalOrder(orderId: string) {
+  await connectToDatabase()
+  try {
+    const order = await Order.findById(orderId)
+    if (order) {
+      const paypalOrder = await paypal.createOrder(order.totalPrice)
+      order.paymentResult = {
+        id: paypalOrder.id,
+        email_address: '',
+        status: '',
+        pricePaid: '0',
+      }
+      await order.save()
+      return {
+        success: true,
+        message: 'PayPal order created successfully',
+        data: paypalOrder.id,
+      }
+    } else {
+      throw new Error('Order not found')
+    }
+  } catch (err) {
+    return { success: false, message: formatError(err) }
+  }
+}
+
+export async function approvePayPalOrder(
+  orderId: string,
+  data: { orderID: string }
+) {
+  await connectToDatabase()
+  try {
+    const order = await Order.findById(orderId).populate('user', 'email')
+    if (!order) throw new Error('Order not found')
+
+    const captureData = await paypal.capturePayment(data.orderID)
+    if (
+      !captureData ||
+      captureData.id !== order.paymentResult?.id ||
+      captureData.status !== 'COMPLETED'
+    )
+      throw new Error('Error in paypal payment')
+    order.isPaid = true
+    order.paidAt = new Date()
+    order.paymentResult = {
+      id: captureData.id,
+      status: captureData.status,
+      email_address: captureData.payer.email_address,
+      pricePaid:
+        captureData.purchase_units[0]?.payments?.captures[0]?.amount?.value,
+    }
+    await order.save()
+    await sendPurchaseReceipt({ order })
+    revalidatePath(`/account/orders/${orderId}`)
+    return {
+      success: true,
+      message: 'Your order has been successfully paid by PayPal',
+    }
+  } catch (err) {
+    return { success: false, message: formatError(err) }
+  }
+}
+
+export const calcDeliveryDateAndPrice = async ({
+  items,
+  shippingAddress,
+  deliveryDateIndex,
+}: {
+  deliveryDateIndex?: number
+  items: OrderItem[]
+  shippingAddress?: ShippingAddress
+}) => {
+  const { availableDeliveryDates } = await getSetting()
+  const itemsPrice = round2(
+    items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+  )
+
+  const deliveryDate =
+    availableDeliveryDates[
+      deliveryDateIndex === undefined
+        ? availableDeliveryDates.length - 1
+        : deliveryDateIndex
+    ]
+  const shippingPrice =
+    !shippingAddress || !deliveryDate
+      ? undefined
+      : deliveryDate.freeShippingMinPrice > 0 &&
+          itemsPrice >= deliveryDate.freeShippingMinPrice
+        ? 0
+        : deliveryDate.shippingPrice
+
+  const taxPrice = !shippingAddress ? undefined : round2(itemsPrice * 0.15)
+  const totalPrice = round2(
+    itemsPrice +
+      (shippingPrice ? round2(shippingPrice) : 0) +
+      (taxPrice ? round2(taxPrice) : 0)
+  )
+  return {
+    availableDeliveryDates,
+    deliveryDateIndex:
+      deliveryDateIndex === undefined
+        ? availableDeliveryDates.length - 1
+        : deliveryDateIndex,
+    itemsPrice,
+    shippingPrice,
+    taxPrice,
+    totalPrice,
+  }
+}
+
+// GET ORDERS BY USER
 export async function getOrderSummary(date: DateRange) {
   await connectToDatabase()
 
@@ -209,10 +398,14 @@ export async function getOrderSummary(date: DateRange) {
   const topSalesCategories = await getTopSalesCategories(date)
   const topSalesProducts = await getTopSalesProducts(date)
 
+  const {
+    common: { pageSize },
+  } = await getSetting()
+  const limit = pageSize
   const latestOrders = await Order.find()
     .populate('user', 'name')
     .sort({ createdAt: 'desc' })
-    .limit(PAGE_SIZE)
+    .limit(limit)
   return {
     ordersCount,
     productsCount,
@@ -226,7 +419,6 @@ export async function getOrderSummary(date: DateRange) {
   }
 }
 
-// Get Sales Chart Data
 async function getSalesChartData(date: DateRange) {
   const result = await Order.aggregate([
     {
@@ -268,7 +460,6 @@ async function getSalesChartData(date: DateRange) {
   return result
 }
 
-// Get Top Sales Products
 async function getTopSalesProducts(date: DateRange) {
   const result = await Order.aggregate([
     {
@@ -320,7 +511,6 @@ async function getTopSalesProducts(date: DateRange) {
   return result
 }
 
-// Get Top Sales Categories
 async function getTopSalesCategories(date: DateRange, limit = 5) {
   const result = await Order.aggregate([
     {
@@ -347,204 +537,4 @@ async function getTopSalesCategories(date: DateRange, limit = 5) {
   ])
 
   return result
-}
-
-// Create Order
-export const createOrder = async (clientSideCart: Cart) => {
-  try {
-    await connectToDatabase()
-    const session = await auth()
-    if (!session) throw new Error('User not authenticated')
-    // recalculate price and delivery date on the server
-    const createdOrder = await createOrderFromCart(
-      clientSideCart,
-      session.user.id!
-    )
-    return {
-      success: true,
-      message: 'Order placed successfully',
-      data: { orderId: createdOrder._id.toString() },
-    }
-  } catch (error) {
-    return { success: false, message: formatError(error) }
-  }
-}
-
-// Create Order From Cart
-export const createOrderFromCart = async (
-  clientSideCart: Cart,
-  userId: string
-) => {
-  const cart = {
-    ...clientSideCart,
-    ...calcDeliveryDateAndPrice({
-      items: clientSideCart.items,
-      shippingAddress: clientSideCart.shippingAddress,
-      deliveryDateIndex: clientSideCart.deliveryDateIndex,
-    }),
-  }
-
-  const order = OrderInputSchema.parse({
-    user: userId,
-    items: cart.items,
-    shippingAddress: cart.shippingAddress,
-    paymentMethod: cart.paymentMethod,
-    itemsPrice: cart.itemsPrice,
-    shippingPrice: cart.shippingPrice,
-    taxPrice: cart.taxPrice,
-    totalPrice: cart.totalPrice,
-    expectedDeliveryDate: cart.expectedDeliveryDate,
-  })
-  return await Order.create(order)
-}
-
-// Get Order By Id
-export async function getOrderById(orderId: string): Promise<IOrder> {
-  await connectToDatabase()
-  const order = await Order.findById(orderId)
-  return JSON.parse(JSON.stringify(order))
-}
-
-// Create PayPal Order
-export async function createPayPalOrder(orderId: string) {
-  await connectToDatabase()
-  try {
-    const order = await Order.findById(orderId)
-    if (order) {
-      const paypalOrder = await paypal.createOrder(order.totalPrice)
-      order.paymentResult = {
-        id: paypalOrder.id,
-        email_address: '',
-        status: '',
-        pricePaid: '0',
-      }
-      await order.save()
-      return {
-        success: true,
-        message: 'PayPal order created successfully',
-        data: paypalOrder.id,
-      }
-    } else {
-      throw new Error('Order not found')
-    }
-  } catch (err) {
-    return { success: false, message: formatError(err) }
-  }
-}
-
-// Approve PayPal Order
-export async function approvePayPalOrder(
-  orderId: string,
-  data: { orderID: string }
-) {
-  await connectToDatabase()
-  try {
-    const order = await Order.findById(orderId).populate('user', 'email')
-    if (!order) throw new Error('Order not found')
-
-    const captureData = await paypal.capturePayment(data.orderID)
-    if (
-      !captureData ||
-      captureData.id !== order.paymentResult?.id ||
-      captureData.status !== 'COMPLETED'
-    )
-      throw new Error('Error in paypal payment')
-    order.isPaid = true
-    order.paidAt = new Date()
-    order.paymentResult = {
-      id: captureData.id,
-      status: captureData.status,
-      email_address: captureData.payer.email_address,
-      pricePaid:
-        captureData.purchase_units[0]?.payments?.captures[0]?.amount?.value,
-    }
-    await order.save()
-    await sendPurchaseReceipt({ order })
-    revalidatePath(`/account/orders/${orderId}`)
-    return {
-      success: true,
-      message: 'Your order has been successfully paid by PayPal',
-    }
-  } catch (err) {
-    return { success: false, message: formatError(err) }
-  }
-}
-
-// Calculate Delivery Date and Price
-export const calcDeliveryDateAndPrice = async ({
-  items,
-  shippingAddress,
-  deliveryDateIndex,
-}: {
-  deliveryDateIndex?: number
-  items: OrderItem[]
-  shippingAddress?: ShippingAddress
-}) => {
-  const itemsPrice = round2(
-    items.reduce((acc, item) => acc + item.price * item.quantity, 0)
-  )
-
-  const deliveryDate =
-    AVAILABLE_DELIVERY_DATES[
-      deliveryDateIndex === undefined
-        ? AVAILABLE_DELIVERY_DATES.length - 1
-        : deliveryDateIndex
-    ]
-
-  const shippingPrice =
-    !shippingAddress || !deliveryDate
-      ? undefined
-      : deliveryDate.freeShippingMinPrice > 0 &&
-          itemsPrice >= deliveryDate.freeShippingMinPrice
-        ? 0
-        : deliveryDate.shippingPrice
-
-  const taxPrice = !shippingAddress ? undefined : round2(itemsPrice * 0.15)
-
-  const totalPrice = round2(
-    itemsPrice +
-      (shippingPrice ? round2(shippingPrice) : 0) +
-      (taxPrice ? round2(taxPrice) : 0)
-  )
-
-  return {
-    AVAILABLE_DELIVERY_DATES,
-    deliveryDateIndex:
-      deliveryDateIndex === undefined
-        ? AVAILABLE_DELIVERY_DATES.length - 1
-        : deliveryDateIndex,
-    itemsPrice,
-    shippingPrice,
-    taxPrice,
-    totalPrice,
-  }
-}
-
-// Get My Orders
-export async function getMyOrders({
-  limit,
-  page,
-}: {
-  limit?: number
-  page: number
-}) {
-  limit = limit || PAGE_SIZE
-  await connectToDatabase()
-  const session = await auth()
-  if (!session) {
-    throw new Error('User is not authenticated')
-  }
-  const skipAmount = (Number(page) - 1) * limit
-  const orders = await Order.find({
-    user: session?.user?.id,
-  })
-    .sort({ createdAt: 'desc' })
-    .skip(skipAmount)
-    .limit(limit)
-  const ordersCount = await Order.countDocuments({ user: session?.user?.id })
-
-  return {
-    data: JSON.parse(JSON.stringify(orders)),
-    totalPages: Math.ceil(ordersCount / limit),
-  }
 }

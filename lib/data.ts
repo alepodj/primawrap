@@ -1,6 +1,7 @@
 import { Data, IProductInput, IUserInput } from '@/types'
 import bcrypt from 'bcryptjs'
 import { toSlug } from './utils'
+import { i18n } from '@/i18n-config'
 
 // Dummy Users
 const users: IUserInput[] = [
@@ -1248,6 +1249,101 @@ We also provide helpful resources such as order tracking, product guides, and FA
       image: '/images/banner2.jpg',
       url: '/search?category=Wrist Watches',
       isPublished: true,
+    },
+  ],
+
+  // Controls for all settings
+  settings: [
+    {
+      common: {
+        freeShippingMinPrice: 35,
+        isMaintenanceMode: false,
+        defaultTheme: 'Light',
+        defaultColor: 'Gold',
+        pageSize: 9,
+      },
+      site: {
+        name: 'Prima Wrap',
+        description:
+          'Prima Wrap is your first choice in gift packaging, printed bags, boxes, cello, gift wrap, ribbons and bows, gift accessories, tissue, wedding supplies and more',
+        keywords:
+          'Prima Wrap, Gift Packaging, Printed Bags, Boxes, Cello, Gift Wrap, Ribbons, Bows, Gift Accessories, Tissue, Wedding Supplies',
+        url: 'https://primawrap.vercel.app',
+        logo: '/icons/prima-wrap-logo.png',
+        slogan: 'Family Owned, Quality Driven',
+        author: 'Prima Wrap',
+        copyright: '2025, Primawrap.com, Inc. or its affiliates',
+        email: 'primawrap@primawrap.com',
+        address: '360 York Rd, Niagara-on-the-Lake, ON L0S 1J0, Canada',
+        phone: '+1 (905) 704-0087',
+      },
+      carousels: [
+        {
+          title: 'Most Popular Shoes For Sale',
+          buttonCaption: 'Shop Now',
+          image: '/images/banner3.jpg',
+          url: '/search?category=Shoes',
+        },
+        {
+          title: 'Best Sellers in T-Shirts',
+          buttonCaption: 'Shop Now',
+          image: '/images/banner1.jpg',
+          url: '/search?category=T-Shirts',
+        },
+        {
+          title: 'Best Deals on Wrist Watches',
+          buttonCaption: 'See More',
+          image: '/images/banner2.jpg',
+          url: '/search?category=Wrist Watches',
+        },
+      ],
+      availableLanguages: i18n.locales.map((locale) => ({
+        code: locale.code,
+        name: locale.name,
+      })),
+      defaultLanguage: 'en-CA',
+      availableCurrencies: [
+        {
+          name: 'United States Dollar',
+          code: 'USD',
+          symbol: '$',
+          convertRate: 1,
+        },
+        {
+          name: 'Canadian Dollar',
+          code: 'CAD',
+          symbol: '$',
+          convertRate: 0.45,
+        },
+      ],
+      defaultCurrency: 'CAD',
+      availablePaymentMethods: [
+        { name: 'PayPal', commission: 0 },
+        { name: 'Stripe', commission: 0 },
+        { name: 'Cash On Delivery', commission: 0 },
+      ],
+      defaultPaymentMethod: 'Stripe',
+      availableDeliveryDates: [
+        {
+          name: 'Tomorrow',
+          daysToDeliver: 1,
+          shippingPrice: 12.9,
+          freeShippingMinPrice: 0,
+        },
+        {
+          name: 'Next 3 Days',
+          daysToDeliver: 3,
+          shippingPrice: 6.9,
+          freeShippingMinPrice: 0,
+        },
+        {
+          name: 'Next 5 Days',
+          daysToDeliver: 5,
+          shippingPrice: 4.9,
+          freeShippingMinPrice: 35,
+        },
+      ],
+      defaultDeliveryDate: 'Next 5 Days',
     },
   ],
 }

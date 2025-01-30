@@ -105,14 +105,16 @@ export function calculateFutureDate(days: number) {
 }
 
 // Get month name
-export function getMonthName(yearAndMonth: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [year, monthNumber] = yearAndMonth.split('-')
-  const date = new Date()
-  date.setMonth(parseInt(monthNumber) - 1)
-  return new Date().getMonth() === parseInt(monthNumber) - 1
-    ? `${date.toLocaleString('default', { month: 'long' })} (ongoing)`
-    : date.toLocaleString('default', { month: 'long' })
+export function getMonthName(yearMonth: string): string {
+  const [year, month] = yearMonth.split('-').map(Number)
+  const date = new Date(year, month - 1)
+  const monthName = date.toLocaleString('default', { month: 'long' })
+  const now = new Date()
+
+  if (year === now.getFullYear() && month === now.getMonth() + 1) {
+    return `${monthName} Ongoing`
+  }
+  return monthName
 }
 
 // Calculate past date
