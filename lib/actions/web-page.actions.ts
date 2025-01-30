@@ -1,0 +1,45 @@
+'use server'
+
+import { revalidatePath } from 'next/cache'
+
+import { connectToDatabase } from '@/lib/db'
+import WebPage, { IWebPage } from '@/lib/db/models/web-page.model'
+import { formatError } from '@/lib/utils'
+
+// Delete Web Page
+export async function deleteWebPage(id: string) {
+  try {
+    await connectToDatabase()
+    const res = await WebPage.findByIdAndDelete(id)
+    if (!res) throw new Error('WebPage not found')
+    revalidatePath('/admin/web-pages')
+    return {
+      success: true,
+      message: 'WebPage deleted successfully',
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
+
+// Get All Web Pages
+export async function getAllWebPages() {
+  await connectToDatabase()
+  const webPages = await WebPage.find()
+  return JSON.parse(JSON.stringify(webPages)) as IWebPage[]
+}
+
+// Get Web Page By ID
+export async function getWebPageById(webPageId: string) {
+  await connectToDatabase()
+  const webPage = await WebPage.findById(webPageId)
+  return JSON.parse(JSON.stringify(webPage)) as IWebPage
+}
+
+// Get Web Page By Slug
+export async function getWebPageBySlug(slug: string) {
+  await connectToDatabase()
+  const webPage = await WebPage.findOne({ slug, isPublished: true })
+  if (!webPage) throw new Error('WebPage not found')
+  return JSON.parse(JSON.stringify(webPage)) as IWebPage
+}
