@@ -15,6 +15,7 @@ import {
 import { auth } from '@/auth'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { getDirection } from '@/i18n-config'
+import { Separator } from '@radix-ui/react-select'
 
 export default async function Sidebar({
   categories,
@@ -35,14 +36,14 @@ export default async function Sidebar({
       <DrawerContent className='w-[350px] mt-0 top-0'>
         <div className='flex flex-col h-full'>
           {/* User Sign In Section */}
-          <div className='dark bg-gray-800 text-foreground flex items-center justify-between  '>
+          <div className='dark bg-gradient-to-tl from-slate-700 to-slate-900 rounded-lg text-foreground flex items-center justify-between absolute inset-x-0 top-0 h-16 '>
             <DrawerHeader>
-              <DrawerTitle className='flex items-center'>
+              <DrawerTitle className='flex items-center '>
                 <UserCircle className='h-6 w-6 mr-2' />
                 {session ? (
                   <DrawerClose asChild>
                     <Link href='/account'>
-                      <span className='text-lg font-semibold'>
+                      <span className='text-lg font-semibold '>
                         {t('Header.Hello')}, {session.user.name}
                       </span>
                     </Link>
@@ -69,9 +70,9 @@ export default async function Sidebar({
 
           {/* Shop By Category */}
           <div className='flex-1 overflow-y-auto'>
-            <div className='p-4 border-b'>
+            <div className='p-4 border-b mt-10'>
               <h2 className='text-lg font-semibold'>
-                {t('Header.Shop By Department')}
+                {t('Header.Shop By Category')}
               </h2>
             </div>
             <nav className='flex flex-col'>
@@ -88,7 +89,7 @@ export default async function Sidebar({
               ))}
             </nav>
           </div>
-
+          <Separator />
           {/* Setting and Help */}
           <div className='border-t flex flex-col '>
             <div className='p-4'>

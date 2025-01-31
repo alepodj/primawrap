@@ -80,7 +80,13 @@ export default function DeliveryDateForm({
                   <FormItem>
                     {index == 0 && <FormLabel>Days</FormLabel>}
                     <FormControl>
-                      <Input {...field} placeholder='daysToDeliver' />
+                      <Input
+                        {...field}
+                        placeholder='daysToDeliver'
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value, 10))
+                        }
+                      />
                     </FormControl>
                     <FormMessage>
                       {

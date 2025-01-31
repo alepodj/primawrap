@@ -24,11 +24,11 @@ export default function Footer() {
   const locale = useLocale()
   const t = useTranslations()
   return (
-    <footer className='bg-black  text-white underline-link'>
+    <footer className='bg-gradient-to-tl to-slate-700 from-slate-900 text-white underline-link'>
       <div className='w-full'>
         <Button
           variant='ghost'
-          className='bg-gray-800 w-full  rounded-none '
+          className='bg-gradient-to-br to-slate-800 from-slate-600 w-full  rounded-none '
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <ChevronUp className='mr-2 h-4 w-4' />
@@ -94,11 +94,10 @@ export default function Footer() {
           <div className='max-w-7xl mx-auto py-8 px-4 flex flex-col items-center space-y-4'>
             <div className='flex items-center space-x-4 flex-wrap md:flex-nowrap'>
               <Image
-                src='/icons/prima-wrap-logo.png'
+                src='/icons/prima-wrap.png'
                 alt={`${site.name} logo`}
-                width={48}
-                height={48}
-                className='w-14'
+                width={150}
+                height={150}
                 style={{
                   maxWidth: '100%',
                   height: 'auto',

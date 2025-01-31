@@ -27,7 +27,7 @@ export default function CartButton() {
         {isMounted && (
           <span
             className={cn(
-              `bg-black  px-1 rounded-full text-primary text-base font-bold absolute ${
+              `bg-white px-1 rounded-full text-primary text-base font-bold absolute ${
                 getDirection(locale) === 'rtl' ? 'right-[5px]' : 'left-[10px]'
               } top-[-4px] z-10`,
               cartItemsCount >= 10 && 'text-sm px-0 p-[1px]'

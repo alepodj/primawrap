@@ -251,7 +251,7 @@ export const PaymentMethodSchema = z.object({
 
 export const DeliveryDateSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  daysToDeliver: z.coerce.number().min(0, 'Days to deliver must be at least 0'),
+  daysToDeliver: z.number().min(0, 'Days to deliver must be at least 0'),
   shippingPrice: z.coerce.number().min(0, 'Shipping price must be at least 0'),
   freeShippingMinPrice: z.coerce
     .number()
@@ -278,7 +278,7 @@ export const SettingInputSchema = z.object({
     defaultColor: z
       .string()
       .min(1, 'Default color is required')
-      .default('gold'),
+      .default('purple'),
   }),
   site: z.object({
     name: z.string().min(1, 'Name is required'),

@@ -14,10 +14,10 @@ export default async function AuthLayout({
       <header className='mt-8'>
         <Link href='/'>
           <Image
-            src='/icons/prima-wrap-logo.png'
+            src='/icons/prima-wrap.png'
             alt='logo'
-            width={64}
-            height={64}
+            width={150}
+            height={150}
             priority
             style={{
               maxWidth: '100%',
@@ -27,7 +27,7 @@ export default async function AuthLayout({
         </Link>
       </header>
       <main className='mx-auto max-w-sm min-w-80 p-4'>{children}</main>
-      <footer className=' flex-1 mt-8  bg-gray-800 w-full flex flex-col gap-4 items-center p-8 text-sm'>
+      <footer className=' flex-1 mt-8  bg-gradient-to-tl to-slate-700 from-slate-900 w-full flex flex-col gap-4 items-center p-8 text-sm'>
         <div className='flex justify-center space-x-4'>
           <Link href='/page/conditions-of-use'>Conditions of Use</Link>
           <Link href='/page/privacy-policy'> Privacy Notice</Link>

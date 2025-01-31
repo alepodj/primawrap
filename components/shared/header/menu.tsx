@@ -28,7 +28,7 @@ const Menu = ({ forAdmin = false }: { forAdmin?: boolean }) => {
           <SheetTrigger className='align-middle header-button'>
             <EllipsisVertical className='h-6 w-6' />
           </SheetTrigger>
-          <SheetContent className='bg-black text-white  flex flex-col items-start  '>
+          <SheetContent className='bg-gradient-to-tl from-slate-700 to-slate-900 text-white  flex flex-col items-start  '>
             <SheetHeader className='w-full'>
               <div className='flex items-center justify-between '>
                 <SheetTitle className='  '>{t('Header.Site Menu')}</SheetTitle>

@@ -14,10 +14,10 @@ export default function CheckoutLayout({
         <div className='max-w-6xl mx-auto flex justify-between items-center'>
           <Link href='/'>
             <Image
-              src='/icons/prima-wrap-logo.png'
+              src='/icons/prima-wrap.png'
               alt='logo'
-              width={70}
-              height={70}
+              width={150}
+              height={150}
               style={{
                 maxWidth: '100%',
                 height: 'auto',

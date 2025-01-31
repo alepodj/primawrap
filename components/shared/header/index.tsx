@@ -13,7 +13,7 @@ export default async function Header() {
   const { site } = await getSetting()
   const t = await getTranslations()
   return (
-    <header className='bg-black  text-white'>
+    <header className='bg-gradient-to-tl from-slate-700 to-slate-900  text-white'>
       <div className='px-2'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center'>
@@ -23,11 +23,11 @@ export default async function Header() {
             >
               <Image
                 src={site.logo}
-                width={40}
-                height={40}
+                width={150}
+                height={150}
                 alt={`${site.name} logo`}
               />
-              {site.name}
+              {/* {site.name} */}
             </Link>
           </div>
 
@@ -40,7 +40,7 @@ export default async function Header() {
           <Search />
         </div>
       </div>
-      <div className='flex items-center px-3 mb-[1px]  bg-gray-800'>
+      <div className='flex items-center px-3 mb-[1px] bg-gradient-to-tr from-slate-800 to-slate-600'>
         <Sidebar categories={categories} />
         <div className='flex items-center flex-wrap gap-3 overflow-hidden   max-h-[42px]'>
           {data.headerMenus.map((menu) => (

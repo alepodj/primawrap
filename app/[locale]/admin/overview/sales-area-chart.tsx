@@ -56,6 +56,7 @@ const STROKE_COLORS: { [key: string]: { [key: string]: string } } = {
   Red: { light: '#980404', dark: '#ff3333' },
   Green: { light: '#015001', dark: '#06dc06' },
   Gold: { light: '#ac9103', dark: '#f1d541' },
+  Purple: { light: '#523E68', dark: '#7e609f' },
 }
 
 export default function SalesAreaChart({ data }: { data: any[] }) {

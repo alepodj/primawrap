@@ -14,13 +14,13 @@ export default async function AdminLayout({
   return (
     <>
       <div className='flex flex-col'>
-        <div className='bg-black text-white'>
+        <div className='bg-gradient-to-tl from-slate-700 to-slate-900 text-white'>
           <div className='flex h-20 items-center px-2'>
             <Link href='/'>
               <Image
                 src='/icons/prima-wrap.png'
                 width={150}
-                height={150}
+                height={150} 
                 alt={`${site.name} logo`}
               />
             </Link>

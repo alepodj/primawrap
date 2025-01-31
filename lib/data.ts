@@ -1259,7 +1259,7 @@ We also provide helpful resources such as order tracking, product guides, and FA
         freeShippingMinPrice: 35,
         isMaintenanceMode: false,
         defaultTheme: 'Light',
-        defaultColor: 'Gold',
+        defaultColor: 'Purple',
         pageSize: 9,
       },
       site: {
@@ -1269,7 +1269,7 @@ We also provide helpful resources such as order tracking, product guides, and FA
         keywords:
           'Prima Wrap, Gift Packaging, Printed Bags, Boxes, Cello, Gift Wrap, Ribbons, Bows, Gift Accessories, Tissue, Wedding Supplies',
         url: 'https://primawrap.vercel.app',
-        logo: '/icons/prima-wrap-logo.png',
+        logo: '/icons/prima-wrap.png',
         slogan: 'Family Owned, Quality Driven',
         author: 'Prima Wrap',
         copyright: '2025, Primawrap.com, Inc. or its affiliates',
