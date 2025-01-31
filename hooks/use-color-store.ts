@@ -15,6 +15,7 @@ type ColorState = {
   defaultColor: string
   userColor?: string
 }
+
 const availableColors = [
   {
     name: 'Gold',
@@ -185,11 +186,13 @@ const availableColors = [
     },
   },
 ]
+
 const initialState: ColorState = {
   availableColors,
   defaultColor: availableColors[0].name,
   userColor: undefined,
 }
+
 export const colorStore = create<ColorState>()(
   persist(() => initialState, {
     name: 'colorStore',

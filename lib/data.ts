@@ -1313,7 +1313,7 @@ We also provide helpful resources such as order tracking, product guides, and FA
           name: 'Canadian Dollar',
           code: 'CAD',
           symbol: '$',
-          convertRate: 0.45,
+          convertRate: 1.45,
         },
       ],
       defaultCurrency: 'CAD',

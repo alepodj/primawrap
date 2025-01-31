@@ -4,7 +4,7 @@ export const i18n = {
     { code: 'fr-CA', name: 'French (Canada)', icon: '🇫🇷' },
     { code: 'es', name: 'Spanish', icon: '🇪🇸' },
   ],
-  defaultLocale: 'en-US',
+  defaultLocale: 'en-CA',
 }
 
 export const getDirection = (locale: string) => {
