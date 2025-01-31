@@ -47,8 +47,8 @@ export const toSlug = (text: string): string =>
     .replace(/-+/g, '-')
 
 // Format currency
-const CURRENCY_FORMATTER = new Intl.NumberFormat('en-US', {
-  currency: 'USD',
+const CURRENCY_FORMATTER = new Intl.NumberFormat('en-CA', {
+  currency: 'CAD',
   style: 'currency',
   minimumFractionDigits: 2,
 })
