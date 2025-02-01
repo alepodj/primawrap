@@ -1,19 +1,30 @@
 import type { NextAuthConfig } from 'next-auth'
+import { connectToDatabase } from './lib/db'
+import User from './lib/db/models/user.model'
 
 // Notice this is only an object, not a full Auth.js instance
 export default {
-  providers: [],
+  pages: {
+    signIn: '/sign-in',
+    newUser: '/sign-up',
+    error: '/sign-in',
+  },
   callbacks: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    authorized({ request, auth }: any) {
-      const protectedPaths = [
-        /\/checkout(\/.*)?/,
-        /\/account(\/.*)?/,
-        /\/admin(\/.*)?/,
-      ]
-      const { pathname } = request.nextUrl
-      if (protectedPaths.some((p) => p.test(pathname))) return !!auth
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user
+      const protectedPaths = ['/checkout', '/account', '/admin']
+      const isProtected = protectedPaths.some((path) =>
+        nextUrl.pathname.startsWith(path)
+      )
+
+      if (isProtected && !isLoggedIn) {
+        const redirectUrl = new URL('/sign-in', nextUrl.origin)
+        redirectUrl.searchParams.set('callbackUrl', nextUrl.href)
+        return Response.redirect(redirectUrl)
+      }
+
       return true
     },
   },
+  providers: [], // configured in auth.ts
 } satisfies NextAuthConfig

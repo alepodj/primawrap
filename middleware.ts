@@ -14,7 +14,8 @@ const publicPages = [
   '/product/(.*)',
   '/page/(.*)',
   '/verify-email',
-  // (/secret requires auth)
+  '/forgot-password',
+  '/reset-password',
 ]
 
 const intlMiddleware = createMiddleware(routing)

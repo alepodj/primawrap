@@ -84,9 +84,17 @@ export default async function UserButton() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuLabel>
-              <div className='font-normal'>
-                {t('Header.New Customer')}?{' '}
-                <Link href='/sign-up'>{t('Header.Sign up')}</Link>
+              <div className='font-normal space-y-2'>
+                <div>
+                  {t('Header.New Customer')}?{' '}
+                  <Link href='/sign-up'>{t('Header.Sign up')}</Link>
+                </div>
+                <div>
+                  {t('Header.Forgot Password')}?{' '}
+                  <Link href='/forgot-password'>
+                    {t('Header.Reset it here')}
+                  </Link>
+                </div>
               </div>
             </DropdownMenuLabel>
           </DropdownMenuContent>

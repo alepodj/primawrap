@@ -3,6 +3,7 @@ import PurchaseReceiptEmail from './purchase-receipt'
 import { IOrder } from '@/lib/db/models/order.model'
 import AskReviewOrderItemsEmail from './ask-review-order-items'
 import VerifyEmail from './verify-email'
+import PasswordResetEmail from './password-reset'
 import { SENDER_EMAIL, SENDER_NAME } from '@/lib/constants'
 import { i18n } from '@/i18n-config'
 import { routing } from '@/i18n/routing'
@@ -21,7 +22,8 @@ export const sendVerificationEmail = async ({
   callbackUrl?: string
 }) => {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || ''
-  const verificationUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}${
+  const defaultLocale = i18n.defaultLocale
+  const verificationUrl = `${baseUrl}/${defaultLocale}/verify-email?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}${
     callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ''
   }`
 
@@ -51,5 +53,22 @@ export const sendAskReviewOrderItems = async ({ order }: { order: IOrder }) => {
     subject: 'Review your order items',
     react: <AskReviewOrderItemsEmail order={order} />,
     scheduledAt: oneDayFromNow,
+  })
+}
+
+export const sendPasswordResetEmail = async ({
+  email,
+  name,
+  resetUrl,
+}: {
+  email: string
+  name: string
+  resetUrl: string
+}) => {
+  await resend.emails.send({
+    from: `${SENDER_NAME} <${SENDER_EMAIL}>`,
+    to: email,
+    subject: 'Reset your password',
+    react: <PasswordResetEmail resetUrl={resetUrl} name={name} />,
   })
 }

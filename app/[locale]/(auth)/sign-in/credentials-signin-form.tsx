@@ -1,6 +1,7 @@
 'use client'
 import { redirect, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import { useParams } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,6 +32,7 @@ export default function CredentialsSignInForm() {
     setting: { site },
   } = useSettingStore()
   const searchParams = useSearchParams()
+  const { locale } = useParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
   const [isResending, setIsResending] = useState(false)
@@ -147,6 +149,14 @@ export default function CredentialsSignInForm() {
                   />
                 </FormControl>
                 <FormMessage />
+                <div className='text-sm text-right'>
+                  <Link
+                    href={`/${locale}/forgot-password`}
+                    className='text-primary hover:underline'
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
               </FormItem>
             )}
           />
@@ -228,8 +238,11 @@ export default function CredentialsSignInForm() {
           </div>
           <div className='text-sm'>
             By signing in, you agree to {site.name}&apos;s{' '}
-            <Link href='/page/conditions-of-use'>Conditions of Use</Link> and{' '}
-            <Link href='/page/privacy-policy'>Privacy Notice.</Link>
+            <Link href={`/${locale}/page/conditions-of-use`}>
+              Conditions of Use
+            </Link>{' '}
+            and{' '}
+            <Link href={`/${locale}/page/privacy-policy`}>Privacy Notice</Link>
           </div>
         </div>
       </form>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import useSettingStore from '@/hooks/use-setting-store'
+import { useParams } from 'next/navigation'
 import {
   Form,
   FormControl,
@@ -81,6 +82,7 @@ export default function SignUpForm() {
     setting: { site },
   } = useSettingStore()
   const searchParams = useSearchParams()
+  const { locale } = useParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   const [isRegistered, setIsRegistered] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -237,11 +239,22 @@ export default function SignUpForm() {
             <Link href='/page/privacy-policy'> Privacy Notice. </Link>
           </div>
           <Separator className='mb-4' />
-          <div className='text-sm'>
-            Already have an account?{' '}
-            <Link className='link' href={`/sign-in?callbackUrl=${callbackUrl}`}>
-              Sign In
-            </Link>
+          <div className='text-sm space-y-2'>
+            <div>
+              Already have an account?{' '}
+              <Link
+                className='link'
+                href={`/${locale}/sign-in?callbackUrl=${callbackUrl}`}
+              >
+                Sign In
+              </Link>
+            </div>
+            <div>
+              Forgot your password?{' '}
+              <Link className='link' href={`/${locale}/forgot-password`}>
+                Reset it here
+              </Link>
+            </div>
           </div>
         </div>
       </form>

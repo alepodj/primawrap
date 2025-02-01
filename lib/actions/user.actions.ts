@@ -11,8 +11,9 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { getSetting } from './setting.actions'
-import { sendVerificationEmail } from '@/emails'
+import { sendVerificationEmail, sendPasswordResetEmail } from '@/emails'
 import crypto from 'crypto'
+import { i18n } from '@/i18n-config'
 
 // CREATE
 export async function registerUser(
@@ -305,6 +306,111 @@ export async function checkEmailVerification(email: string) {
     return { success: true }
   } catch (error) {
     console.error('Error checking email verification:', error)
+    return { success: false, error: formatError(error) }
+  }
+}
+
+// PASSWORD RESET
+export async function requestPasswordReset(email: string, locale?: string) {
+  try {
+    await connectToDatabase()
+    const user = await User.findOne({ email })
+
+    if (!user) {
+      return { success: false, error: 'No account found with this email' }
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
+    // Update user with reset token using findOneAndUpdate
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: user._id },
+      {
+        $set: {
+          resetToken: resetToken,
+          resetTokenExpiry: resetTokenExpiry,
+        },
+      },
+      { new: true, runValidators: true }
+    )
+
+    if (!updatedUser) {
+      console.error('Failed to update user with reset token')
+      return { success: false, error: 'Failed to process password reset' }
+    }
+
+    // Send reset email with properly encoded token
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || ''
+    const resetUrl = `${baseUrl}/${locale || i18n.defaultLocale}/reset-password?token=${encodeURIComponent(resetToken)}`
+
+    await sendPasswordResetEmail({
+      email: user.email,
+      name: user.name,
+      resetUrl,
+    })
+
+    return {
+      success: true,
+      message: 'Password reset instructions sent to your email',
+    }
+  } catch (error) {
+    console.error('Request password reset error:', error)
+    return { success: false, error: formatError(error) }
+  }
+}
+
+export async function resetPassword(token: string, newPassword: string) {
+  try {
+    await connectToDatabase()
+
+    // First check if token exists at all
+    const userWithToken = await User.findOne({ resetToken: token })
+    if (!userWithToken) {
+      return {
+        success: false,
+        error: 'Password reset link is invalid',
+      }
+    }
+
+    // Then check if token is expired
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: new Date() },
+    })
+
+    if (!user) {
+      return {
+        success: false,
+        error: 'Password reset link has expired',
+      }
+    }
+
+    // Update password and clear reset token using findOneAndUpdate
+    const updatedUser = await User.findOneAndUpdate(
+      { resetToken: token },
+      {
+        $set: { password: await bcrypt.hash(newPassword, 5) },
+        $unset: { resetToken: 1, resetTokenExpiry: 1 },
+      },
+      { new: true }
+    )
+
+    if (!updatedUser) {
+      console.error('Failed to update password')
+      return {
+        success: false,
+        error: 'Failed to reset password',
+      }
+    }
+
+    return {
+      success: true,
+      message: 'Password has been reset successfully',
+    }
+  } catch (error) {
+    console.error('Reset password error:', error)
     return { success: false, error: formatError(error) }
   }
 }
