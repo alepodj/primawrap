@@ -5,34 +5,25 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { CheckCircle2, XCircle } from 'lucide-react'
 
-type Props = {
-  params: { locale: string }
-  searchParams: { token: string; email?: string; callbackUrl?: string }
-}
-
-export default async function VerifyEmailPage({ params, searchParams }: Props) {
-  const { locale } = params
+export default async function VerifyEmailPage(props: {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{
+    token: string
+    email?: string
+    callbackUrl?: string
+  }>
+}) {
+  const { locale } = await props.params
+  const searchParams = await props.searchParams
   const { token, callbackUrl } = searchParams
 
-  console.log('Verification page accessed with:', {
-    locale,
-    token: token ? `${token.substring(0, 10)}...` : undefined, // Only log part of the token for security
-    email: searchParams.email,
-    callbackUrl,
-    fullUrl:
-      typeof window !== 'undefined' ? window.location.href : 'server-side',
-  })
-
   if (!token) {
-    console.log('No token provided, redirecting to home')
     redirect('/')
   }
 
   try {
     // Verify the email
-    console.log('Attempting to verify email with token...')
     const { success, error } = await verifyEmail(token)
-    console.log('Verification result:', { success, error })
 
     return (
       <div className='container max-w-lg mx-auto py-10'>

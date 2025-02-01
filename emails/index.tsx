@@ -25,8 +25,6 @@ export const sendVerificationEmail = async ({
     callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : ''
   }`
 
-  console.log('Generated verification URL:', verificationUrl)
-
   await resend.emails.send({
     from: `${SENDER_NAME} <${SENDER_EMAIL}>`,
     to: email,

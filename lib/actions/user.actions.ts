@@ -70,19 +70,11 @@ export async function verifyEmail(token: string) {
   try {
     await connectToDatabase()
 
-    console.log('Verifying email with token:', token)
-
     // First try to find the user without expiry check to see if token exists
     const anyUser = await User.findOne({ verificationToken: token })
     if (!anyUser) {
-      console.log('No user found with this token at all')
       return { success: false, error: 'Invalid verification link' }
     }
-
-    console.log('Token exists for user:', anyUser.email)
-    console.log('Current verification status:', anyUser.emailVerified)
-    console.log('Token expiry:', anyUser.verificationTokenExpiry)
-    console.log('Current time:', new Date())
 
     // Now check with expiry
     const user = await User.findOne({
@@ -91,17 +83,10 @@ export async function verifyEmail(token: string) {
     })
 
     if (!user) {
-      console.log('Token expired or not found with expiry check')
       return { success: false, error: 'Verification link has expired' }
     }
 
-    console.log('Found valid user:', user.email)
-    console.log('User ID:', user._id)
-    console.log('Current verification status:', user.emailVerified)
-    console.log('Current verification token:', user.verificationToken)
-
     // First attempt - try with findOneAndUpdate
-    console.log('Attempting update with findOneAndUpdate...')
     const updatedUser = await User.findOneAndUpdate(
       {
         _id: user._id,
@@ -117,11 +102,7 @@ export async function verifyEmail(token: string) {
       }
     )
 
-    console.log('First update attempt result:', updatedUser)
-
     if (!updatedUser || !updatedUser.emailVerified) {
-      console.log('First update attempt failed, trying alternative approach...')
-
       // Second attempt - try direct save
       user.emailVerified = true
       user.verificationToken = undefined
@@ -129,31 +110,22 @@ export async function verifyEmail(token: string) {
 
       try {
         const savedUser = await user.save()
-        console.log('Second update attempt result:', savedUser)
 
         if (!savedUser.emailVerified) {
-          console.error('Both update attempts failed')
           return {
             success: false,
             error: 'Failed to verify email. Please try again.',
           }
         }
       } catch (saveError) {
-        console.error('Error during save:', saveError)
         throw saveError
       }
     }
 
     // Final verification check
     const finalCheck = await User.findById(user._id)
-    console.log('Final verification check:', {
-      email: finalCheck?.email,
-      verified: finalCheck?.emailVerified,
-      hasToken: !!finalCheck?.verificationToken,
-    })
 
     if (!finalCheck?.emailVerified) {
-      console.error('Final verification check failed')
       return {
         success: false,
         error: 'Failed to verify email. Please try again.',
@@ -165,7 +137,6 @@ export async function verifyEmail(token: string) {
       message: 'Email verified successfully',
     }
   } catch (error) {
-    console.error('Error verifying email:', error)
     return { success: false, error: formatError(error) }
   }
 }
@@ -316,19 +287,14 @@ export async function resendVerificationEmail(
 export async function checkEmailVerification(email: string) {
   try {
     await connectToDatabase()
-    console.log('Checking email verification for:', email)
 
     const user = await User.findOne({ email })
 
     if (!user) {
-      console.log('No user found with email:', email)
       return { success: false, error: 'Invalid email or password' }
     }
 
-    console.log('Found user, verification status:', user.emailVerified)
-
     if (!user.emailVerified) {
-      console.log('User email not verified')
       return {
         success: false,
         error: 'Please verify your email before signing in',
@@ -336,7 +302,6 @@ export async function checkEmailVerification(email: string) {
       }
     }
 
-    console.log('User email is verified')
     return { success: true }
   } catch (error) {
     console.error('Error checking email verification:', error)
