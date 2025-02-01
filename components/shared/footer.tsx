@@ -31,74 +31,14 @@ export default function Footer() {
           className='bg-gradient-to-br to-slate-800 from-slate-600 w-full rounded-none'
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
-          <ChevronUp className='mr-2 h-4 w-4' />
-          {t('Footer.Back to top')}
+          <ChevronUp className='mr-2 h-4 w-4 footer-link' />
+          <span className='footer-link'>{t('Footer.Back to Top')}</span>
+          <ChevronUp className='ml-2 h-4 w-4 footer-link' />
         </Button>
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto'>
-          <div>
-            <h3 className='font-bold mb-2'>{t('Footer.Get to Know Us')}</h3>
-            <ul className='space-y-2'>
-              <li>
-                <Link href='/page/careers' className='footer-link'>
-                  {t('Footer.Careers')}
-                </Link>
-              </li>
-              <li>
-                <Link href='/page/blog' className='footer-link'>
-                  {t('Footer.Blog')}
-                </Link>
-              </li>
-              <li>
-                <Link href='/page/about-us' className='footer-link'>
-                  {t('Footer.About name', { name: site.name })}
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className='font-bold mb-2'>{t('Footer.Make Money with Us')}</h3>
-            <ul className='space-y-2'>
-              <li>
-                <Link href='/page/sell' className='footer-link'>
-                  {t('Footer.Sell products on', { name: site.name })}
-                </Link>
-              </li>
-              <li>
-                <Link href='/page/become-affiliate' className='footer-link'>
-                  {t('Footer.Become an Affiliate')}
-                </Link>
-              </li>
-              <li>
-                <Link href='/page/advertise' className='footer-link'>
-                  {t('Footer.Advertise Your Products')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className='font-bold mb-2'>{t('Footer.Let Us Help You')}</h3>
-            <ul className='space-y-2'>
-              <li>
-                <Link href='/page/shipping' className='footer-link'>
-                  {t('Footer.Shipping Rates & Policies')}
-                </Link>
-              </li>
-              <li>
-                <Link href='/page/returns-policy' className='footer-link'>
-                  {t('Footer.Returns & Replacements')}
-                </Link>
-              </li>
-              <li>
-                <Link href='/page/help' className='footer-link'>
-                  {t('Footer.Help')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className='border-t border-gray-800'>
-          <div className='max-w-7xl mx-auto py-8 px-4 flex flex-col items-center space-y-4'>
-            <div className='flex items-center space-x-4 flex-wrap md:flex-nowrap'>
+
+        <div>
+          <div className='max-w-7xl mx-auto py-2 px-2 flex flex-col items-center space-y-2'>
+            <div className='flex items-center space-x-2 flex-wrap md:flex-nowrap'>
               <Link
                 href='/'
                 className='transition-opacity hover:opacity-80 w-[150px] shrink-0'
@@ -176,7 +116,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className='p-4'>
+      <div className='p-2'>
         <div className='flex justify-center gap-4 text-sm'>
           <Link href='/page/conditions-of-use' className='footer-link'>
             {t('Footer.Conditions of Use')}
@@ -187,12 +127,46 @@ export default function Footer() {
           <Link href='/page/help' className='footer-link'>
             {t('Footer.Help')}
           </Link>
+          <Link href='/page/Blog' className='footer-link'>
+            {t('Footer.Blog')}
+          </Link>
+          <Link href='/page/Careers' className='footer-link'>
+            {t('Footer.Careers')}
+          </Link>
         </div>
-        <div className='flex justify-center text-sm'>
+        <div className='p-2'>
+          <div className='flex justify-center gap-4 text-sm'>
+            <Link href='/page/about-us' className='footer-link'>
+              {t('Footer.About name', { name: site.name })}
+            </Link>
+            <Link href='/page/shipping' className='footer-link'>
+              {t('Footer.Shipping Rates & Policies')}
+            </Link>
+            <Link href='/page/returns-policy' className='footer-link'>
+              {t('Footer.Returns & Replacements')}
+            </Link>
+          </div>
+        </div>
+        <div className='mt-2 flex justify-center text-center text-sm'>
+          <Link
+            href='https://www.google.ca/search?q=%2B1+%28905%29+704-0087'
+            target='_blank'
+            className='footer-link'
+          >
+            {site.phone}
+          </Link>
+        </div>
+        <div className='mt-2 flex justify-center text-center text-sm'>
+          <Link
+            href='https://g.co/kgs/J8oFq6L'
+            target='_blank'
+            className='footer-link'
+          >
+            {site.address}
+          </Link>
+        </div>
+        <div className='flex mt-2 justify-center text-sm'>
           <p> © {site.copyright}</p>
-        </div>
-        <div className='mt-5 flex justify-center text-center text-sm text-gray-400'>
-          {site.phone} <br /> {site.address}
         </div>
       </div>
     </footer>

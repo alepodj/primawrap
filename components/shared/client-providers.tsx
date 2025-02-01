@@ -6,6 +6,7 @@ import { Toaster } from '../ui/toaster'
 import { ThemeProvider } from './theme-provider'
 import { ClientSetting } from '@/types'
 import AppInitializer from './app-initializer'
+import { usePathname } from 'next/navigation'
 
 export default function ClientProviders({
   children,
@@ -15,6 +16,15 @@ export default function ClientProviders({
   setting: ClientSetting
 }) {
   const visible = useCartSidebar()
+  const pathname = usePathname()
+
+  // Don't show cart sidebar in auth routes
+  const isAuthRoute =
+    pathname.includes('/sign-in') ||
+    pathname.includes('/sign-up') ||
+    pathname.includes('/forgot-password') ||
+    pathname.includes('/reset-password') ||
+    pathname.includes('/verify-email')
 
   return (
     <AppInitializer setting={setting}>
@@ -22,7 +32,7 @@ export default function ClientProviders({
         attribute='class'
         defaultTheme={setting.common.defaultTheme.toLocaleLowerCase()}
       >
-        {visible ? (
+        {visible && !isAuthRoute ? (
           <div className='flex min-h-screen'>
             <div className='flex-1 overflow-hidden'>{children}</div>
             <CartSidebar />

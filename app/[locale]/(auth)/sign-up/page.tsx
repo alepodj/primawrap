@@ -16,7 +16,7 @@ export default async function SignUpPage(props: {
   }>
 }) {
   const searchParams = await props.searchParams
-
+  
   const { callbackUrl } = searchParams
 
   const session = await auth()
@@ -28,7 +28,7 @@ export default async function SignUpPage(props: {
     <div className='w-full'>
       <Card>
         <CardHeader>
-          <CardTitle className='text-2xl'>Create account</CardTitle>
+          <CardTitle className='text-2xl text-center'>Create account</CardTitle>
         </CardHeader>
         <CardContent>
           <SignUpForm />
