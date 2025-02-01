@@ -62,10 +62,11 @@ export default function VerificationResult({
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-4'>
-          <p className='text-muted-foreground'>
+          <p className='text-muted-foreground text-left'>
             {success ? (
               <>
                 Your email has been verified successfully. You can now sign in
+
                 to your account.
               </>
             ) : (

@@ -1,18 +1,23 @@
 import { Metadata } from 'next'
 import { SessionProvider } from 'next-auth/react'
-
 import { auth } from '@/auth'
-
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 
-const PAGE_TITLE = 'Login & Security'
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: 'Manage Account',
 }
-export default async function ProfilePage() {
+
+const PAGE_TITLE = 'Login & Security'
+
+export default async function ProfilePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
   const session = await auth()
   return (
     <div className='mb-24'>
@@ -42,7 +47,6 @@ export default async function ProfilePage() {
             <div>
               <h3 className='font-bold'>Email</h3>
               <p>{session?.user.email}</p>
-              <p>will be implemented in the next version</p>
             </div>
             <div>
               <Link href='#'>
@@ -61,16 +65,13 @@ export default async function ProfilePage() {
             <div>
               <h3 className='font-bold'>Password</h3>
               <p>************</p>
-              <p>will be implemented in the next version</p>
             </div>
             <div>
-              <Link href='#'>
-                <Button
-                  disabled
-                  className='rounded-full w-32'
-                  variant='outline'
-                >
-                  Edit
+              <Link
+                href={`/${locale}/forgot-password?email=${encodeURIComponent(session?.user.email || '')}`}
+              >
+                <Button className='rounded-full w-32' variant='outline'>
+                  Reset
                 </Button>
               </Link>
             </div>

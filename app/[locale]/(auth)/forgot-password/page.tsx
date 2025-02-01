@@ -11,7 +11,7 @@ export default function ForgotPasswordPage() {
     <div className='w-full'>
       <Card>
         <CardHeader>
-          <CardTitle className='text-2xl'>Forgot Password</CardTitle>
+          <CardTitle className='text-2xl text-center'>Forgot Password</CardTitle>
         </CardHeader>
         <CardContent>
           <ForgotPasswordForm />

@@ -87,6 +87,8 @@ export default function SignUpForm() {
   const [isRegistered, setIsRegistered] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const currentLocale = typeof locale === 'string' ? locale : 'en-CA'
 
   const form = useForm<IUserSignUp>({
     resolver: zodResolver(UserSignUpSchema),
@@ -97,6 +99,7 @@ export default function SignUpForm() {
 
   const onSubmit = async (data: IUserSignUp) => {
     try {
+      setIsSubmitting(true)
       const res = await registerUser(data, callbackUrl)
       if (!res.success) {
         toast({
@@ -113,6 +116,8 @@ export default function SignUpForm() {
         description: 'Something went wrong',
         variant: 'destructive',
       })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -122,7 +127,7 @@ export default function SignUpForm() {
         <CardTitle>Check your email</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className='text-center text-sm text-muted-foreground'>
+        <p className='text-sm text-muted-foreground'>
           We sent you a verification link. Please check your email to verify
           your account.
         </p>
@@ -231,7 +236,9 @@ export default function SignUpForm() {
             )}
           />
           <div>
-            <Button type='submit'>Sign Up</Button>
+            <Button type='submit' disabled={isSubmitting}>
+              {isSubmitting ? 'Sending...' : 'Sign Up'}
+            </Button>
           </div>
           <div className='text-sm'>
             By creating an account, you agree to {site.name}&apos;s{' '}
@@ -244,14 +251,14 @@ export default function SignUpForm() {
               Already have an account?{' '}
               <Link
                 className='link'
-                href={`/${locale}/sign-in?callbackUrl=${callbackUrl}`}
+                href={`/${currentLocale}/sign-in?callbackUrl=${callbackUrl}`}
               >
                 Sign In
               </Link>
             </div>
             <div>
               Forgot your password?{' '}
-              <Link className='link' href={`/${locale}/forgot-password`}>
+              <Link className='link' href={`/${currentLocale}/forgot-password`}>
                 Reset it here
               </Link>
             </div>

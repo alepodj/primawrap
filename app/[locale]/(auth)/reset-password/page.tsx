@@ -11,7 +11,7 @@ export default function ResetPasswordPage() {
     <div className='w-full'>
       <Card>
         <CardHeader>
-          <CardTitle className='text-2xl'>Reset Password</CardTitle>
+          <CardTitle className='text-2xl text-center'>Reset Password</CardTitle>
         </CardHeader>
         <CardContent>
           <ResetPasswordForm />

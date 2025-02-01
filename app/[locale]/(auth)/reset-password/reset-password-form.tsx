@@ -20,6 +20,7 @@ import Link from 'next/link'
 import { useSearchParams, useParams } from 'next/navigation'
 import { Eye, EyeOff, Info } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
+import { CountdownRedirect } from '@/components/ui/countdown-redirect'
 
 function PasswordStrengthIndicator({ password }: { password: string }) {
   const requirements = [
@@ -90,6 +91,7 @@ export default function ResetPasswordForm() {
   const searchParams = useSearchParams()
   const { locale } = useParams()
   const token = searchParams.get('token')
+  const currentLocale = typeof locale === 'string' ? locale : 'en-CA'
 
   const form = useForm<ResetPasswordForm>({
     resolver: zodResolver(ResetPasswordSchema),
@@ -146,9 +148,10 @@ export default function ResetPasswordForm() {
           your new password.
         </p>
         <br />
-        <Link href={`/${locale}/sign-in`}>
+        <Link href={`/${currentLocale}/sign-in`}>
           <Button className='w-full'>Sign In</Button>
         </Link>
+        <CountdownRedirect locale={currentLocale} />
       </div>
     )
   }

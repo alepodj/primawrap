@@ -17,7 +17,8 @@ import {
 import { toast } from '@/hooks/use-toast'
 import { requestPasswordReset } from '@/lib/actions/user.actions'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
+import { CountdownRedirect } from '@/components/ui/countdown-redirect'
 
 const ForgotPasswordSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -29,12 +30,14 @@ export default function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
   const params = useParams()
-  const locale = typeof params.locale === 'string' ? params.locale : undefined
+  const searchParams = useSearchParams()
+  const locale = typeof params.locale === 'string' ? params.locale : 'en-CA'
+  const emailFromQuery = searchParams.get('email') || ''
 
   const form = useForm<ForgotPasswordForm>({
     resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: {
-      email: '',
+      email: emailFromQuery,
     },
   })
 
@@ -88,6 +91,7 @@ export default function ForgotPasswordForm() {
               Back to Sign In
             </Button>
           </Link>
+          <CountdownRedirect locale={locale} />
         </div>
       </div>
     )
