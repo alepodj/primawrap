@@ -19,12 +19,6 @@ export default async function UserButton() {
   const t = await getTranslations()
   const session = await auth()
 
-  console.log('UserButton - Session data:', {
-    name: session?.user?.name,
-    email: session?.user?.email,
-    role: session?.user?.role,
-  })
-
   return (
     <div className='flex gap-2 items-center'>
       <DropdownMenu>

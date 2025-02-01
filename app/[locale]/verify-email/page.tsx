@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { CheckCircle2, XCircle } from 'lucide-react'
 
-export default async function VerifyEmailPage({
-  params: { locale },
-  searchParams,
-}: {
+type Props = {
   params: { locale: string }
   searchParams: { token: string; email?: string; callbackUrl?: string }
-}) {
+}
+
+export default async function VerifyEmailPage({ params, searchParams }: Props) {
+  const { locale } = params
   const { token, callbackUrl } = searchParams
 
   console.log('Verification page accessed with:', {
