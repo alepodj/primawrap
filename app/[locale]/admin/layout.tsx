@@ -20,7 +20,7 @@ export default async function AdminLayout({
               <Image
                 src='/icons/prima-wrap.png'
                 width={150}
-                height={150} 
+                height={150}
                 alt={`${site.name} logo`}
               />
             </Link>

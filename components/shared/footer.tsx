@@ -24,11 +24,11 @@ export default function Footer() {
   const locale = useLocale()
   const t = useTranslations()
   return (
-    <footer className='bg-gradient-to-tl to-slate-700 from-slate-900 text-white underline-link'>
+    <footer className='bg-gradient-to-tl to-slate-700 from-slate-900 text-white'>
       <div className='w-full'>
         <Button
           variant='ghost'
-          className='bg-gradient-to-br to-slate-800 from-slate-600 w-full  rounded-none '
+          className='bg-gradient-to-br to-slate-800 from-slate-600 w-full rounded-none'
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <ChevronUp className='mr-2 h-4 w-4' />
@@ -39,13 +39,17 @@ export default function Footer() {
             <h3 className='font-bold mb-2'>{t('Footer.Get to Know Us')}</h3>
             <ul className='space-y-2'>
               <li>
-                <Link href='/page/careers'>{t('Footer.Careers')}</Link>
+                <Link href='/page/careers' className='footer-link'>
+                  {t('Footer.Careers')}
+                </Link>
               </li>
               <li>
-                <Link href='/page/blog'>{t('Footer.Blog')}</Link>
+                <Link href='/page/blog' className='footer-link'>
+                  {t('Footer.Blog')}
+                </Link>
               </li>
               <li>
-                <Link href='/page/about-us'>
+                <Link href='/page/about-us' className='footer-link'>
                   {t('Footer.About name', { name: site.name })}
                 </Link>
               </li>
@@ -55,17 +59,17 @@ export default function Footer() {
             <h3 className='font-bold mb-2'>{t('Footer.Make Money with Us')}</h3>
             <ul className='space-y-2'>
               <li>
-                <Link href='/page/sell'>
+                <Link href='/page/sell' className='footer-link'>
                   {t('Footer.Sell products on', { name: site.name })}
                 </Link>
               </li>
               <li>
-                <Link href='/page/become-affiliate'>
+                <Link href='/page/become-affiliate' className='footer-link'>
                   {t('Footer.Become an Affiliate')}
                 </Link>
               </li>
               <li>
-                <Link href='/page/advertise'>
+                <Link href='/page/advertise' className='footer-link'>
                   {t('Footer.Advertise Your Products')}
                 </Link>
               </li>
@@ -75,17 +79,19 @@ export default function Footer() {
             <h3 className='font-bold mb-2'>{t('Footer.Let Us Help You')}</h3>
             <ul className='space-y-2'>
               <li>
-                <Link href='/page/shipping'>
+                <Link href='/page/shipping' className='footer-link'>
                   {t('Footer.Shipping Rates & Policies')}
                 </Link>
               </li>
               <li>
-                <Link href='/page/returns-policy'>
+                <Link href='/page/returns-policy' className='footer-link'>
                   {t('Footer.Returns & Replacements')}
                 </Link>
               </li>
               <li>
-                <Link href='/page/help'>{t('Footer.Help')}</Link>
+                <Link href='/page/help' className='footer-link'>
+                  {t('Footer.Help')}
+                </Link>
               </li>
             </ul>
           </div>
@@ -93,16 +99,19 @@ export default function Footer() {
         <div className='border-t border-gray-800'>
           <div className='max-w-7xl mx-auto py-8 px-4 flex flex-col items-center space-y-4'>
             <div className='flex items-center space-x-4 flex-wrap md:flex-nowrap'>
-              <Image
-                src='/icons/prima-wrap.png'
-                alt={`${site.name} logo`}
-                width={150}
-                height={150}
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                }}
-              />{' '}
+              <Link
+                href='/'
+                className='transition-opacity hover:opacity-80 w-[150px] shrink-0'
+              >
+                <Image
+                  src='/icons/prima-wrap.png'
+                  alt={`${site.name} logo`}
+                  width={150}
+                  height={150}
+                  priority
+                  className='w-full h-auto'
+                />
+              </Link>
               <Select
                 value={locale}
                 onValueChange={(value) => {
@@ -152,11 +161,15 @@ export default function Footer() {
       </div>
       <div className='p-4'>
         <div className='flex justify-center  gap-3 text-sm'>
-          <Link href='/page/conditions-of-use'>
+          <Link href='/page/conditions-of-use' className='footer-link'>
             {t('Footer.Conditions of Use')}
           </Link>
-          <Link href='/page/privacy-policy'>{t('Footer.Privacy Notice')}</Link>
-          <Link href='/page/help'>{t('Footer.Help')}</Link>
+          <Link href='/page/privacy-policy' className='footer-link'>
+            {t('Footer.Privacy Notice')}
+          </Link>
+          <Link href='/page/help' className='footer-link'>
+            {t('Footer.Help')}
+          </Link>
         </div>
         <div className='flex justify-center text-sm'>
           <p> © {site.copyright}</p>

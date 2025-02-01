@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 @layer base {
@@ -76,22 +76,48 @@ body {
   .web-page-content p {
     @apply py-2;
   }
+
   .highlight-link a,
   a.highlight-link {
-    @apply text-sky-700  hover:text-orange-700 hover:underline;
+    @apply relative text-sky-700 inline-block hover:text-sky-900;
   }
+
   .header-button {
-    @apply cursor-pointer p-1 border border-transparent hover:border-white rounded-[2px];
+    @apply cursor-pointer p-1 relative transition-all duration-200 rounded-md
+    hover:bg-white/10 active:scale-95
+    before:absolute before:inset-0 before:rounded-xl
+    before:bg-white/0 before:transition-all before:duration-200
+    hover:before:bg-white/5 hover:before:scale-[1.1]
+    before:-z-10;
   }
+
+  .nav-link {
+    @apply relative py-2 text-white transition-all duration-200 
+    after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 
+    after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 
+    hover:after:w-full hover:text-white/90;
+  }
+
   .item-button {
-    @apply p-3 hover:bg-muted hover:no-underline;
+    @apply p-3 transition-colors duration-200 
+    hover:bg-slate-800/20 rounded-md
+    active:scale-[0.98];
   }
+
+  .footer-link {
+    @apply transition-all duration-200 text-white hover:text-white/90 
+    relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px 
+    after:bg-white/50 after:transition-all after:duration-300 hover:after:w-full;
+  }
+
   .h1-bold {
     @apply font-bold text-2xl lg:text-3xl;
   }
+
   .h2-bold {
     @apply font-bold text-lg lg:text-xl;
   }
+
   .flex-between {
     @apply flex justify-between items-center;
   }
