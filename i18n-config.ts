@@ -1,8 +1,23 @@
 export const i18n = {
   locales: [
-    { code: 'en-CA', name: 'English (Canada)', icon: '🇨🇦' },
-    { code: 'fr-CA', name: 'French (Canada)', icon: '🇫🇷' },
-    { code: 'es', name: 'Spanish', icon: '🇪🇸' },
+    {
+      code: 'en-CA',
+      name: 'English',
+      icon: '🇨🇦',
+      flagImg: '/flags/ca.svg',
+    },
+    {
+      code: 'fr-CA',
+      name: 'French',
+      icon: '🇫🇷',
+      flagImg: '/flags/fr.svg',
+    },
+    {
+      code: 'es',
+      name: 'Spanish',
+      icon: '🇪🇸',
+      flagImg: '/flags/es.svg',
+    },
   ],
   defaultLocale: 'en-CA',
 }

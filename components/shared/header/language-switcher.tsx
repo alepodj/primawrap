@@ -7,7 +7,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
@@ -17,61 +16,97 @@ import useSettingStore from '@/hooks/use-setting-store'
 import { i18n } from '@/i18n-config'
 import { setCurrencyOnServer } from '@/lib/actions/setting.actions'
 import { ChevronDownIcon } from 'lucide-react'
+import Image from 'next/image'
 
 export default function LanguageSwitcher() {
   const { locales } = i18n
   const locale = useLocale()
   const pathname = usePathname()
+  const currentLocale = locales.find((l) => l.code === locale)
 
   const {
     setting: { availableCurrencies, currency },
     setCurrency,
   } = useSettingStore()
+
   const handleCurrencyChange = async (newCurrency: string) => {
     await setCurrencyOnServer(newCurrency)
     setCurrency(newCurrency)
   }
+
+  const currentCurrency = availableCurrencies.find((c) => c.code === currency)
+
+  // Sort currencies to put CAD at the top
+  const sortedCurrencies = React.useMemo(() => {
+    return [...availableCurrencies].sort((a, b) => {
+      if (a.code === 'CAD') return -1
+      if (b.code === 'CAD') return 1
+      return a.code.localeCompare(b.code)
+    })
+  }, [availableCurrencies])
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className='header-button h-[41px]'>
-        <div className='flex items-center gap-1'>
-          <span className='text-xl'>
-            {locales.find((l) => l.code === locale)?.icon}
-          </span>
-          {locale.toUpperCase().slice(0, 2)}
-          <ChevronDownIcon />
-        </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-56'>
-        <DropdownMenuLabel>Language</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={locale}>
-          {locales.map((c) => (
-            <DropdownMenuRadioItem key={c.name} value={c.code}>
-              <Link
-                className='w-full flex items-center gap-1'
-                href={pathname}
-                locale={c.code}
-              >
-                <span className='text-lg'>{c.icon}</span> {c.name}
-              </Link>
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
+    <div className='flex items-center gap-2'>
+      <DropdownMenu>
+        <DropdownMenuTrigger className='header-button h-[41px]'>
+          <div className='flex items-center gap-2'>
+            {currentCurrency?.symbol} {currency}
+            <ChevronDownIcon />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Currency</DropdownMenuLabel>
+          <DropdownMenuRadioGroup
+            value={currency}
+            onValueChange={handleCurrencyChange}
+          >
+            {sortedCurrencies.map((c) => (
+              <DropdownMenuRadioItem key={c.name} value={c.code}>
+                {c.symbol} {c.code}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-        <DropdownMenuSeparator />
-
-        <DropdownMenuLabel>Currency</DropdownMenuLabel>
-        <DropdownMenuRadioGroup
-          value={currency}
-          onValueChange={handleCurrencyChange}
-        >
-          {availableCurrencies.map((c) => (
-            <DropdownMenuRadioItem key={c.name} value={c.code}>
-              {c.symbol} {c.code}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      <DropdownMenu>
+        <DropdownMenuTrigger className='header-button h-[41px]'>
+          <div className='flex items-center gap-2'>
+            <Image
+              src={currentLocale?.flagImg || ''}
+              alt={currentLocale?.name || ''}
+              width={20}
+              height={15}
+              className='inline-block'
+            />
+            {locale.toUpperCase().slice(0, 2)}
+            <ChevronDownIcon />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className='w-56'>
+          <DropdownMenuLabel>Language</DropdownMenuLabel>
+          <DropdownMenuRadioGroup value={locale}>
+            {locales.map((c) => (
+              <DropdownMenuRadioItem key={c.name} value={c.code}>
+                <Link
+                  className='w-full flex items-center gap-2'
+                  href={pathname}
+                  locale={c.code}
+                >
+                  <Image
+                    src={c.flagImg}
+                    alt={c.name}
+                    width={20}
+                    height={15}
+                    className='inline-block'
+                  />
+                  {c.name}
+                </Link>
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }

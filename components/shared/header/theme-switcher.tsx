@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronDownIcon, Moon, Sun } from 'lucide-react'
+import { ChevronDownIcon, SunMedium, MoonStar } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import * as React from 'react'
 import {
@@ -30,11 +30,13 @@ export default function ThemeSwitcher() {
       <DropdownMenuTrigger className='header-button h-[41px]'>
         {theme === 'dark' && isMounted ? (
           <div className='flex items-center gap-1'>
-            <Moon className='h-4 w-4' /> {t('Dark')} <ChevronDownIcon />
+            <MoonStar className='h-5 w-5 text-white' /> {t('Dark')}{' '}
+            <ChevronDownIcon />
           </div>
         ) : (
           <div className='flex items-center gap-1'>
-            <Sun className='h-4 w-4' /> {t('Light')} <ChevronDownIcon />
+            <SunMedium className='h-5 w-5 text-white' /> {t('Light')}{' '}
+            <ChevronDownIcon />
           </div>
         )}
       </DropdownMenuTrigger>
@@ -43,10 +45,10 @@ export default function ThemeSwitcher() {
 
         <DropdownMenuRadioGroup value={theme} onValueChange={changeTheme}>
           <DropdownMenuRadioItem value='dark'>
-            <Moon className='h-4 w-4 mr-1' /> {t('Dark')}
+            <MoonStar className='h-5 w-5 mr-2' /> {t('Dark')}
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value='light'>
-            <Sun className='h-4 w-4 mr-1' /> {t('Light')}
+            <SunMedium className='h-5 w-5 mr-2' /> {t('Light')}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
