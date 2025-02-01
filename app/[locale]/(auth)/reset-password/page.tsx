@@ -6,11 +6,7 @@ export const metadata: Metadata = {
   title: 'Reset Password',
 }
 
-export default function ResetPasswordPage(props: {
-  searchParams: Promise<{
-    token: string
-  }>
-}) {
+export default function ResetPasswordPage() {
   return (
     <div className='w-full'>
       <Card>

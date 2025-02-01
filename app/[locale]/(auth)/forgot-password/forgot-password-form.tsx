@@ -28,7 +28,8 @@ type ForgotPasswordForm = z.infer<typeof ForgotPasswordSchema>
 export default function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
-  const { locale } = useParams()
+  const params = useParams()
+  const locale = typeof params.locale === 'string' ? params.locale : undefined
 
   const form = useForm<ForgotPasswordForm>({
     resolver: zodResolver(ForgotPasswordSchema),
@@ -71,8 +72,8 @@ export default function ForgotPasswordForm() {
       <div className='space-y-4 text-center'>
         <h2 className='text-lg font-semibold'>Check Your Email</h2>
         <p className='text-muted-foreground'>
-          We've sent password reset instructions to your email address. Please
-          check your inbox and spam folder.
+          We&apos;ve sent password reset instructions to your email address.
+          Please check your inbox and spam folder.
         </p>
         <div className='space-y-2'>
           <Button
