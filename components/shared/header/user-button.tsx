@@ -18,6 +18,13 @@ import Link from 'next/link'
 export default async function UserButton() {
   const t = await getTranslations()
   const session = await auth()
+
+  console.log('UserButton - Session data:', {
+    name: session?.user?.name,
+    email: session?.user?.email,
+    role: session?.user?.role,
+  })
+
   return (
     <div className='flex gap-2 items-center'>
       <DropdownMenu>
@@ -53,7 +60,7 @@ export default async function UserButton() {
                 <DropdownMenuItem>{t('Header.Your orders')}</DropdownMenuItem>
               </Link>
 
-              {session.user.role === 'Admin' && (
+              {session.user.role?.toLowerCase() === 'admin' && (
                 <Link className='w-full' href='/admin/overview'>
                   <DropdownMenuItem>{t('Header.Admin')}</DropdownMenuItem>
                 </Link>

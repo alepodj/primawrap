@@ -65,30 +65,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    // Updated for a more efficient way to handle user data
     jwt: async ({ token, user, trigger, session }) => {
       if (user) {
-        if (!user.name) {
-          await connectToDatabase()
-          await User.findByIdAndUpdate(user.id, {
-            name: user.name || user.email!.split('@')[0],
-            role: 'user',
-          })
-        }
-        token.name = user.name || user.email!.split('@')[0]
+        // Only set these values when the user first signs in
+        token.name = user.name
         token.role = (user as { role: string }).role
       }
 
-      if (session?.user?.name && trigger === 'update') {
-        token.name = session.user.name
+      // Handle role updates if needed
+      if (trigger === 'update' && session?.user) {
+        if (session.user.name) token.name = session.user.name
+        if (session.user.role) token.role = session.user.role
       }
+
       return token
     },
-    session: async ({ session, user, trigger, token }) => {
-      session.user.id = token.sub as string
-      session.user.role = token.role as string
-      session.user.name = token.name
-      if (trigger === 'update') {
-        session.user.name = user.name
+    session: async ({ session, token }) => {
+      if (token) {
+        session.user.id = token.sub as string
+        session.user.role = token.role as string
+        session.user.name = token.name as string
       }
       return session
     },
