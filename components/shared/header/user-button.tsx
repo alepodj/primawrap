@@ -9,6 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Separator } from '@/components/ui/separator'
 import { SignOut } from '@/lib/actions/user.actions'
 import { cn } from '@/lib/utils'
 import { ChevronDownIcon } from 'lucide-react'
@@ -72,7 +73,7 @@ export default async function UserButton() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         ) : (
-          <DropdownMenuContent className='w-56' align='end' forceMount>
+          <DropdownMenuContent className='w-70' align='end' forceMount>
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Link
@@ -83,16 +84,19 @@ export default async function UserButton() {
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
+            <Separator />
             <DropdownMenuLabel>
               <div className='font-normal space-y-2'>
                 <div>
                   {t('Header.New Customer')}?{' '}
-                  <Link href='/sign-up'>{t('Header.Sign up')}</Link>
+                  <Link href='/sign-up' className='user-menu-link'>
+                    {t('Header.Sign up')}
+                  </Link>
                 </div>
                 <div>
                   {t('Header.Forgot Password')}?{' '}
-                  <Link href='/forgot-password'>
-                    {t('Header.Reset it here')}
+                  <Link href='/forgot-password' className='user-menu-link'>
+                    {t('Header.Reset it')}
                   </Link>
                 </div>
               </div>

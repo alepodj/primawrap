@@ -36,14 +36,17 @@ export default function LanguageSwitcher() {
 
   const currentCurrency = availableCurrencies.find((c) => c.code === currency)
 
-  // Sort currencies to put CAD at the top
+  // Sort currencies to show current currency first, then others alphabetically
   const sortedCurrencies = React.useMemo(() => {
-    return [...availableCurrencies].sort((a, b) => {
-      if (a.code === 'CAD') return -1
-      if (b.code === 'CAD') return 1
-      return a.code.localeCompare(b.code)
-    })
-  }, [availableCurrencies])
+    return [
+      // Show current currency first
+      ...availableCurrencies.filter((c) => c.code === currency),
+      // Then show other currencies alphabetically
+      ...availableCurrencies
+        .filter((c) => c.code && c.code !== currency)
+        .sort((a, b) => a.code.localeCompare(b.code)),
+    ]
+  }, [availableCurrencies, currency])
 
   return (
     <div className='flex items-center gap-2'>
@@ -86,7 +89,12 @@ export default function LanguageSwitcher() {
         <DropdownMenuContent className='w-56'>
           <DropdownMenuLabel>Language</DropdownMenuLabel>
           <DropdownMenuRadioGroup value={locale}>
-            {locales.map((c) => (
+            {[
+              // Show current language first
+              ...locales.filter((l) => l.code === locale),
+              // Then show other languages
+              ...locales.filter((l) => l.code !== locale),
+            ].map((c) => (
               <DropdownMenuRadioItem key={c.name} value={c.code}>
                 <Link
                   className='w-full flex items-center gap-2'

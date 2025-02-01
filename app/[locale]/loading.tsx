@@ -14,16 +14,16 @@ export default function LoadingPage() {
           <Image
             src='/icons/prima-wrap.png'
             alt='logo'
-            width={150}
-            height={150}
+            width={250}
+            height={250}
             priority
             style={{
               maxWidth: '100%',
               height: 'auto',
             }}
           />
-          <Loader2 className='h-12 w-12 animate-spin text-primary' />
-          <p className='text-2xl font-medium text-muted-foreground'>
+          <Loader2 className='h-16 w-16 animate-spin text-primary' />
+          <p className='text-3xl font-medium text-muted-foreground'>
             {t('Loading.Loading')}
           </p>
         </div>

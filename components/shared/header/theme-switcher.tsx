@@ -44,12 +44,21 @@ export default function ThemeSwitcher() {
         <DropdownMenuLabel>Theme</DropdownMenuLabel>
 
         <DropdownMenuRadioGroup value={theme} onValueChange={changeTheme}>
-          <DropdownMenuRadioItem value='dark'>
-            <MoonStar className='h-5 w-5 mr-2' /> {t('Dark')}
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value='light'>
-            <SunMedium className='h-5 w-5 mr-2' /> {t('Light')}
-          </DropdownMenuRadioItem>
+          {[
+            // Show current theme first
+            theme === 'dark' ? 'dark' : 'light',
+            // Then show other theme
+            theme === 'dark' ? 'light' : 'dark',
+          ].map((themeOption) => (
+            <DropdownMenuRadioItem key={themeOption} value={themeOption}>
+              {themeOption === 'dark' ? (
+                <MoonStar className='h-5 w-5 mr-2' />
+              ) : (
+                <SunMedium className='h-5 w-5 mr-2' />
+              )}{' '}
+              {t(themeOption === 'dark' ? 'Dark' : 'Light')}
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>{t('Color')}</DropdownMenuLabel>
@@ -58,13 +67,17 @@ export default function ThemeSwitcher() {
           value={color.name}
           onValueChange={(value) => setColor(value, true)}
         >
-          {availableColors.map((c) => (
+          {[
+            // Show current color first
+            ...availableColors.filter((c) => c.name === color.name),
+            // Then show other colors
+            ...availableColors.filter((c) => c.name !== color.name),
+          ].map((c) => (
             <DropdownMenuRadioItem key={c.name} value={c.name}>
               <div
                 style={{ backgroundColor: c.name }}
                 className='h-4 w-4 mr-1 rounded-full'
               ></div>
-
               {t(c.name)}
             </DropdownMenuRadioItem>
           ))}

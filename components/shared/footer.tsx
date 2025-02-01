@@ -122,14 +122,24 @@ export default function Footer() {
                   <SelectValue placeholder={t('Footer.Select a language')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {locales.map((lang, index) => (
+                  {[
+                    ...locales.filter((l) => l.code === locale),
+                    ...locales.filter((l) => l.code !== locale),
+                  ].map((lang, index) => (
                     <SelectItem key={index} value={lang.code}>
                       <Link
                         className='w-full flex items-center gap-1'
                         href={pathname}
                         locale={lang.code}
                       >
-                        <span className='text-lg'>{lang.icon}</span> {lang.name}
+                        <Image
+                          src={lang.flagImg}
+                          alt={lang.name}
+                          width={20}
+                          height={15}
+                          className='inline-block'
+                        />
+                        {lang.name}
                       </Link>
                     </SelectItem>
                   ))}
@@ -146,13 +156,20 @@ export default function Footer() {
                   <SelectValue placeholder={t('Footer.Select a currency')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {availableCurrencies
-                    .filter((x) => x.code)
-                    .map((currency, index) => (
-                      <SelectItem key={index} value={currency.code}>
-                        {currency.name} ({currency.code})
-                      </SelectItem>
-                    ))}
+                  {[
+                    ...availableCurrencies.filter((x) => x.code === currency),
+                    ...availableCurrencies.filter(
+                      (x) => x.code && x.code !== currency
+                    ),
+                  ].map((currency, index) => (
+                    <SelectItem
+                      className='cursor-pointer'
+                      key={index}
+                      value={currency.code}
+                    >
+                      {currency.name} ({currency.code})
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -160,7 +177,7 @@ export default function Footer() {
         </div>
       </div>
       <div className='p-4'>
-        <div className='flex justify-center  gap-3 text-sm'>
+        <div className='flex justify-center gap-4 text-sm'>
           <Link href='/page/conditions-of-use' className='footer-link'>
             {t('Footer.Conditions of Use')}
           </Link>
@@ -174,8 +191,8 @@ export default function Footer() {
         <div className='flex justify-center text-sm'>
           <p> © {site.copyright}</p>
         </div>
-        <div className='mt-8 flex justify-center text-sm text-gray-400'>
-          {site.address} | {site.phone}
+        <div className='mt-5 flex justify-center text-center text-sm text-gray-400'>
+          {site.phone} <br /> {site.address}
         </div>
       </div>
     </footer>
