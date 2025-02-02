@@ -63,6 +63,20 @@ export default async function ProfilePage({
           <Separator />
           <CardContent className='p-4 flex justify-between flex-wrap'>
             <div>
+              <h3 className='font-bold'>Phone</h3>
+              <p>{session?.user.phone || 'Not set'}</p>
+            </div>
+            <div>
+              <Link href='/account/manage/phone'>
+                <Button className='rounded-full w-32' variant='outline'>
+                  Edit
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+          <Separator />
+          <CardContent className='p-4 flex justify-between flex-wrap'>
+            <div>
               <h3 className='font-bold'>Password</h3>
               <p>************</p>
             </div>

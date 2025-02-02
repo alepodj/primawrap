@@ -2,7 +2,7 @@
 
 import bcrypt from 'bcryptjs'
 import { auth, signIn, signOut } from '@/auth'
-import { IUserName, IUserSignIn, IUserSignUp } from '@/types'
+import { IUserName, IUserSignIn, IUserSignUp, IUserPhone } from '@/types'
 import { UserSignUpSchema, UserUpdateSchema } from '../validator'
 import { connectToDatabase } from '../db'
 import User, { IUser } from '../db/models/user.model'
@@ -193,6 +193,41 @@ export async function updateUserName(user: IUserName) {
       data: JSON.parse(JSON.stringify(updatedUser)),
     }
   } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
+
+export async function updateUserPhone(user: IUserPhone) {
+  try {
+    await connectToDatabase()
+    const session = await auth()
+
+    if (!session?.user?.id) {
+      console.error('No user ID in session')
+      throw new Error('User not found')
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: session.user.id },
+      { $set: { phone: user.phone } },
+      { new: true, runValidators: true }
+    )
+
+    if (!updatedUser) {
+      console.error('User not found in database')
+      throw new Error('User not found')
+    }
+
+    // Revalidate the account page to show updated data
+    revalidatePath('/account/manage')
+
+    return {
+      success: true,
+      message: 'Phone number updated successfully',
+      data: JSON.parse(JSON.stringify(updatedUser)),
+    }
+  } catch (error) {
+    console.error('Error updating phone:', error)
     return { success: false, message: formatError(error) }
   }
 }

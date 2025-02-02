@@ -178,11 +178,27 @@ export const UserUpdateSchema = z.object({
   role: UserRole,
 })
 
+// User Phone Schema
+export const UserPhoneSchema = z.object({
+  phone: z
+    .string()
+    .min(10, { message: 'Phone number must be at least 10 digits' })
+    .max(15, { message: 'Phone number must be at most 15 digits' })
+    .regex(/^[0-9+\-\s()]*$/, { message: 'Invalid phone number format' })
+    .optional(),
+})
+
 // User Input Schema
 export const UserInputSchema = z.object({
   name: UserName,
   email: Email,
   image: z.string().optional(),
+  phone: z
+    .string()
+    .min(10, { message: 'Phone number must be at least 10 digits' })
+    .max(15, { message: 'Phone number must be at most 15 digits' })
+    .regex(/^[0-9+\-\s()]*$/, { message: 'Invalid phone number format' })
+    .optional(),
   emailVerified: z.boolean(),
   role: UserRole,
   password: Password,

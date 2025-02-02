@@ -18,6 +18,7 @@ import {
   UserSignInSchema,
   UserSignUpSchema,
   WebPageInputSchema,
+  UserPhoneSchema,
 } from '@/lib/validator'
 import { z } from 'zod'
 import { TooltipProps } from 'recharts'
@@ -84,6 +85,7 @@ export type IUserInput = z.infer<typeof UserInputSchema>
 export type IUserSignIn = z.infer<typeof UserSignInSchema>
 export type IUserSignUp = z.infer<typeof UserSignUpSchema>
 export type IUserName = z.infer<typeof UserNameSchema>
+export type IUserPhone = z.infer<typeof UserPhoneSchema>
 
 // WebPage
 export type IWebPageInput = z.infer<typeof WebPageInputSchema>

@@ -23,7 +23,7 @@ export default function AccountPage() {
               <div>
                 <h2 className='text-xl font-bold'>Orders</h2>
                 <p className='text-muted-foreground'>
-                  Track, return, cancel an order, download invoice or buy again
+                  See orders, details, download invoice or buy again
                 </p>
               </div>
             </CardContent>
@@ -39,7 +39,7 @@ export default function AccountPage() {
               <div>
                 <h2 className='text-xl font-bold'>Login & security</h2>
                 <p className='text-muted-foreground'>
-                  Manage password, email and mobile number
+                  Manage name, password, email and mobile number
                 </p>
               </div>
             </CardContent>

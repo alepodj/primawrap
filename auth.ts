@@ -7,13 +7,22 @@ import client from './lib/db/client'
 import User from './lib/db/models/user.model'
 
 import NextAuth, { type DefaultSession } from 'next-auth'
+import { JWT } from 'next-auth/jwt'
 import authConfig from './auth.config'
 
 declare module 'next-auth' {
   interface Session {
     user: {
       role: string
+      phone?: string
     } & DefaultSession['user']
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    role: string
+    phone?: string
   }
 }
 
@@ -32,6 +41,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Google({
       allowDangerousEmailAccountLinking: true,
+      async profile(profile) {
+        // Try to find existing user to preserve their phone number
+        await connectToDatabase()
+        const existingUser = await User.findOne({ email: profile.email })
+
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          role: existingUser?.role || 'User',
+          phone: existingUser?.phone, // Preserve existing phone number if user exists
+        }
+      },
     }),
     CredentialsProvider({
       credentials: {
@@ -57,6 +80,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               name: user.name,
               email: user.email,
               role: user.role,
+              phone: user.phone,
             }
           }
         }
@@ -71,12 +95,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // Only set these values when the user first signs in
         token.name = user.name
         token.role = (user as { role: string }).role
+        token.phone = (user as { phone?: string }).phone
       }
 
       // Handle role updates if needed
       if (trigger === 'update' && session?.user) {
         if (session.user.name) token.name = session.user.name
         if (session.user.role) token.role = session.user.role
+        if (session.user.phone !== undefined) token.phone = session.user.phone
       }
 
       return token
@@ -86,6 +112,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.sub as string
         session.user.role = token.role as string
         session.user.name = token.name as string
+        session.user.phone = token.phone as string | undefined
       }
       return session
     },

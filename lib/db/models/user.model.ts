@@ -18,6 +18,7 @@ const userSchema = new Schema<IUser>(
     role: { type: String, required: true, default: 'User' },
     password: { type: String },
     image: { type: String },
+    phone: { type: String },
     emailVerified: { type: Boolean, default: false },
     verificationToken: { type: String, index: { sparse: true } },
     verificationTokenExpiry: { type: Date },
