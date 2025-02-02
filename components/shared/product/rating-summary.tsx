@@ -1,7 +1,6 @@
 'use client'
 
 import { Progress } from '@/components/ui/progress'
-import Rating from './rating'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
 import {
@@ -12,16 +11,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { useTranslations } from 'next-intl'
 import { ChevronDownIcon } from 'lucide-react'
-
-type RatingSummaryProps = {
-  asPopover?: boolean
-  avgRating: number
-  numReviews: number
-  ratingDistribution: {
-    rating: number
-    count: number
-  }[]
-}
+import type { RatingSummaryProps } from '@/types'
+import Rating from './rating'
 
 export default function RatingSummary({
   asPopover,

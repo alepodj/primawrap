@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-
-interface CountdownRedirectProps {
-  locale: string
-  callbackUrl?: string
-  seconds?: number
-}
+import type { CountdownRedirectProps } from '@/types'
 
 export function CountdownRedirect({
   locale,

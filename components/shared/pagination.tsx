@@ -5,15 +5,10 @@ import React from 'react'
 
 import { formUrlQuery } from '@/lib/utils'
 
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-
-type PaginationProps = {
-  page: number | string
-  totalPages: number
-  urlParamName?: string
-}
+import type { PaginationProps } from '@/types'
 
 const Pagination = ({ page, totalPages, urlParamName }: PaginationProps) => {
   const router = useRouter()

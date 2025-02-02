@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -19,12 +18,8 @@ import { requestPasswordReset } from '@/lib/actions/user.actions'
 import Link from 'next/link'
 import { useParams, useSearchParams } from 'next/navigation'
 import { CountdownRedirect } from '@/components/ui/countdown-redirect'
-
-const ForgotPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-})
-
-type ForgotPasswordForm = z.infer<typeof ForgotPasswordSchema>
+import { ForgotPasswordSchema } from '@/lib/validator'
+import type { ForgotPasswordForm } from '@/types'
 
 export default function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)

@@ -2,10 +2,12 @@ import {
   CarouselSchema,
   CartSchema,
   DeliveryDateSchema,
+  ForgotPasswordSchema,
   OrderInputSchema,
   OrderItemSchema,
   PaymentMethodSchema,
   ProductInputSchema,
+  ResetPasswordSchema,
   ReviewInputSchema,
   SettingInputSchema,
   ShippingAddressSchema,
@@ -18,6 +20,9 @@ import {
   WebPageInputSchema,
 } from '@/lib/validator'
 import { z } from 'zod'
+import { TooltipProps } from 'recharts'
+import { DayPicker } from 'react-day-picker'
+import { Toast, ToastAction } from '@/components/ui/toast'
 
 // Review Input
 export type IReviewInput = z.infer<typeof ReviewInputSchema>
@@ -93,3 +98,64 @@ export type SiteLanguage = z.infer<typeof SiteLanguageSchema>
 export type SiteCurrency = z.infer<typeof SiteCurrencySchema>
 export type PaymentMethod = z.infer<typeof PaymentMethodSchema>
 export type DeliveryDate = z.infer<typeof DeliveryDateSchema>
+
+// Auth
+export type ForgotPasswordForm = z.infer<typeof ForgotPasswordSchema>
+export type ResetPasswordForm = z.infer<typeof ResetPasswordSchema>
+
+// UI Components
+export type CalendarProps = React.ComponentProps<typeof DayPicker>
+
+export type PaginationProps = {
+  page: number | string
+  totalPages: number
+  urlParamName?: string
+}
+
+export type RatingSummaryProps = {
+  asPopover?: boolean
+  avgRating: number
+  numReviews: number
+  ratingDistribution: {
+    rating: number
+    count: number
+  }[]
+}
+
+export type CardItem = {
+  title: string
+  value: string | number
+  description: string
+  icon: React.ReactNode
+}
+
+export interface CountdownRedirectProps {
+  locale: string
+  callbackUrl?: string
+  seconds?: number
+}
+
+export type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>
+export type ToastActionElement = React.ReactElement<typeof ToastAction>
+
+export interface CustomTooltipProps extends TooltipProps<number, string> {
+  active?: boolean
+  payload?: any[]
+  label?: string
+}
+
+export type TableChartProps = {
+  data: {
+    name: string
+    value: number
+  }[]
+  title: string
+  valuePrefix?: string
+  valueSuffix?: string
+}
+
+export interface RatingProps {
+  rating: number
+  className?: string
+  size?: number
+}
