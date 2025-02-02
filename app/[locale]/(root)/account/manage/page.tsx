@@ -5,6 +5,16 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 export const metadata: Metadata = {
   title: 'Manage Account',
@@ -49,15 +59,28 @@ export default async function ProfilePage({
               <p>{session?.user.email}</p>
             </div>
             <div>
-              <Link href='#'>
-                <Button
-                  disabled
-                  className='rounded-full w-32'
-                  variant='outline'
-                >
-                  Edit
-                </Button>
-              </Link>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className='rounded-full w-32' variant='outline'>
+                    Notice
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Email Change Not Allowed
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Email addresses cannot be changed on existing accounts. If
+                      you need to use a different email address, please create a
+                      new account with the new email.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogAction>OK</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardContent>
           <Separator />
