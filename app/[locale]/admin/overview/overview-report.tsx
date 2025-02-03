@@ -178,7 +178,7 @@ export default function OverviewReport() {
             <CardHeader>
               <CardTitle>{t("How much you're earning")}</CardTitle>
               <CardDescription>
-                {t('Estimated')} · {t('Last 6 months')}
+                {t('Estimated')} · {t('Last 9 months')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -218,28 +218,44 @@ export default function OverviewReport() {
                   <TableRow>
                     <TableHead>{t('Buyer')}</TableHead>
                     <TableHead>{t('Date')}</TableHead>
-                    <TableHead>{t('Total')}</TableHead>
-                    <TableHead>{t('Actions')}</TableHead>
+                    <TableHead className='text-right'>{t('Total')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.latestOrders.map((order: IOrderList) => (
-                    <TableRow key={order._id}>
-                      <TableCell>
-                        {order.user ? order.user.name : t('Deleted User')}
+                    <TableRow
+                      key={order._id}
+                      className='group cursor-pointer hover:bg-muted/50'
+                      onClick={() =>
+                        (window.location.href = `/admin/orders/${order._id}`)
+                      }
+                    >
+                      <TableCell className='font-medium'>
+                        {order.user ? (
+                          <div className='flex items-center gap-2'>
+                            <div className='size-8 rounded-full bg-primary/10 text-primary grid place-items-center'>
+                              {order.user.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span className='group-hover:text-primary transition-colors'>
+                              {order.user.name}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className='flex items-center gap-2'>
+                            <div className='size-8 rounded-full bg-muted grid place-items-center'>
+                              ?
+                            </div>
+                            <span className='text-muted-foreground group-hover:text-primary transition-colors'>
+                              {t('Deleted User')}
+                            </span>
+                          </div>
+                        )}
                       </TableCell>
-
-                      <TableCell>
+                      <TableCell className='text-muted-foreground group-hover:text-primary transition-colors'>
                         {formatDateTime(order.createdAt).dateOnly}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className='text-right font-medium group-hover:text-primary transition-colors'>
                         <ProductPrice price={order.totalPrice} plain />
-                      </TableCell>
-
-                      <TableCell>
-                        <Link href={`/admin/orders/${order._id}`}>
-                          <span className='px-2'>{t('Details')}</span>
-                        </Link>
                       </TableCell>
                     </TableRow>
                   ))}

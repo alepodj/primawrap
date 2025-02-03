@@ -366,16 +366,16 @@ export async function getOrderSummary(date: DateRange) {
   const totalSales = totalSalesResult[0] ? totalSalesResult[0].totalSales : 0
 
   const today = new Date()
-  const sixMonthEarlierDate = new Date(
+  const nineMonthEarlierDate = new Date(
     today.getFullYear(),
-    today.getMonth() - 5,
+    today.getMonth() - 8, // -8 gives us 9 months (current month + 8 previous months)
     1
   )
   const monthlySales = await Order.aggregate([
     {
       $match: {
         createdAt: {
-          $gte: sixMonthEarlierDate,
+          $gte: nineMonthEarlierDate,
         },
       },
     },
