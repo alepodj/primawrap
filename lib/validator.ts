@@ -371,3 +371,23 @@ export const ResetPasswordSchema = z
 export const DeleteAccountSchema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
+
+// Address Schema
+export const AddressSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
+  street: z.string().min(1, 'Street is required'),
+  city: z.string().min(1, 'City is required'),
+  province: z.string().min(1, 'Province is required'),
+  postalCode: z.string().min(1, 'Postal code is required'),
+  country: z.string().min(1, 'Country is required'),
+  phone: z
+    .string()
+    .min(10, { message: 'Phone number must be at least 10 digits' })
+    .max(15, { message: 'Phone number must be at most 15 digits' })
+    .regex(/^[0-9+\-\s()]*$/, { message: 'Invalid phone number format' }),
+  isDefault: z.boolean().default(false),
+})
+
+export const AddressUpdateSchema = AddressSchema.extend({
+  _id: z.string(),
+})

@@ -212,5 +212,28 @@
     "Status": "Status",
     "Actions": "Actions",
     "Details": "Details"
+  },
+  "Account": {
+    "Your Addresses": "Your Addresses",
+    "Add Address": "Add Address",
+    "Edit Address": "Edit Address",
+    "Delete Address": "Delete Address",
+    "Default": "Default",
+    "Set as Default": "Set as Default",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Cancel": "Cancel",
+    "Are you sure you want to delete this address?": "Are you sure you want to delete this address?",
+    "Full Name": "Full Name",
+    "Street Address": "Street Address",
+    "City": "City",
+    "Province": "Province",
+    "Postal Code": "Postal Code",
+    "Country": "Country",
+    "Phone": "Phone",
+    "Set as default address": "Set as default address",
+    "Saving": "Saving",
+    "Update Address": "Update Address",
+    "Your Account": "Your Account"
   }
 }

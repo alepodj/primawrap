@@ -1,6 +1,18 @@
 import { IUserInput } from '@/types'
 import { Document, Model, model, models, Schema } from 'mongoose'
 
+export interface IAddress {
+  _id: string
+  fullName: string
+  street: string
+  city: string
+  province: string
+  postalCode: string
+  country: string
+  phone: string
+  isDefault: boolean
+}
+
 export interface IUser extends Document, IUserInput {
   _id: string
   createdAt: Date
@@ -9,7 +21,19 @@ export interface IUser extends Document, IUserInput {
   verificationTokenExpiry?: Date
   resetToken?: string
   resetTokenExpiry?: Date
+  addresses: IAddress[]
 }
+
+const addressSchema = new Schema<IAddress>({
+  fullName: { type: String, required: true },
+  street: { type: String, required: true },
+  city: { type: String, required: true },
+  province: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  country: { type: String, required: true },
+  phone: { type: String, required: true },
+  isDefault: { type: Boolean, default: false },
+})
 
 const userSchema = new Schema<IUser>(
   {
@@ -24,6 +48,7 @@ const userSchema = new Schema<IUser>(
     verificationTokenExpiry: { type: Date },
     resetToken: { type: String, index: { sparse: true } },
     resetTokenExpiry: { type: Date },
+    addresses: [addressSchema],
   },
   {
     timestamps: true,

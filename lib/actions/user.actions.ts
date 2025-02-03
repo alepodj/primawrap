@@ -2,7 +2,14 @@
 
 import bcrypt from 'bcryptjs'
 import { auth, signIn, signOut } from '@/auth'
-import { IUserName, IUserSignIn, IUserSignUp, IUserPhone } from '@/types'
+import {
+  IUserName,
+  IUserSignIn,
+  IUserSignUp,
+  IUserPhone,
+  IAddressForm,
+  IAddressUpdate,
+} from '@/types'
 import { UserSignUpSchema, UserUpdateSchema } from '../validator'
 import { connectToDatabase } from '../db'
 import User, { IUser } from '../db/models/user.model'
@@ -510,5 +517,149 @@ export async function resetPassword(token: string, newPassword: string) {
   } catch (error) {
     console.error('Reset password error:', error)
     return { success: false, error: formatError(error) }
+  }
+}
+
+// Address Management
+export async function addAddress(address: IAddressForm) {
+  try {
+    await connectToDatabase()
+    const session = await auth()
+    if (!session?.user?.id) throw new Error('User not found')
+
+    const user = await User.findById(session.user.id)
+    if (!user) throw new Error('User not found')
+
+    // Initialize addresses array if it doesn't exist
+    if (!user.addresses) {
+      user.addresses = []
+    }
+
+    // If this is the first address or isDefault is true, make it default
+    if (user.addresses.length === 0 || address.isDefault) {
+      // Set all other addresses to non-default
+      user.addresses.forEach((addr) => {
+        addr.isDefault = false
+      })
+    }
+
+    // Create a new address with an ObjectId
+    const newAddress = {
+      _id: new ObjectId().toString(),
+      ...address,
+    }
+
+    user.addresses.push(newAddress)
+    await user.save()
+
+    revalidatePath('/account/addresses')
+    return {
+      success: true,
+      message: 'Address added successfully',
+      data: JSON.parse(JSON.stringify(user)),
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
+
+export async function updateAddress(address: IAddressUpdate) {
+  try {
+    await connectToDatabase()
+    const session = await auth()
+    if (!session?.user?.id) throw new Error('User not found')
+
+    const user = await User.findById(session.user.id)
+    if (!user) throw new Error('User not found')
+
+    const addressIndex = user.addresses.findIndex(
+      (addr) => addr._id.toString() === address._id
+    )
+    if (addressIndex === -1) throw new Error('Address not found')
+
+    // If setting as default, update other addresses
+    if (address.isDefault) {
+      user.addresses.forEach((addr) => {
+        addr.isDefault = false
+      })
+    }
+
+    user.addresses[addressIndex] = {
+      ...user.addresses[addressIndex],
+      ...address,
+    }
+
+    await user.save()
+
+    revalidatePath('/account/addresses')
+    return {
+      success: true,
+      message: 'Address updated successfully',
+      data: JSON.parse(JSON.stringify(user)),
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
+
+export async function deleteAddress(addressId: string) {
+  try {
+    await connectToDatabase()
+    const session = await auth()
+    if (!session?.user?.id) throw new Error('User not found')
+
+    const user = await User.findById(session.user.id)
+    if (!user) throw new Error('User not found')
+
+    const addressIndex = user.addresses.findIndex(
+      (addr) => addr._id.toString() === addressId
+    )
+    if (addressIndex === -1) throw new Error('Address not found')
+
+    // If deleting default address, make the first remaining address default
+    const wasDefault = user.addresses[addressIndex].isDefault
+    user.addresses.splice(addressIndex, 1)
+
+    if (wasDefault && user.addresses.length > 0) {
+      user.addresses[0].isDefault = true
+    }
+
+    await user.save()
+
+    revalidatePath('/account/addresses')
+    return {
+      success: true,
+      message: 'Address deleted successfully',
+      data: JSON.parse(JSON.stringify(user)),
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
+  }
+}
+
+export async function setDefaultAddress(addressId: string) {
+  try {
+    await connectToDatabase()
+    const session = await auth()
+    if (!session?.user?.id) throw new Error('User not found')
+
+    const user = await User.findById(session.user.id)
+    if (!user) throw new Error('User not found')
+
+    // Set all addresses to non-default first
+    user.addresses.forEach((addr) => {
+      addr.isDefault = addr._id.toString() === addressId
+    })
+
+    await user.save()
+
+    revalidatePath('/account/addresses')
+    return {
+      success: true,
+      message: 'Default address updated successfully',
+      data: JSON.parse(JSON.stringify(user)),
+    }
+  } catch (error) {
+    return { success: false, message: formatError(error) }
   }
 }

@@ -20,6 +20,8 @@ import {
   WebPageInputSchema,
   UserPhoneSchema,
   DeleteAccountSchema,
+  AddressSchema,
+  AddressUpdateSchema,
 } from '@/lib/validator'
 import { z } from 'zod'
 import { DayPicker } from 'react-day-picker'
@@ -166,3 +168,7 @@ export interface RatingProps {
 }
 
 export type UserNameForm = z.infer<typeof UserNameSchema>
+
+// Address
+export type IAddressForm = z.infer<typeof AddressSchema>
+export type IAddressUpdate = z.infer<typeof AddressUpdateSchema>
