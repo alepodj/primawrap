@@ -13,16 +13,10 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
-  TooltipProps,
   XAxis,
   YAxis,
 } from 'recharts'
-
-interface CustomTooltipProps extends TooltipProps<number, string> {
-  active?: boolean
-  payload?: { value: number }[]
-  label?: string
-}
+import { CustomTooltipProps } from '@/types'
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({
   active,

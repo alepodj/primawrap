@@ -4,7 +4,6 @@ import { auth } from '@/auth'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +14,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { DeleteAccountForm } from './delete-account-form'
+import { LoadingButton } from './loading-button'
 
 export const metadata: Metadata = {
   title: 'Manage Account',
@@ -30,7 +31,7 @@ export default async function ProfilePage({
   const { locale } = await params
   const session = await auth()
   return (
-    <div className='mb-24'>
+    <div>
       <SessionProvider session={session}>
         <div className='flex gap-2 '>
           <Link href='/account'>Your Account</Link>
@@ -38,18 +39,14 @@ export default async function ProfilePage({
           <span>{PAGE_TITLE}</span>
         </div>
         <h1 className='h1-bold py-4'>{PAGE_TITLE}</h1>
-        <Card className='max-w-2xl '>
+        <Card>
           <CardContent className='p-4 flex justify-between flex-wrap'>
             <div>
               <h3 className='font-bold'>Name</h3>
               <p>{session?.user.name}</p>
             </div>
             <div>
-              <Link href='/account/manage/name'>
-                <Button className='rounded-full w-32' variant='outline'>
-                  Edit
-                </Button>
-              </Link>
+              <LoadingButton href='/account/manage/name'>Edit</LoadingButton>
             </div>
           </CardContent>
           <Separator />
@@ -61,9 +58,7 @@ export default async function ProfilePage({
             <div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button className='rounded-full w-32' variant='outline'>
-                    Notice
-                  </Button>
+                  <LoadingButton skipLoading>Notice</LoadingButton>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -90,11 +85,7 @@ export default async function ProfilePage({
               <p>{session?.user.phone || 'Not set'}</p>
             </div>
             <div>
-              <Link href='/account/manage/phone'>
-                <Button className='rounded-full w-32' variant='outline'>
-                  Edit
-                </Button>
-              </Link>
+              <LoadingButton href='/account/manage/phone'>Edit</LoadingButton>
             </div>
           </CardContent>
           <Separator />
@@ -104,16 +95,15 @@ export default async function ProfilePage({
               <p>************</p>
             </div>
             <div>
-              <Link
+              <LoadingButton
                 href={`/${locale}/forgot-password?email=${encodeURIComponent(session?.user.email || '')}`}
               >
-                <Button className='rounded-full w-32' variant='outline'>
-                  Reset
-                </Button>
-              </Link>
+                Reset
+              </LoadingButton>
             </div>
           </CardContent>
         </Card>
+        <DeleteAccountForm />
       </SessionProvider>
     </div>
   )

@@ -4,9 +4,9 @@ import { IOrder } from '@/lib/db/models/order.model'
 import AskReviewOrderItemsEmail from './ask-review-order-items'
 import VerifyEmail from './verify-email'
 import PasswordResetEmail from './password-reset'
+import AccountDeletionEmail from './account-deletion'
 import { SENDER_EMAIL, SENDER_NAME } from '@/lib/constants'
 import { i18n } from '@/i18n-config'
-import { routing } from '@/i18n/routing'
 
 const resend = new Resend(process.env.RESEND_API_KEY as string)
 
@@ -70,5 +70,20 @@ export const sendPasswordResetEmail = async ({
     to: email,
     subject: 'Reset your password',
     react: <PasswordResetEmail resetUrl={resetUrl} name={name} />,
+  })
+}
+
+export async function sendAccountDeletionEmail({
+  email,
+  name,
+}: {
+  email: string
+  name: string
+}) {
+  await resend.emails.send({
+    from: `${SENDER_NAME} <${SENDER_EMAIL}>`,
+    to: email,
+    subject: 'Farewell from Our Community',
+    react: <AccountDeletionEmail name={name} />,
   })
 }

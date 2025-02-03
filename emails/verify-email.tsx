@@ -10,6 +10,7 @@ import {
   Tailwind,
   Text,
   Link,
+  Img,
 } from '@react-email/components'
 
 type VerifyEmailProps = {
@@ -28,6 +29,12 @@ export default function VerifyEmail({
       <Tailwind>
         <Body className='bg-gray-50 font-sans'>
           <Container className='mx-auto py-8 px-4 max-w-[600px]'>
+            <Img
+              src={`${process.env.NEXT_PUBLIC_APP_URL}/images/logo.png`}
+              alt='Logo'
+              className='mx-auto mb-4'
+              width={150}
+            />
             <Section className='bg-white rounded-lg shadow-lg p-8'>
               <Heading className='text-3xl font-bold text-center text-gray-800 mb-6'>
                 Welcome to Prima Wrap!
@@ -52,7 +59,7 @@ export default function VerifyEmail({
                   hour.
                 </Text>
                 <Text className='text-gray-600 mb-6'>
-                  If you didn't create an account with Prima Wrap, you can
+                  If you didn&apos;t create an account with Prima Wrap, you can
                   safely ignore this email.
                 </Text>
                 <Text className='text-gray-500 text-sm'>

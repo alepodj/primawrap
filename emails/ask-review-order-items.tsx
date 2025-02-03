@@ -151,6 +151,11 @@ export default async function AskReviewOrderItemsEmail({
                 </Row>
               ))}
             </Section>
+            <Section className='border-t border-gray-200 mt-8 pt-6'>
+                <Text className='text-gray-500 text-sm text-center'>
+                  © {new Date().getFullYear()} Prima Wrap. All rights reserved.
+                </Text>
+              </Section>
           </Container>
         </Body>
       </Tailwind>

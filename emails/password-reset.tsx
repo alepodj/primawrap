@@ -7,6 +7,8 @@ import {
   Link,
   Preview,
   Text,
+  Img,
+  Section,
 } from '@react-email/components'
 import { SENDER_NAME } from '@/lib/constants'
 
@@ -25,11 +27,20 @@ export default function PasswordResetEmail({
       <Preview>Reset your {SENDER_NAME} password</Preview>
       <Body style={main}>
         <Container style={container}>
+          <Img
+            src={`${process.env.NEXT_PUBLIC_APP_URL}/images/logo.png`}
+            alt='Logo'
+            style={{
+              margin: '0 auto',
+              marginBottom: '24px',
+              width: '150px',
+            }}
+          />
           <Heading style={h1}>Reset your password</Heading>
           <Text style={text}>Hi {name},</Text>
           <Text style={text}>
             Someone requested a password reset for your account. If this was
-            you, click the link below to reset your password. If you didn't
+            you, click the link below to reset your password. If you didn&apos;t
             request this, you can safely ignore this email.
           </Text>
           <Link style={button} href={resetUrl}>
@@ -39,9 +50,14 @@ export default function PasswordResetEmail({
             This link will expire in 1 hour for security reasons.
           </Text>
           <Text style={footer}>
-            If you're having trouble clicking the button, copy and paste this
-            URL into your web browser: {resetUrl}
+            If you&apos;re having trouble clicking the button, copy and paste
+            this URL into your web browser: {resetUrl}
           </Text>
+          <Section className='border-t border-gray-200 pt-6'>
+            <Text className='text-gray-500 text-sm text-center'>
+              © {new Date().getFullYear()} Prima Wrap. All rights reserved.
+            </Text>
+          </Section>
         </Container>
       </Body>
     </Html>

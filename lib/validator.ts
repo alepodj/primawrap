@@ -366,3 +366,8 @@ export const ResetPasswordSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+// Delete Account Schema
+export const DeleteAccountSchema = z.object({
+  password: z.string().min(1, 'Password is required'),
+})

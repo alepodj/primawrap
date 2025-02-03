@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
@@ -19,11 +18,12 @@ import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { updateUserName } from '@/lib/actions/user.actions'
 import { UserNameSchema } from '@/lib/validator'
+import { UserNameForm } from '@/types'
 
-export const ProfileForm = () => {
+export const NameForm = () => {
   const router = useRouter()
   const { data: session, update } = useSession()
-  const form = useForm<z.infer<typeof UserNameSchema>>({
+  const form = useForm<UserNameForm>({
     resolver: zodResolver(UserNameSchema),
     defaultValues: {
       name: session?.user?.name ?? '',
@@ -31,7 +31,7 @@ export const ProfileForm = () => {
   })
   const { toast } = useToast()
 
-  async function onSubmit(values: z.infer<typeof UserNameSchema>) {
+  async function onSubmit(values: UserNameForm) {
     const res = await updateUserName(values)
     if (!res.success)
       return toast({

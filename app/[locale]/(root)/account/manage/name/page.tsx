@@ -1,11 +1,9 @@
 import { Metadata } from 'next'
 import { SessionProvider } from 'next-auth/react'
-
 import { auth } from '@/auth'
-
-import { ProfileForm } from './profile-form'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
+import { NameForm } from './name-form'
 import { getSetting } from '@/lib/actions/setting.actions'
 
 const PAGE_TITLE = 'Change Your Name'
@@ -13,7 +11,7 @@ export const metadata: Metadata = {
   title: PAGE_TITLE,
 }
 
-export default async function ProfilePage() {
+export default async function NamePage() {
   const session = await auth()
   const { site } = await getSetting()
   return (
@@ -27,14 +25,14 @@ export default async function ProfilePage() {
           <span>{PAGE_TITLE}</span>
         </div>
         <h1 className='h1-bold py-4'>{PAGE_TITLE}</h1>
-        <Card className='max-w-2xl'>
+        <Card>
           <CardContent className='p-4 flex justify-between flex-wrap'>
             <p className='text-sm py-2'>
               If you want to change the name associated with your {site.name}
               &apos;s account, you may do so below. Be sure to click the Save
               Changes button when you are done.
             </p>
-            <ProfileForm />
+            <NameForm />
           </CardContent>
         </Card>
       </SessionProvider>

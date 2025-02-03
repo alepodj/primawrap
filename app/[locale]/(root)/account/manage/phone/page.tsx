@@ -27,7 +27,7 @@ export default async function PhonePage() {
           <span>{PAGE_TITLE}</span>
         </div>
         <h1 className='h1-bold py-4'>{PAGE_TITLE}</h1>
-        <Card className='max-w-2xl'>
+        <Card>
           <CardContent className='p-4 flex justify-between flex-wrap'>
             <p className='text-sm py-2'>
               If you want to change the phone number associated with your{' '}

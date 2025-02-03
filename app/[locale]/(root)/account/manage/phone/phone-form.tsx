@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
@@ -19,11 +18,12 @@ import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { updateUserPhone } from '@/lib/actions/user.actions'
 import { UserPhoneSchema } from '@/lib/validator'
+import { IUserPhone } from '@/types'
 
 export const PhoneForm = () => {
   const router = useRouter()
   const { data: session, update } = useSession()
-  const form = useForm<z.infer<typeof UserPhoneSchema>>({
+  const form = useForm<IUserPhone>({
     resolver: zodResolver(UserPhoneSchema),
     defaultValues: {
       phone: session?.user?.phone ?? '',
@@ -31,7 +31,7 @@ export const PhoneForm = () => {
   })
   const { toast } = useToast()
 
-  async function onSubmit(values: z.infer<typeof UserPhoneSchema>) {
+  async function onSubmit(values: IUserPhone) {
     const res = await updateUserPhone(values)
     if (!res.success)
       return toast({

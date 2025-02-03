@@ -70,12 +70,20 @@ export default async function PurchaseReceiptEmail({
   const { site } = await getSetting()
   return (
     <Html>
-      <Preview>View order receipt</Preview>
+      <Head />
+      <Preview>Your Prima Wrap Order Receipt</Preview>
       <Tailwind>
-        <Head />
-        <Body className='font-sans bg-white'>
-          <Container className='max-w-xl'>
-            <Heading>Purchase Receipt</Heading>
+        <Body className='bg-white font-sans'>
+          <Container className='mx-auto py-5 px-4'>
+            <Img
+              src={`${process.env.NEXT_PUBLIC_APP_URL}/images/logo.png`}
+              alt='Logo'
+              className='mx-auto mb-4'
+              width={150}
+            />
+            <Heading className='text-2xl font-bold text-center text-gray-900 mb-4'>
+              Purchase Receipt
+            </Heading>
             <Section>
               <Row>
                 <Column>
@@ -145,9 +153,15 @@ export default async function PurchaseReceiptEmail({
                 </Row>
               ))}
             </Section>
+            <Section className='border-t border-gray-200 pt-6'>
+              <Text className='text-gray-500 text-sm text-center'>
+                © {new Date().getFullYear()} Prima Wrap. All rights reserved.
+              </Text>
+            </Section>
           </Container>
         </Body>
       </Tailwind>
+
     </Html>
   )
 }

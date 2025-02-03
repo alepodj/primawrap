@@ -19,11 +19,19 @@ import {
   UserSignUpSchema,
   WebPageInputSchema,
   UserPhoneSchema,
+  DeleteAccountSchema,
 } from '@/lib/validator'
 import { z } from 'zod'
-import { TooltipProps } from 'recharts'
 import { DayPicker } from 'react-day-picker'
 import { Toast, ToastAction } from '@/components/ui/toast'
+import { TooltipProps } from 'recharts'
+
+// Charts
+export interface CustomTooltipProps extends TooltipProps<number, string> {
+  active?: boolean
+  payload?: { value: number }[]
+  label?: string
+}
 
 // Review Input
 export type IReviewInput = z.infer<typeof ReviewInputSchema>
@@ -104,6 +112,7 @@ export type DeliveryDate = z.infer<typeof DeliveryDateSchema>
 // Auth
 export type ForgotPasswordForm = z.infer<typeof ForgotPasswordSchema>
 export type ResetPasswordForm = z.infer<typeof ResetPasswordSchema>
+export type DeleteAccountForm = z.infer<typeof DeleteAccountSchema>
 
 // UI Components
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
@@ -140,12 +149,6 @@ export interface CountdownRedirectProps {
 export type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>
 export type ToastActionElement = React.ReactElement<typeof ToastAction>
 
-export interface CustomTooltipProps extends TooltipProps<number, string> {
-  active?: boolean
-  payload?: any[]
-  label?: string
-}
-
 export type TableChartProps = {
   data: {
     name: string
@@ -161,3 +164,5 @@ export interface RatingProps {
   className?: string
   size?: number
 }
+
+export type UserNameForm = z.infer<typeof UserNameSchema>

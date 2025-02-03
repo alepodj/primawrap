@@ -10,7 +10,7 @@ export default function CheckoutLayout({
 }) {
   return (
     <div className='p-4'>
-      <header className='bg-card mb-4 border-b'>
+      <header className='bg-card mb-4 pb-4 border-b'>
         <div className='max-w-6xl mx-auto flex justify-between items-center'>
           <Link href='/'>
             <Image
