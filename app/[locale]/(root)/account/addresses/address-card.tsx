@@ -30,10 +30,9 @@ import { AddressForm } from './address-form'
 
 interface AddressCardProps {
   address: IAddress
-  addressCount: number
 }
 
-export function AddressCard({ address, addressCount }: AddressCardProps) {
+export function AddressCard({ address }: AddressCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const t = useTranslations('Account')
@@ -53,7 +52,7 @@ export function AddressCard({ address, addressCount }: AddressCardProps) {
         description: res.message,
       })
       setIsDeleteOpen(false)
-    } catch (error) {
+    } catch {
       toast({
         variant: 'destructive',
         description: 'Something went wrong. Please try again.',
@@ -74,7 +73,7 @@ export function AddressCard({ address, addressCount }: AddressCardProps) {
       toast({
         description: res.message,
       })
-    } catch (error) {
+    } catch {
       toast({
         variant: 'destructive',
         description: 'Something went wrong. Please try again.',
@@ -107,7 +106,6 @@ export function AddressCard({ address, addressCount }: AddressCardProps) {
                 </DialogHeader>
                 <AddressForm
                   address={address}
-                  addressCount={addressCount}
                   onSuccess={() => setIsEditOpen(false)}
                 />
               </DialogContent>

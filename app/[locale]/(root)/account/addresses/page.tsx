@@ -61,11 +61,7 @@ export default async function AddressesPage() {
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           {addresses.map((address) => (
-            <AddressCard
-              key={address._id.toString()}
-              address={address}
-              addressCount={addresses.length}
-            />
+            <AddressCard key={address._id.toString()} address={address} />
           ))}
 
           <AddAddressDialog trigger={addCard} addressCount={addresses.length} />
