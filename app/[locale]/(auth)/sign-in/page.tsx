@@ -22,9 +22,7 @@ export default async function SignInPage(props: {
 }) {
   const searchParams = await props.searchParams
   const { site } = await getSetting()
-
   const { callbackUrl = '/' } = searchParams
-
   const session = await auth()
   if (session) {
     return redirect(callbackUrl)
@@ -34,7 +32,9 @@ export default async function SignInPage(props: {
     <div className='w-full'>
       <Card>
         <CardHeader>
-          <CardTitle className='text-2xl text-center'>Sign In to {site.name}</CardTitle>
+          <CardTitle className='text-2xl text-center'>
+            Sign In to {site.name}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div>
@@ -48,13 +48,12 @@ export default async function SignInPage(props: {
       </Card>
       <SeparatorWithOr>New to {site.name}?</SeparatorWithOr>
 
-      <Link href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-      className='!block'>
-        <Button className='w-full'>
-          Create your {site.name} account
-        </Button>
+      <Link
+        href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+        className='!block'
+      >
+        <Button className='w-full'>Create your {site.name} account</Button>
       </Link>
-
     </div>
   )
 }

@@ -2,19 +2,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { HomeCardItem } from '@/types'
 
-type CardItem = {
-  title: string
-  link: { text: string; href: string }
-  items: {
-    name: string
-    items?: string[]
-    image: string
-    href: string
-  }[]
-}
-
-export function HomeCard({ cards }: { cards: CardItem[] }) {
+export function HomeCard({ cards }: { cards: HomeCardItem[] }) {
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 md:gap-4'>
       {cards.map((card) => (

@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import { useLocale } from 'next-intl'
-import { Link, usePathname } from '@/i18n/routing'
+import { usePathname, useRouter } from '@/i18n/routing'
 import useSettingStore from '@/hooks/use-setting-store'
 import { i18n } from '@/i18n-config'
 import { setCurrencyOnServer } from '@/lib/actions/setting.actions'
@@ -22,6 +22,7 @@ export default function LanguageSwitcher() {
   const { locales } = i18n
   const locale = useLocale()
   const pathname = usePathname()
+  const router = useRouter()
   const currentLocale = locales.find((l) => l.code === locale)
 
   const {
@@ -81,6 +82,10 @@ export default function LanguageSwitcher() {
               width={20}
               height={15}
               className='inline-block'
+              style={{
+                maxWidth: '100%',
+                height: 'auto',
+              }}
             />
             {locale.toUpperCase().slice(0, 2)}
             <ChevronDownIcon />
@@ -88,7 +93,12 @@ export default function LanguageSwitcher() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-56'>
           <DropdownMenuLabel>Language</DropdownMenuLabel>
-          <DropdownMenuRadioGroup value={locale}>
+          <DropdownMenuRadioGroup
+            value={locale}
+            onValueChange={(value) => {
+              router.replace(pathname, { locale: value })
+            }}
+          >
             {[
               // Show current language first
               ...locales.filter((l) => l.code === locale),
@@ -96,20 +106,20 @@ export default function LanguageSwitcher() {
               ...locales.filter((l) => l.code !== locale),
             ].map((c) => (
               <DropdownMenuRadioItem key={c.name} value={c.code}>
-                <Link
-                  className='w-full flex items-center gap-2'
-                  href={pathname}
-                  locale={c.code}
-                >
+                <div className='w-full flex items-center gap-2'>
                   <Image
                     src={c.flagImg}
                     alt={c.name}
                     width={20}
                     height={15}
                     className='inline-block'
+                    style={{
+                      maxWidth: '100%',
+                      height: 'auto',
+                    }}
                   />
                   {c.name}
-                </Link>
+                </div>
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>

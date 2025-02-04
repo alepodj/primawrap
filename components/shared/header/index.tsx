@@ -6,10 +6,12 @@ import Search from './search'
 import Sidebar from './sidebar'
 import { getSetting } from '@/lib/actions/setting.actions'
 import NavLink from './nav-link'
+import { getTranslations } from 'next-intl/server'
 
 export default async function Header() {
   const categories = await getAllCategories()
   const { site, headerMenus } = await getSetting()
+  const t = await getTranslations('Locale')
   return (
     <header className='bg-gradient-to-tl from-slate-700 to-slate-900 dark:from-slate-800 dark:to-slate-950 text-white'>
       <div className='px-2'>
@@ -24,6 +26,10 @@ export default async function Header() {
                 width={150}
                 height={150}
                 alt={`${site.name} logo`}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                }}
               />
               {/* {site.name} */}
             </Link>
@@ -42,7 +48,7 @@ export default async function Header() {
         <Sidebar categories={categories} />
         <div className='flex items-center flex-wrap gap-3 overflow-hidden max-h-[42px]'>
           {headerMenus?.map((menu) => (
-            <NavLink key={menu.href} href={menu.href} name={menu.name} />
+            <NavLink key={menu.href} href={menu.href} name={t(menu.name)} />
           )) || null}
         </div>
       </div>

@@ -26,6 +26,7 @@ import { toast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserSignInSchema } from '@/lib/validator'
 import { isRedirectError } from 'next/dist/client/components/redirect-error'
+import { useTranslations } from 'next-intl'
 
 export default function CredentialsSignInForm() {
   const {
@@ -37,7 +38,7 @@ export default function CredentialsSignInForm() {
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
   const [isResending, setIsResending] = useState(false)
   const [lastResent, setLastResent] = useState<Date | null>(null)
-
+  const t = useTranslations('Locale')
   const form = useForm<IUserSignIn>({
     resolver: zodResolver(UserSignInSchema),
     defaultValues: {
@@ -189,7 +190,7 @@ export default function CredentialsSignInForm() {
                     We noticed your email address ({unverifiedEmail})
                     hasn&apos;t been verified yet. Please check your inbox for
                     the verification email and click the link to verify your
-                    account.
+                    account
                   </p>
                   <div className='space-y-3'>
                     <Button
@@ -228,24 +229,30 @@ export default function CredentialsSignInForm() {
                     </Button>
                     <p className='text-xs text-blue-500'>
                       {lastResent
-                        ? `Last sent: ${lastResent.toLocaleTimeString()}`
-                        : "Can't find the email? Check your spam folder or click the button above to send a new verification email."}
+                        ? `${t('Last sent')}: ${lastResent.toLocaleTimeString()}`
+                        : t("Can't find the email? Check your spam folder or click the button above to send a new verification email")}
                     </p>
                   </div>
                 </div>
+
               </div>
             )}
           </div>
           <div className='text-sm'>
-            By signing in, you agree to {site.name}&apos;s{' '}
+            {t('By signing in, you agree to')} {site.name}&apos;s{' '}
             <Link href={`/${locale}/page/conditions-of-use`}>
-              Conditions of Use
+              {t('Conditions of Use')}
             </Link>{' '}
-            and{' '}
-            <Link href={`/${locale}/page/privacy-policy`}>Privacy Notice</Link>
+
+            {t('and')}{' '}
+            <Link href={`/${locale}/page/privacy-policy`}>{t('Privacy Notice')}</Link>
+
           </div>
         </div>
+
       </form>
+
+
     </Form>
   )
 }

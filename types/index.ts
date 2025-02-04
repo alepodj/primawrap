@@ -119,6 +119,17 @@ export type DeleteAccountForm = z.infer<typeof DeleteAccountSchema>
 // UI Components
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
+export type HomeCardItem = {
+  title: string
+  link: { text: string; href: string }
+  items: {
+    name: string
+    items?: string[]
+    image: string
+    href: string
+  }[]
+}
+
 export type PaginationProps = {
   page: number | string
   totalPages: number

@@ -49,13 +49,16 @@ export default function Footer() {
                   width={150}
                   height={150}
                   priority
-                  className='w-full h-auto'
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                  }}
                 />
               </Link>
               <Select
                 value={locale}
                 onValueChange={(value) => {
-                  router.push(pathname, { locale: value })
+                  router.replace(pathname, { locale: value })
                 }}
               >
                 <SelectTrigger>
@@ -67,20 +70,20 @@ export default function Footer() {
                     ...locales.filter((l) => l.code !== locale),
                   ].map((lang, index) => (
                     <SelectItem key={index} value={lang.code}>
-                      <Link
-                        className='w-full flex items-center gap-1'
-                        href={pathname}
-                        locale={lang.code}
-                      >
+                      <div className='w-full flex items-center gap-1'>
                         <Image
                           src={lang.flagImg}
                           alt={lang.name}
                           width={20}
                           height={15}
                           className='inline-block'
+                          style={{
+                            maxWidth: '100%',
+                            height: 'auto',
+                          }}
                         />
                         {lang.name}
-                      </Link>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -166,7 +169,7 @@ export default function Footer() {
           </Link>
         </div>
         <div className='flex mt-2 justify-center text-sm'>
-          <p> © {site.copyright}</p>
+          <p> © {t(site.copyright)}</p>
         </div>
       </div>
     </footer>
