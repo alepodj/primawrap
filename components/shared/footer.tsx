@@ -45,13 +45,13 @@ export default function Footer() {
               >
                 <Image
                   src='/icons/prima-wrap.png'
-                  alt={`${site.name} logo`}
+                  alt='PrimaWrap Logo'
                   width={150}
                   height={150}
                   priority
                   style={{
-                    maxWidth: '100%',
-                    height: 'auto',
+                    width: '150px',
+                    height: '150px',
                   }}
                 />
               </Link>

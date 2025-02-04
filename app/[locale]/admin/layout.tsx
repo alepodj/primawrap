@@ -3,14 +3,13 @@ import Link from 'next/link'
 import React from 'react'
 import Menu from '@/components/shared/header/menu'
 import { AdminNav } from './admin-nav'
-import { getSetting } from '@/lib/actions/setting.actions'
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { site } = await getSetting()
+
   return (
     <>
       <div className='flex flex-col'>
@@ -19,12 +18,13 @@ export default async function AdminLayout({
             <Link href='/'>
               <Image
                 src='/icons/prima-wrap.png'
+                alt='PrimaWrap Logo'
                 width={150}
                 height={150}
-                alt={`${site.name} logo`}
+                priority
                 style={{
-                  maxWidth: '100%',
-                  height: 'auto',
+                  width: '150px',
+                  height: '150px',
                 }}
               />
             </Link>

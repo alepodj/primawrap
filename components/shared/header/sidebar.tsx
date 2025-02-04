@@ -71,9 +71,7 @@ export default async function Sidebar({
           {/* Shop By Category */}
           <div className='flex-1 overflow-y-auto'>
             <div className='p-4 border-b mt-10'>
-              <h2 className='text-lg font-semibold'>
-                {t('Shop By Category')}
-              </h2>
+              <h2 className='text-lg font-semibold'>{t('Shop By Category')}</h2>
             </div>
             <nav className='flex flex-col'>
               {categories.map((category) => (
@@ -93,9 +91,7 @@ export default async function Sidebar({
           {/* Setting and Help */}
           <div className='border-t flex flex-col '>
             <div className='p-4'>
-              <h2 className='text-lg font-semibold'>
-                {t('Help & Settings')}
-              </h2>
+              <h2 className='text-lg font-semibold'>{t('Help & Settings')}</h2>
             </div>
             <DrawerClose asChild>
               <Link href='/account' className='item-button'>

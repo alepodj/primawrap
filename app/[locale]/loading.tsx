@@ -13,13 +13,13 @@ export default function LoadingPage() {
         <div className='flex flex-col items-center gap-6'>
           <Image
             src='/icons/prima-wrap.png'
-            alt='logo'
+            alt='PrimaWrap Logo'
             width={250}
             height={250}
             priority
             style={{
-              maxWidth: '100%',
-              height: 'auto',
+              width: '250px',
+              height: '250px',
             }}
           />
           <Loader2 className='h-16 w-16 animate-spin text-primary' />

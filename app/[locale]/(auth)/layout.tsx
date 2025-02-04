@@ -17,13 +17,13 @@ export default async function AuthLayout({
             <Link href='/'>
               <Image
                 src='/icons/prima-wrap.png'
-                alt='logo'
+                alt='PrimaWrap Logo'
                 width={250}
                 height={250}
                 priority
                 style={{
-                  maxWidth: '100%',
-                  height: 'auto',
+                  width: '250px',
+                  height: '250px',
                 }}
               />
             </Link>

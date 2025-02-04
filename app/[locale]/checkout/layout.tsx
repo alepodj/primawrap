@@ -15,12 +15,13 @@ export default function CheckoutLayout({
           <Link href='/'>
             <Image
               src='/icons/prima-wrap.png'
-              alt='logo'
+              alt='PrimaWrap Logo'
               width={150}
               height={150}
+              priority
               style={{
-                maxWidth: '100%',
-                height: 'auto',
+                width: '150px',
+                height: '150px',
               }}
             />
           </Link>
