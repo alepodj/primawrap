@@ -52,6 +52,7 @@ export const NameForm = () => {
       description: message,
     })
     router.push('/account/manage')
+    router.refresh()
   }
   return (
     <Form {...form}>

@@ -18,11 +18,12 @@ export default async function NamePage() {
     <div className='mb-24'>
       <SessionProvider session={session}>
         <div className='flex gap-2 '>
-          <Link href='/account' className='footer-link'>Your Account</Link>
+          <Link href='/account' className='content-link dark:footer-link'>Your Account</Link>
           <span>›</span>
-          <Link href='/account/manage'className='footer-link'>Login & Security</Link>
+          <Link href='/account/manage'className='content-link dark:footer-link'>Login & Security</Link>
           <span>›</span>
           <span>{PAGE_TITLE}</span>
+
         </div>
         <h1 className='h1-bold py-4'>{PAGE_TITLE}</h1>
         <Card>
