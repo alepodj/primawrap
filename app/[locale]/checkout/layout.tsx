@@ -20,8 +20,8 @@ export default function CheckoutLayout({
               height={150}
               priority
               style={{
-                width: '150px',
-                height: '150px',
+                maxWidth: '100%',
+                height: 'auto',
               }}
             />
           </Link>

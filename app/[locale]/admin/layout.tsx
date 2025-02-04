@@ -9,7 +9,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-
   return (
     <>
       <div className='flex flex-col'>
@@ -23,8 +22,8 @@ export default async function AdminLayout({
                 height={150}
                 priority
                 style={{
-                  width: '150px',
-                  height: '150px',
+                  maxWidth: '100%',
+                  height: 'auto',
                 }}
               />
             </Link>

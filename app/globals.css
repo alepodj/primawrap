@@ -110,6 +110,12 @@ body {
     after:bg-white/50 after:transition-all after:duration-300 hover:after:w-full;
   }
 
+  .content-link {
+    @apply transition-all duration-200 text-black hover:text-black/90 
+    relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-px 
+    after:bg-black/50 after:transition-all after:duration-300 hover:after:w-full;
+  }
+
   .user-menu-link {
     @apply text-primary transition-colors duration-200 hover:text-primary/80 
     relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] 

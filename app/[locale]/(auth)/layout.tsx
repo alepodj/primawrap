@@ -22,8 +22,8 @@ export default async function AuthLayout({
                 height={250}
                 priority
                 style={{
-                  width: '250px',
-                  height: '250px',
+                  maxWidth: '100%',
+                  height: 'auto',
                 }}
               />
             </Link>

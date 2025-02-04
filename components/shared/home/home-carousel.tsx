@@ -22,7 +22,7 @@ export function HomeCarousel({ items }: { items: ICarousel[] }) {
   const [current, setCurrent] = React.useState(0)
 
   const plugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true })
+    Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: false })
   )
   const t = useTranslations('Locale')
 
@@ -53,7 +53,7 @@ export function HomeCarousel({ items }: { items: ICarousel[] }) {
           {items.map((item) => (
             <CarouselItem key={item.title || item.image}>
               <Link href={item.url || '#'}>
-                <div className='flex aspect-[16/6] items-center justify-center p-6 relative -m-1'>
+                <div className='flex aspect-[16/6] items-center justify-center p-6 relative -m-1 shadow-lg'>
                   <Image
                     src={item.image}
                     alt={item.title || 'Carousel image'}
