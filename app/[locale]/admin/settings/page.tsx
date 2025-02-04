@@ -1,24 +1,85 @@
-import { getNoCachedSetting } from '@/lib/actions/setting.actions'
-import SettingForm from './setting-form'
+'use client'
+
 import SettingNav from './setting-nav'
-import { Metadata } from 'next'
+import SettingForm from './setting-form'
+import { Switch } from '@/components/ui/switch'
+import { Separator } from '@/components/ui/separator'
+import { getNoCachedSetting } from '@/lib/actions/setting.actions'
+import { useEffect, useState } from 'react'
+import { ISettingInput } from '@/types'
 
-export const metadata: Metadata = {
-  title: 'Admin Setting',
-}
+const SettingPage = () => {
+  const [setting, setSetting] = useState<ISettingInput | null>(null)
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-const SettingPage = async () => {
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true)
+        const [settingData, maintenanceData] = await Promise.all([
+          getNoCachedSetting(),
+          fetch('/api/settings/maintenance').then((res) => res.json()),
+        ])
+        setSetting(settingData)
+        setIsMaintenanceMode(maintenanceData.enabled)
+      } catch (error) {
+        console.error('Error loading settings:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  if (isLoading || !setting) return null
+
   return (
     <div className='max-w-7xl mx-auto px-4'>
       <h1 className='text-3xl font-bold mb-6 mt-8'>Site Settings</h1>
-      <div className='grid md:grid-cols-5 gap-6'>
-        <div className='hidden md:block'>
-          <div className='sticky top-24'>
-            <SettingNav />
-          </div>
+      <div className='grid grid-cols-12 gap-4 py-4'>
+        <div className='col-span-12 md:col-span-2'>
+          <SettingNav />
         </div>
-        <main className='col-span-5 md:col-span-4'>
-          <SettingForm setting={await getNoCachedSetting()} />
+        <main className='col-span-12 md:col-span-10'>
+          <div className='space-y-6'>
+            <div className='flex items-center justify-between'>
+              <div>
+                <h3 className='text-lg font-medium'>Maintenance Mode</h3>
+                <p className='text-sm text-muted-foreground'>
+                  Enable maintenance mode to temporarily restrict access to the
+                  site
+                </p>
+              </div>
+              <Switch
+                name='isMaintenanceMode'
+                checked={isMaintenanceMode}
+                onCheckedChange={async (checked) => {
+                  try {
+                    setIsMaintenanceMode(checked)
+                    const response = await fetch('/api/settings/maintenance', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({ enabled: checked }),
+                    })
+                    if (!response.ok) {
+                      // If the request fails, revert the UI state
+                      setIsMaintenanceMode(!checked)
+                      throw new Error('Failed to update maintenance mode')
+                    }
+                  } catch (error) {
+                    console.error('Error updating maintenance mode:', error)
+                    // You might want to show a toast notification here
+                  }
+                }}
+              />
+            </div>
+
+            <Separator />
+            <SettingForm setting={setting} />
+          </div>
         </main>
       </div>
     </div>

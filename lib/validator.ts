@@ -397,3 +397,11 @@ export const AddressSchema = z.object({
 export const AddressUpdateSchema = AddressSchema.extend({
   _id: z.string(),
 })
+
+export const CommonSettingSchema = z.object({
+  defaultLanguage: z.string(),
+  defaultCurrency: z.string(),
+  defaultPaymentMethod: z.string(),
+  defaultDeliveryDate: z.string(),
+  isMaintenanceMode: z.boolean().default(false),
+})

@@ -5,7 +5,6 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   FormControl,
   FormField,
@@ -151,30 +150,6 @@ export default function CommonForm({
                 <FormDescription>
                   Default light/dark mode setting for new visitors
                 </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className='border-t pt-6'>
-          <FormField
-            control={control}
-            name='common.isMaintenanceMode'
-            render={({ field }) => (
-              <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className='space-y-1 leading-none'>
-                  <FormLabel>Maintenance Mode</FormLabel>
-                  <FormDescription>
-                    When enabled, the site will display a maintenance message to
-                    visitors
-                  </FormDescription>
-                </div>
                 <FormMessage />
               </FormItem>
             )}
