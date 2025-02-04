@@ -8,6 +8,7 @@ import {
   Languages,
   Package,
   SettingsIcon,
+  Menu,
 } from 'lucide-react'
 
 import { useEffect, useState } from 'react'
@@ -49,6 +50,11 @@ const SettingNav = () => {
             name: 'Common Settings',
             hash: 'setting-common',
             icon: <SettingsIcon />,
+          },
+          {
+            name: 'Header Menus',
+            hash: 'setting-header-menus',
+            icon: <Menu />,
           },
           {
             name: 'Carousels',

@@ -12,12 +12,14 @@ export default function AppInitializer({
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
-    setRendered(true)
-  }, [setting])
-  if (!rendered) {
     useSettingStore.setState({
       setting,
     })
+    setRendered(true)
+  }, [setting])
+
+  if (!rendered) {
+    return null // Return null on first render to avoid flashing of content
   }
 
   return children

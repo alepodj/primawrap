@@ -1,7 +1,5 @@
 'use client'
 import { BadgeDollarSign, Barcode, CreditCard, Users } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-
 import Link from 'next/link'
 import {
   Card,
@@ -19,9 +17,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { calculatePastDate, formatDateTime, formatNumber } from '@/lib/utils'
-
 import SalesCategoryPieChart from './sales-category-pie-chart'
-
 import React, { useEffect, useState, useTransition } from 'react'
 import { DateRange } from 'react-day-picker'
 import { getOrderSummary } from '@/lib/actions/order.actions'
@@ -33,7 +29,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import TableChart from './table-chart'
 
 export default function OverviewReport() {
-  const t = useTranslations('Admin')
   const [date, setDate] = useState<DateRange | undefined>({
     from: calculatePastDate(30),
     to: new Date(),
@@ -88,7 +83,7 @@ export default function OverviewReport() {
   return (
     <div>
       <div className='flex items-center justify-between mb-2'>
-        <h1 className='h1-bold'>{t('Dashboard')}</h1>
+        <h1 className='h1-bold'>Dashboard</h1>
         <CalendarDateRangePicker defaultDate={date} setDate={setDate} />
       </div>
       <div className='space-y-4'>
@@ -96,7 +91,7 @@ export default function OverviewReport() {
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
-                {t('Total Revenue')}
+                Total Revenue
               </CardTitle>
               <BadgeDollarSign />
             </CardHeader>
@@ -106,16 +101,14 @@ export default function OverviewReport() {
               </div>
               <div>
                 <Link className='text-xs' href='/admin/orders'>
-                  {t('View revenue')}
+                  View revenue
                 </Link>
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                {t('Sales')}
-              </CardTitle>
+              <CardTitle className='text-sm font-medium'>Sales</CardTitle>
               <CreditCard />
             </CardHeader>
             <CardContent className='space-y-2'>
@@ -124,39 +117,35 @@ export default function OverviewReport() {
               </div>
               <div>
                 <Link className='text-xs' href='/admin/orders'>
-                  {t('View orders')}
+                  View orders
                 </Link>
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                {t('Customers')}
-              </CardTitle>
+              <CardTitle className='text-sm font-medium'>Customers</CardTitle>
               <Users />
             </CardHeader>
             <CardContent className='space-y-2'>
               <div className='text-2xl font-bold'>{data.usersCount}</div>
               <div>
                 <Link className='text-xs' href='/admin/users'>
-                  {t('View customers')}
+                  View customers
                 </Link>
               </div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                {t('Products')}
-              </CardTitle>
+              <CardTitle className='text-sm font-medium'>Products</CardTitle>
               <Barcode />
             </CardHeader>
             <CardContent className='space-y-2'>
               <div className='text-2xl font-bold'>{data.productsCount}</div>
               <div>
                 <Link className='text-xs' href='/admin/products'>
-                  {t('View products')}
+                  View products
                 </Link>
               </div>
             </CardContent>
@@ -165,7 +154,7 @@ export default function OverviewReport() {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>{t('Sales Overview')}</CardTitle>
+              <CardTitle>Sales Overview</CardTitle>
             </CardHeader>
             <CardContent>
               <SalesAreaChart data={data.salesChartData} />
@@ -176,10 +165,8 @@ export default function OverviewReport() {
         <div className='grid gap-4 md:grid-cols-2'>
           <Card>
             <CardHeader>
-              <CardTitle>{t("How much you're earning")}</CardTitle>
-              <CardDescription>
-                {t('Estimated')} · {t('Last 9 months')}
-              </CardDescription>
+              <CardTitle>How much you&apos;re earning</CardTitle>
+              <CardDescription>Estimated · Last 9 months</CardDescription>
             </CardHeader>
             <CardContent>
               <TableChart data={data.monthlySales} labelType='month' />
@@ -187,7 +174,7 @@ export default function OverviewReport() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>{t('Product Performance')}</CardTitle>
+              <CardTitle>Product Performance</CardTitle>
               <CardDescription>
                 {formatDateTime(date!.from!).dateOnly} to{' '}
                 {formatDateTime(date!.to!).dateOnly}
@@ -202,7 +189,7 @@ export default function OverviewReport() {
         <div className='grid gap-4 md:grid-cols-2'>
           <Card>
             <CardHeader>
-              <CardTitle>{t('Best-Selling Categories')}</CardTitle>
+              <CardTitle>Best-Selling Categories</CardTitle>
             </CardHeader>
             <CardContent>
               <SalesCategoryPieChart data={data.topSalesCategories} />
@@ -210,15 +197,15 @@ export default function OverviewReport() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>{t('Recent Sales')}</CardTitle>
+              <CardTitle>Recent Sales</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>{t('Buyer')}</TableHead>
-                    <TableHead>{t('Date')}</TableHead>
-                    <TableHead className='text-right'>{t('Total')}</TableHead>
+                    <TableHead>Buyer</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead className='text-right'>Total</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -246,15 +233,15 @@ export default function OverviewReport() {
                               ?
                             </div>
                             <span className='text-muted-foreground group-hover:text-primary transition-colors'>
-                              {t('Deleted User')}
+                              Deleted User
                             </span>
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className='text-muted-foreground group-hover:text-primary transition-colors'>
-                        {formatDateTime(order.createdAt).dateOnly}
+                      <TableCell>
+                        {formatDateTime(order.createdAt).dateTime}
                       </TableCell>
-                      <TableCell className='text-right font-medium group-hover:text-primary transition-colors'>
+                      <TableCell className='text-right'>
                         <ProductPrice price={order.totalPrice} plain />
                       </TableCell>
                     </TableRow>

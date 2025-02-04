@@ -23,7 +23,7 @@ export default function CartAddItem({ itemId }: { itemId: string }) {
   } = useSettingStore()
   const item = items.find((x) => x.clientId === itemId)
 
-  const t = useTranslations()
+  const t = useTranslations('Locale')
   if (!item) return notFound()
   return (
     <div>
@@ -45,14 +45,14 @@ export default function CartAddItem({ itemId }: { itemId: string }) {
             <div>
               <h3 className='text-xl font-bold flex gap-2 my-2'>
                 <CheckCircle2Icon className='h-6 w-6 text-green-700' />
-                {t('Cart.Added to cart')}
+                {t('Added to cart')}
               </h3>
               <p className='text-sm'>
-                <span className='font-bold'> {t('Cart.Color')}: </span>{' '}
+                <span className='font-bold'> {t('Color')}: </span>{' '}
                 {item.color ?? '-'}
               </p>
               <p className='text-sm'>
-                <span className='font-bold'> {t('Cart.Size')}: </span>{' '}
+                <span className='font-bold'> {t('Size')}: </span>{' '}
                 {item.size ?? '-'}
               </p>
             </div>
@@ -64,7 +64,7 @@ export default function CartAddItem({ itemId }: { itemId: string }) {
               <div className='flex justify-center items-center'>
                 {itemsPrice < freeShippingMinPrice ? (
                   <div className='text-center '>
-                    {t('Cart.Add')}{' '}
+                    {t('Add')}{' '}
                     <span className='text-green-700'>
                       <ProductPrice
                         price={freeShippingMinPrice - itemsPrice}
@@ -72,7 +72,7 @@ export default function CartAddItem({ itemId }: { itemId: string }) {
                       />
                     </span>{' '}
                     {t(
-                      'Cart.of eligible items to your order to qualify for FREE Shipping'
+                      'of eligible items to your order to qualify for FREE Shipping'
                     )}
                   </div>
                 ) : (
@@ -105,7 +105,7 @@ export default function CartAddItem({ itemId }: { itemId: string }) {
                     'rounded-full w-full'
                   )}
                 >
-                  {t('Cart.Go to Cart')}
+                  {t('Go to Cart')}
                 </Link>
               </div>
             </div>

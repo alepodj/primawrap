@@ -17,7 +17,7 @@ import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 
 export default async function UserButton() {
-  const t = await getTranslations()
+  const t = await getTranslations('Locale')
   const session = await auth()
 
   return (
@@ -27,10 +27,10 @@ export default async function UserButton() {
           <div className='flex items-center'>
             <div className='flex flex-col text-xs text-left'>
               <span>
-                {t('Header.Hello')},{' '}
-                {session ? session.user.name : t('Header.sign in')}
+                {t('Hello')},{' '}
+                {session ? session.user.name : t('sign in')}
               </span>
-              <span className='font-bold'>{t('Header.Account & Orders')}</span>
+              <span className='font-bold'>{t('Account & Orders')}</span>
             </div>
             <ChevronDownIcon />
           </div>
@@ -49,15 +49,15 @@ export default async function UserButton() {
             </DropdownMenuLabel>
             <DropdownMenuGroup>
               <Link className='w-full' href='/account'>
-                <DropdownMenuItem>{t('Header.Your account')}</DropdownMenuItem>
+                <DropdownMenuItem>{t('Your account')}</DropdownMenuItem>
               </Link>
               <Link className='w-full' href='/account/orders'>
-                <DropdownMenuItem>{t('Header.Your orders')}</DropdownMenuItem>
+                <DropdownMenuItem>{t('Your orders')}</DropdownMenuItem>
               </Link>
 
               {session.user.role?.toLowerCase() === 'admin' && (
                 <Link className='w-full' href='/admin/overview'>
-                  <DropdownMenuItem>{t('Header.Admin')}</DropdownMenuItem>
+                  <DropdownMenuItem>{t('Admin')}</DropdownMenuItem>
                 </Link>
               )}
             </DropdownMenuGroup>
@@ -67,7 +67,7 @@ export default async function UserButton() {
                   className='w-full py-4 px-2 h-4 justify-start'
                   variant='ghost'
                 >
-                  {t('Header.Sign out')}
+                  {t('Sign out')}
                 </Button>
               </form>
             </DropdownMenuItem>
@@ -80,7 +80,7 @@ export default async function UserButton() {
                   className={cn(buttonVariants(), 'w-full')}
                   href='/sign-in'
                 >
-                  {t('Header.Sign in')}
+                  {t('Sign in')}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -88,15 +88,15 @@ export default async function UserButton() {
             <DropdownMenuLabel>
               <div className='font-normal space-y-2'>
                 <div>
-                  {t('Header.New Customer')}?{' '}
+                  {t('New Customer')}?{' '}
                   <Link href='/sign-up' className='user-menu-link'>
-                    {t('Header.Sign up')}
+                    {t('Sign up')}
                   </Link>
                 </div>
                 <div>
-                  {t('Header.Forgot Password')}?{' '}
+                  {t('Forgot Password')}?{' '}
                   <Link href='/forgot-password' className='user-menu-link'>
-                    {t('Header.Reset it')}
+                    {t('Reset it')}
                   </Link>
                 </div>
               </div>

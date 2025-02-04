@@ -35,7 +35,7 @@ interface AddressCardProps {
 export function AddressCard({ address }: AddressCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-  const t = useTranslations('Account')
+  const t = useTranslations('Locale')
   const { toast } = useToast()
 
   const handleDelete = async () => {

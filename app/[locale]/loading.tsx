@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 
 export default function LoadingPage() {
-  const t = useTranslations()
+  const t = useTranslations('Locale')
 
   return (
     <div className='fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm'>
@@ -24,7 +24,7 @@ export default function LoadingPage() {
           />
           <Loader2 className='h-16 w-16 animate-spin text-primary' />
           <p className='text-3xl font-medium text-muted-foreground'>
-            {t('Loading.Loading')}
+            {t('Loading')}
           </p>
         </div>
       </div>

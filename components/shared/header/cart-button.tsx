@@ -16,7 +16,7 @@ export default function CartButton() {
   } = useCartStore()
   const cartItemsCount = items.reduce((a, c) => a + c.quantity, 0)
   const showSidebar = useShowSidebar()
-  const t = useTranslations()
+  const t = useTranslations('Locale')
 
   const locale = useLocale()
   return (
@@ -36,7 +36,7 @@ export default function CartButton() {
             {cartItemsCount}
           </span>
         )}
-        <span className='font-bold'>{t('Header.Cart')}</span>
+        <span className='font-bold'>{t('Cart')}</span>
 
         {showSidebar && (
           <div

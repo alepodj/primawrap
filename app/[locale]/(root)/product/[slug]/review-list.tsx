@@ -67,7 +67,7 @@ export default function ReviewList({
   userId: string | undefined
   product: IProduct
 }) {
-  const t = useTranslations('Product')
+  const t = useTranslations('Locale')
   const [page, setPage] = useState(2)
   const [totalPages, setTotalPages] = useState(0)
   const [reviews, setReviews] = useState<IReviewDetails[]>([])
@@ -275,7 +275,7 @@ export default function ReviewList({
                           disabled={form.formState.isSubmitting}
                         >
                           {form.formState.isSubmitting
-                            ? t('Submitting...')
+                            ? t('Submitting')
                             : t('Submit')}
                         </Button>
                       </DialogFooter>

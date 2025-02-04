@@ -32,17 +32,17 @@ export default function CartPage() {
     },
   } = useSettingStore()
 
-  const t = useTranslations()
+  const t = useTranslations('Locale')
   return (
     <div>
       <div className='grid grid-cols-1 md:grid-cols-4  md:gap-4'>
         {items.length === 0 ? (
           <Card className='col-span-4 rounded-none'>
             <CardHeader className='text-3xl  '>
-              {t('Cart.Your Shopping Cart is empty')}
+              {t('Your Shopping Cart is empty')}
             </CardHeader>
             <CardContent>
-              {t.rich('Cart.Continue shopping on', {
+              {t.rich('Continue shopping on', {
                 name: site.name,
                 home: (chunks) => <Link href='/'>{chunks}</Link>,
               })}
@@ -53,11 +53,11 @@ export default function CartPage() {
             <div className='col-span-3'>
               <Card className='rounded-none'>
                 <CardHeader className='text-3xl pb-0'>
-                  {t('Cart.Shopping Cart')}
+                  {t('Shopping Cart')}
                 </CardHeader>
                 <CardContent className='p-4'>
                   <div className='flex justify-end border-b mb-4'>
-                    {t('Cart.Price')}
+                    {t('Price')}
                   </div>
 
                   {items.map((item) => (
@@ -90,14 +90,14 @@ export default function CartPage() {
                           <p className='text-sm'>
                             <span className='font-bold'>
                               {' '}
-                              {t('Cart.Color')}:{' '}
+                              {t('Color')}:{' '}
                             </span>{' '}
                             {item.color}
                           </p>
                           <p className='text-sm'>
                             <span className='font-bold'>
                               {' '}
-                              {t('Cart.Size')}:{' '}
+                              {t('Size')}:{' '}
                             </span>{' '}
                             {item.size}
                           </p>
@@ -111,7 +111,7 @@ export default function CartPage() {
                           >
                             <SelectTrigger className='w-auto'>
                               <SelectValue>
-                                {t('Cart.Quantity')}: {item.quantity}
+                                {t('Quantity')}: {item.quantity}
                               </SelectValue>
                             </SelectTrigger>
                             <SelectContent position='popper'>
@@ -128,7 +128,7 @@ export default function CartPage() {
                             variant={'outline'}
                             onClick={() => removeItem(item)}
                           >
-                            {t('Cart.Delete')}
+                            {t('Delete')}
                           </Button>
                         </div>
                       </div>
@@ -136,7 +136,7 @@ export default function CartPage() {
                         <p className='text-right'>
                           {item.quantity > 1 && (
                             <>
-                              {item.quantity} x {' '}
+                              {item.quantity} x{' '}
                               <ProductPrice price={item.price} plain />
                               <br />
                             </>
@@ -154,9 +154,9 @@ export default function CartPage() {
                   ))}
 
                   <div className='flex justify-end text-lg my-2'>
-                    {t('Cart.Subtotal')} (
+                    {t('Subtotal')} (
                     {items.reduce((acc, item) => acc + item.quantity, 0)}{' '}
-                    {t('Cart.Items')}):{' '}
+                    {t('Items')}):{' '}
                     <span className='font-bold ml-1'>
                       <ProductPrice price={itemsPrice} plain />
                     </span>{' '}
@@ -169,7 +169,7 @@ export default function CartPage() {
                 <CardContent className='py-4 space-y-4'>
                   {itemsPrice < freeShippingMinPrice ? (
                     <div className='flex-1'>
-                      {t('Cart.Add')}{' '}
+                      {t('Add')}{' '}
                       <span className='text-green-700'>
                         <ProductPrice
                           price={freeShippingMinPrice - itemsPrice}
@@ -177,21 +177,21 @@ export default function CartPage() {
                         />
                       </span>{' '}
                       {t(
-                        'Cart.of eligible items to your order to qualify for FREE Shipping'
+                        'of eligible items to your order to qualify for FREE Shipping'
                       )}
                     </div>
                   ) : (
                     <div className='flex-1'>
                       <span className='text-green-700'>
-                        {t('Cart.Your order qualifies for FREE Shipping')}
+                        {t('Your order qualifies for FREE Shipping')}
                       </span>{' '}
-                      {t('Cart.Choose this option at checkout')}
+                      {t('Choose this option at checkout')}
                     </div>
                   )}
                   <div className='text-lg'>
-                    {t('Cart.Subtotal')} (
+                    {t('Subtotal')} (
                     {items.reduce((acc, item) => acc + item.quantity, 0)}{' '}
-                    {t('Cart.items')}):{' '}
+                    {t('items')}):{' '}
                     <span className='font-bold'>
                       <ProductPrice price={itemsPrice} plain />
                     </span>{' '}
@@ -200,7 +200,7 @@ export default function CartPage() {
                     onClick={() => router.push('/checkout')}
                     className='rounded-full w-full'
                   >
-                    {t('Cart.Proceed to Checkout')}
+                    {t('Proceed to Checkout')}
                   </Button>
                 </CardContent>
               </Card>

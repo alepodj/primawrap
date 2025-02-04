@@ -259,10 +259,10 @@ export const SiteLanguageSchema = z.object({
 })
 
 export const CarouselSchema = z.object({
-  title: z.string().min(1, 'title is required'),
-  url: z.string().min(1, 'url is required'),
+  title: z.string().optional(),
+  url: z.string().optional(),
   image: z.string().min(1, 'image is required'),
-  buttonCaption: z.string().min(1, 'buttonCaption is required'),
+  buttonCaption: z.string().optional(),
 })
 
 export const SiteCurrencySchema = z.object({
@@ -286,9 +286,8 @@ export const DeliveryDateSchema = z.object({
     .min(0, 'Free shipping min amount must be at least 0'),
 })
 
+// Remove HeaderMenuSchema and its comment
 export const SettingInputSchema = z.object({
-  // PROMPT: create fields
-  // codeium, based on the mongoose schema for settings
   common: z.object({
     pageSize: z.coerce
       .number()
@@ -321,13 +320,20 @@ export const SettingInputSchema = z.object({
     copyright: z.string().min(1, 'Copyright is required'),
     address: z.string().min(1, 'Address is required'),
   }),
+  headerMenus: z
+    .array(
+      z.object({
+        name: z.string().min(1, 'Name is required'),
+        href: z.string().min(1, 'URL is required'),
+      })
+    )
+    .default([]),
   availableLanguages: z
     .array(SiteLanguageSchema)
     .min(1, 'At least one language is required'),
-
   carousels: z
     .array(CarouselSchema)
-    .min(1, 'At least one language is required'),
+    .min(1, 'At least one carousel is required'),
   defaultLanguage: z.string().min(1, 'Language is required'),
   availableCurrencies: z
     .array(SiteCurrencySchema)

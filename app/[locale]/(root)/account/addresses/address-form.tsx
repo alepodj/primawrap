@@ -31,7 +31,7 @@ export function AddressForm({
   onSuccess,
   defaultIsDefault,
 }: AddressFormProps) {
-  const t = useTranslations('Account')
+  const t = useTranslations('Locale')
   const { toast } = useToast()
 
   const form = useForm<IAddressForm>({

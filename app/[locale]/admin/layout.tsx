@@ -14,7 +14,7 @@ export default async function AdminLayout({
   return (
     <>
       <div className='flex flex-col'>
-        <div className='bg-gradient-to-tl from-slate-700 to-slate-900 text-white'>
+        <div className='bg-gradient-to-tl from-slate-700 to-slate-900 dark:from-slate-800 dark:to-slate-950 text-white'>
           <div className='flex h-20 items-center px-2'>
             <Link href='/'>
               <Image

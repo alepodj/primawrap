@@ -22,17 +22,17 @@ export default function Footer() {
   const { locales } = i18n
 
   const locale = useLocale()
-  const t = useTranslations()
+  const t = useTranslations('Locale')
   return (
-    <footer className='bg-gradient-to-tl to-slate-700 from-slate-900 text-white'>
+    <footer className='bg-gradient-to-tl to-slate-700 from-slate-900 dark:to-slate-800 dark:from-slate-950 text-white'>
       <div className='w-full'>
         <Button
           variant='ghost'
-          className='bg-gradient-to-br to-slate-800 from-slate-600 w-full rounded-none'
+          className='bg-gradient-to-br to-slate-800 from-slate-600 dark:to-slate-900 dark:from-slate-700 w-full rounded-none'
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <ChevronUp className='mr-2 h-4 w-4 footer-link' />
-          <span className='footer-link'>{t('Footer.Back to Top')}</span>
+          <span className='footer-link'>{t('Back to Top')}</span>
           <ChevronUp className='ml-2 h-4 w-4 footer-link' />
         </Button>
 
@@ -59,7 +59,7 @@ export default function Footer() {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('Footer.Select a language')} />
+                  <SelectValue placeholder={t('Select a language')} />
                 </SelectTrigger>
                 <SelectContent>
                   {[
@@ -93,7 +93,7 @@ export default function Footer() {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('Footer.Select a currency')} />
+                  <SelectValue placeholder={t('Select a currency')} />
                 </SelectTrigger>
                 <SelectContent>
                   {[
@@ -119,31 +119,31 @@ export default function Footer() {
       <div className='p-2'>
         <div className='flex justify-center gap-4 text-sm'>
           <Link href='/page/conditions-of-use' className='footer-link'>
-            {t('Footer.Conditions of Use')}
+            {t('Conditions of Use')}
           </Link>
           <Link href='/page/privacy-policy' className='footer-link'>
-            {t('Footer.Privacy Notice')}
+            {t('Privacy Notice')}
           </Link>
           <Link href='/page/help' className='footer-link'>
-            {t('Footer.Help')}
+            {t('Help')}
           </Link>
-          <Link href='/page/Blog' className='footer-link'>
-            {t('Footer.Blog')}
+          <Link href='/page/blog' className='footer-link'>
+            {t('Blog')}
           </Link>
-          <Link href='/page/Careers' className='footer-link'>
-            {t('Footer.Careers')}
+          <Link href='/page/careers' className='footer-link'>
+            {t('Careers')}
           </Link>
         </div>
         <div className='p-2'>
           <div className='flex justify-center gap-4 text-sm'>
             <Link href='/page/about-us' className='footer-link'>
-              {t('Footer.About name', { name: site.name })}
+              {t('About name', { name: site.name })}
             </Link>
             <Link href='/page/shipping' className='footer-link'>
-              {t('Footer.Shipping Rates & Policies')}
+              {t('Shipping Rates & Policies')}
             </Link>
             <Link href='/page/returns-policy' className='footer-link'>
-              {t('Footer.Returns & Replacements')}
+              {t('Returns & Replacements')}
             </Link>
           </div>
         </div>

@@ -31,16 +31,31 @@ export default async function AuthLayout({
           {children}
         </div>
       </main>
-      <footer className='bg-gradient-to-tl to-slate-700 from-slate-900 w-full flex flex-col gap-2 items-center p-4 text-sm'>
+      <footer className='bg-gradient-to-tl to-slate-700 from-slate-900 dark:to-slate-800 dark:from-slate-950 w-full flex flex-col gap-2 items-center p-4 text-sm'>
         <div className='flex justify-center space-x-4'>
-          <Link className='!footer-link !text-white' href='/page/conditions-of-use'>Conditions of Use</Link>
-          <Link className='!footer-link !text-white' href='/page/privacy-policy'> Privacy Notice</Link>
-          <Link className='!footer-link !text-white' href='/page/help'> Help </Link>
+          <Link
+            className='!footer-link !text-white'
+            href='/page/conditions-of-use'
+          >
+            Conditions of Use
+          </Link>
+          <Link
+            className='!footer-link !text-white'
+            href='/page/privacy-policy'
+          >
+            {' '}
+            Privacy Notice
+          </Link>
+          <Link className='!footer-link !text-white' href='/page/help'>
+            {' '}
+            Help{' '}
+          </Link>
         </div>
 
-
         <div>
-          <p className='flex justify-center text-sm text-white'>© {site.copyright}</p>
+          <p className='flex justify-center text-sm text-white'>
+            © {site.copyright}
+          </p>
         </div>
       </footer>
     </div>

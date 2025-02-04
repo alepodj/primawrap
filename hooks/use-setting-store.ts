@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-
-import data from '@/lib/data'
 import { ClientSetting, SiteCurrency } from '@/types'
 import { create } from 'zustand'
 
@@ -11,11 +8,42 @@ interface SettingState {
   setCurrency: (currency: string) => void
 }
 
+const defaultSetting: ClientSetting = {
+  common: {
+    pageSize: 9,
+    isMaintenanceMode: false,
+    freeShippingMinPrice: 0,
+    defaultTheme: 'light',
+    defaultColor: 'purple',
+  },
+  site: {
+    name: '',
+    description: '',
+    keywords: '',
+    url: '',
+    logo: '',
+    slogan: '',
+    author: '',
+    copyright: '',
+    email: '',
+    address: '',
+    phone: '',
+  },
+  headerMenus: [],
+  carousels: [],
+  availableLanguages: [],
+  defaultLanguage: 'en-CA',
+  availableCurrencies: [],
+  defaultCurrency: 'CAD',
+  currency: 'CAD',
+  availablePaymentMethods: [],
+  defaultPaymentMethod: '',
+  availableDeliveryDates: [],
+  defaultDeliveryDate: '',
+}
+
 const useSettingStore = create<SettingState>((set, get) => ({
-  setting: {
-    ...data.settings[0],
-    currency: data.settings[0].defaultCurrency,
-  } as ClientSetting,
+  setting: defaultSetting,
   setSetting: (newSetting: ClientSetting) => {
     set({
       setting: {
@@ -28,7 +56,12 @@ const useSettingStore = create<SettingState>((set, get) => ({
     return (
       get().setting.availableCurrencies.find(
         (c) => c.code === get().setting.currency
-      ) || data.settings[0].availableCurrencies[0]
+      ) || {
+        name: 'Canadian Dollar',
+        code: 'CAD',
+        convertRate: 1,
+        symbol: '$',
+      }
     )
   },
   setCurrency: async (currency: string) => {

@@ -2,9 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
-
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
 
 const links = [
   {
@@ -32,12 +30,13 @@ const links = [
     href: '/admin/settings',
   },
 ]
+
 export function AdminNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname()
-  const t = useTranslations('Admin')
+
   return (
     <nav
       className={cn(
@@ -52,10 +51,12 @@ export function AdminNav({
           href={item.href}
           className={cn(
             '',
-            pathname.includes(item.href) ? '' : 'text-muted-foreground'
+            pathname.includes(item.href)
+              ? ''
+              : 'footer-link !text-muted-foreground'
           )}
         >
-          {t(item.title)}
+          {item.title}
         </Link>
       ))}
     </nav>

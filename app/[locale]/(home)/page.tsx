@@ -14,7 +14,7 @@ import { toSlug } from '@/lib/utils'
 import { getTranslations } from 'next-intl/server'
 
 export default async function HomePage() {
-  const t = await getTranslations('Home')
+  const t = await getTranslations('Locale')
   const { carousels } = await getSetting()
   const todaysDeals = await getProductsByTag({ tag: 'todays-deal' })
   const bestSellingProducts = await getProductsByTag({ tag: 'best-seller' })
@@ -73,12 +73,12 @@ export default async function HomePage() {
       <HomeCarousel items={carousels} />
       <div className='md:p-4 md:space-y-4'>
         <HomeCard cards={cards} />
-        <Card className='w-full rounded-none'>
+        <Card className='w-full rounded'>
           <CardContent className='p-4 items-center gap-3'>
             <ProductSlider title={t("Today's Deals")} products={todaysDeals} />
           </CardContent>
         </Card>
-        <Card className='w-full rounded-none'>
+        <Card className='w-full rounded'>
           <CardContent className='p-4 items-center gap-3'>
             <ProductSlider
               title={t('Best Selling Products')}

@@ -29,16 +29,21 @@ const settingSchema = new Schema<ISetting>(
       copyright: { type: String, required: true },
       address: { type: String, required: true },
     },
+    headerMenus: [
+      {
+        name: { type: String, required: true },
+        href: { type: String, required: true },
+      },
+    ],
     carousels: [
       {
         title: {
           type: String,
-          required: true,
+          required: false,
         },
         url: {
           type: String,
-          required: true,
-          unique: true,
+          required: false,
         },
         image: {
           type: String,
@@ -46,7 +51,7 @@ const settingSchema = new Schema<ISetting>(
         },
         buttonCaption: {
           type: String,
-          required: true,
+          required: false,
         },
       },
     ],

@@ -16,6 +16,7 @@ import DeliveryDateForm from './delivery-date-form'
 import SiteInfoForm from './site-info-form'
 import CommonForm from './common-form'
 import CarouselForm from './carousel-form'
+import HeaderMenuForm from './header-menu-form'
 
 const SettingForm = ({ setting }: { setting: ISettingInput }) => {
   const { setSetting } = useSetting()
@@ -53,14 +54,11 @@ const SettingForm = ({ setting }: { setting: ISettingInput }) => {
       >
         <SiteInfoForm id='setting-site-info' form={form} />
         <CommonForm id='setting-common' form={form} />
+        <HeaderMenuForm id='setting-header-menus' form={form} />
         <CarouselForm id='setting-carousels' form={form} />
-
         <LanguageForm id='setting-languages' form={form} />
-
         <CurrencyForm id='setting-currencies' form={form} />
-
         <PaymentMethodForm id='setting-payment-methods' form={form} />
-
         <DeliveryDateForm id='setting-delivery-dates' form={form} />
 
         <div>

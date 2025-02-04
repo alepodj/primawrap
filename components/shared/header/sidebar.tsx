@@ -26,12 +26,12 @@ export default async function Sidebar({
 
   const locale = await getLocale()
 
-  const t = await getTranslations()
+  const t = await getTranslations('Locale')
   return (
     <Drawer direction={getDirection(locale) === 'rtl' ? 'right' : 'left'}>
       <DrawerTrigger className='header-button flex items-center !p-2  '>
         <MenuIcon className='h-5 w-5 mr-1' />
-        {t('Header.All')}
+        {t('All')}
       </DrawerTrigger>
       <DrawerContent className='w-[350px] mt-0 top-0'>
         <div className='flex flex-col h-full'>
@@ -44,7 +44,7 @@ export default async function Sidebar({
                   <DrawerClose asChild>
                     <Link href='/account'>
                       <span className='text-lg font-semibold '>
-                        {t('Header.Hello')}, {session.user.name}
+                        {t('Hello')}, {session.user.name}
                       </span>
                     </Link>
                   </DrawerClose>
@@ -52,7 +52,7 @@ export default async function Sidebar({
                   <DrawerClose asChild>
                     <Link href='/sign-in'>
                       <span className='text-lg font-semibold'>
-                        {t('Header.Hello')}, {t('Header.sign in')}
+                        {t('Hello')}, {t('sign in')}
                       </span>
                     </Link>
                   </DrawerClose>
@@ -72,7 +72,7 @@ export default async function Sidebar({
           <div className='flex-1 overflow-y-auto'>
             <div className='p-4 border-b mt-10'>
               <h2 className='text-lg font-semibold'>
-                {t('Header.Shop By Category')}
+                {t('Shop By Category')}
               </h2>
             </div>
             <nav className='flex flex-col'>
@@ -94,31 +94,26 @@ export default async function Sidebar({
           <div className='border-t flex flex-col '>
             <div className='p-4'>
               <h2 className='text-lg font-semibold'>
-                {t('Header.Help & Settings')}
+                {t('Help & Settings')}
               </h2>
             </div>
             <DrawerClose asChild>
               <Link href='/account' className='item-button'>
-                {t('Header.Your account')}
+                {t('Your account')}
               </Link>
             </DrawerClose>{' '}
-            <DrawerClose asChild>
-              <Link href='/page/customer-service' className='item-button'>
-                {t('Header.Customer Service')}
-              </Link>
-            </DrawerClose>
             {session ? (
               <form action={SignOut} className='w-full'>
                 <Button
                   className='w-full justify-start item-button text-base'
                   variant='ghost'
                 >
-                  {t('Header.Sign out')}
+                  {t('Sign out')}
                 </Button>
               </form>
             ) : (
               <Link href='/sign-in' className='item-button'>
-                {t('Header.Sign in')}
+                {t('Sign in')}
               </Link>
             )}
           </div>

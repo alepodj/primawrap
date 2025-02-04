@@ -34,7 +34,7 @@ export default async function ProfilePage({
     <div>
       <SessionProvider session={session}>
         <div className='flex gap-2 '>
-          <Link href='/account'>Your Account</Link>
+          <Link href='/account' className='footer-link'>Your Account</Link>
           <span>›</span>
           <span>{PAGE_TITLE}</span>
         </div>

@@ -3,17 +3,15 @@ import Link from 'next/link'
 import { getAllCategories } from '@/lib/actions/product.actions'
 import Menu from './menu'
 import Search from './search'
-import data from '@/lib/data'
 import Sidebar from './sidebar'
 import { getSetting } from '@/lib/actions/setting.actions'
-import { getTranslations } from 'next-intl/server'
+import NavLink from './nav-link'
 
 export default async function Header() {
   const categories = await getAllCategories()
-  const { site } = await getSetting()
-  const t = await getTranslations()
+  const { site, headerMenus } = await getSetting()
   return (
-    <header className='bg-gradient-to-tl from-slate-700 to-slate-900 text-white'>
+    <header className='bg-gradient-to-tl from-slate-700 to-slate-900 dark:from-slate-800 dark:to-slate-950 text-white'>
       <div className='px-2'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center'>
@@ -40,14 +38,12 @@ export default async function Header() {
           <Search />
         </div>
       </div>
-      <div className='flex items-center px-3 mb-[1px] bg-gradient-to-tr from-slate-800 to-slate-600'>
+      <div className='flex items-center px-3 mb-[1px] bg-gradient-to-tr from-slate-800 to-slate-600 dark:from-slate-900 dark:to-slate-700'>
         <Sidebar categories={categories} />
         <div className='flex items-center flex-wrap gap-3 overflow-hidden max-h-[42px]'>
-          {data.headerMenus.map((menu) => (
-            <Link href={menu.href} key={menu.href} className='nav-link px-2'>
-              {t('Header.' + menu.name)}
-            </Link>
-          ))}
+          {headerMenus?.map((menu) => (
+            <NavLink key={menu.href} href={menu.href} name={menu.name} />
+          )) || null}
         </div>
       </div>
     </header>

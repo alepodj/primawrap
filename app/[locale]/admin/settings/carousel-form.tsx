@@ -76,7 +76,7 @@ export default function CarouselForm({
                   <FormItem>
                     {index == 0 && <FormLabel>Caption</FormLabel>}
                     <FormControl>
-                      <Input {...field} placeholder='buttonCaption' />
+                      <Input {...field} placeholder='Button Caption' />
                     </FormControl>
                     <FormMessage>
                       {errors.carousels?.[index]?.buttonCaption?.message}
