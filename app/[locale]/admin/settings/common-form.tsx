@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   FormControl,
@@ -6,6 +12,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
@@ -17,6 +24,7 @@ import {
 } from '@/components/ui/select'
 import { COLORS, THEMES } from '@/lib/constants'
 import { ISettingInput } from '@/types'
+import { Settings2 } from 'lucide-react'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
@@ -30,21 +38,35 @@ export default function CommonForm({
   const { control } = form
 
   return (
-    <Card id={id}>
+    <Card id={id} className='transition-all duration-300 hover:shadow-md'>
       <CardHeader>
-        <CardTitle>Common Settings</CardTitle>
+        <CardTitle className='flex items-center gap-2'>
+          <Settings2 className='w-5 h-5' />
+          Common Settings
+        </CardTitle>
+        <CardDescription>
+          Configure general settings that apply across your site
+        </CardDescription>
       </CardHeader>
-      <CardContent className='space-y-4'>
-        <div className='flex flex-col gap-5 md:flex-row'>
+      <CardContent className='space-y-6'>
+        <div className='flex flex-col gap-6 md:flex-row'>
           <FormField
             control={control}
             name='common.pageSize'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Page Size</FormLabel>
+                <FormLabel>Default Page Size</FormLabel>
                 <FormControl>
-                  <Input placeholder='Enter Page Size' {...field} />
+                  <Input
+                    type='number'
+                    min='1'
+                    placeholder='Enter items per page'
+                    {...field}
+                  />
                 </FormControl>
+                <FormDescription>
+                  Number of items to display per page in lists and grids
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -54,32 +76,38 @@ export default function CommonForm({
             name='common.freeShippingMinPrice'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Free Shipping Minimum Price</FormLabel>
+                <FormLabel>Free Shipping Threshold</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Enter Free Shipping Minimum Price'
+                    type='number'
+                    min='0'
+                    step='0.01'
+                    placeholder='Enter minimum amount for free shipping'
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>
+                  Minimum order amount to qualify for free shipping
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <div className='flex flex-col gap-5 md:flex-row'>
+        <div className='flex flex-col gap-6 md:flex-row'>
           <FormField
             control={control}
             name='common.defaultColor'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Default Color</FormLabel>
+                <FormLabel>Default Theme Color</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value || ''}
                     onValueChange={(value) => field.onChange(value)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select a color' />
+                      <SelectValue placeholder='Choose a default color theme' />
                     </SelectTrigger>
                     <SelectContent>
                       {COLORS.map((color, index) => (
@@ -90,6 +118,9 @@ export default function CommonForm({
                     </SelectContent>
                   </Select>
                 </FormControl>
+                <FormDescription>
+                  Primary color scheme used throughout the site
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -99,14 +130,14 @@ export default function CommonForm({
             name='common.defaultTheme'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Default Theme</FormLabel>
+                <FormLabel>Default Display Theme</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value || ''}
                     onValueChange={(value) => field.onChange(value)}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder='Select a theme' />
+                      <SelectValue placeholder='Choose light or dark mode' />
                     </SelectTrigger>
                     <SelectContent>
                       {THEMES.map((theme, index) => (
@@ -117,24 +148,33 @@ export default function CommonForm({
                     </SelectContent>
                   </Select>
                 </FormControl>
+                <FormDescription>
+                  Default light/dark mode setting for new visitors
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <div>
+        <div className='border-t pt-6'>
           <FormField
             control={control}
             name='common.isMaintenanceMode'
             render={({ field }) => (
-              <FormItem className='space-x-2 items-center'>
+              <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
                 <FormControl>
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <FormLabel>Maintenance Mode?</FormLabel>
+                <div className='space-y-1 leading-none'>
+                  <FormLabel>Maintenance Mode</FormLabel>
+                  <FormDescription>
+                    When enabled, the site will display a maintenance message to
+                    visitors
+                  </FormDescription>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

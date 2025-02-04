@@ -1,23 +1,24 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card'
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import { ISettingInput } from '@/types'
-import { TrashIcon } from 'lucide-react'
-import React, { useEffect } from 'react'
+import { DollarSign, GripVertical, PlusCircle, TrashIcon } from 'lucide-react'
+import { useEffect } from 'react'
 import { useFieldArray, UseFormReturn } from 'react-hook-form'
 
 export default function CurrencyForm({
@@ -31,156 +32,231 @@ export default function CurrencyForm({
     control: form.control,
     name: 'availableCurrencies',
   })
-  const {
-    setValue,
-    watch,
-    control,
-    formState: { errors },
-  } = form
 
-  const availableCurrencies = watch('availableCurrencies')
-  const defaultCurrency = watch('defaultCurrency')
+  const defaultCurrency = form.watch('defaultCurrency')
+  const currencies = form.watch('availableCurrencies')
 
+  // Ensure there is always a default currency selected and handle exchange rate calculations
   useEffect(() => {
-    const validCodes = availableCurrencies.map((lang) => lang.code)
-    if (!validCodes.includes(defaultCurrency)) {
-      setValue('defaultCurrency', '')
+    if (currencies?.length > 0) {
+      // If no default currency is set, set the first one as default
+      if (!defaultCurrency && currencies[0]?.code) {
+        form.setValue('defaultCurrency', currencies[0].code)
+      }
+
+      // When default currency changes, update exchange rates
+      const defaultCurrencyIndex = currencies.findIndex(
+        (c) => c.code === defaultCurrency
+      )
+      if (defaultCurrencyIndex !== -1) {
+        const oldDefaultRate = currencies[defaultCurrencyIndex].convertRate
+
+        // Set the new default currency's rate to 1
+        form.setValue(
+          `availableCurrencies.${defaultCurrencyIndex}.convertRate`,
+          1
+        )
+
+        // Recalculate other currencies' rates relative to the new default
+        currencies.forEach((currency, index) => {
+          if (index !== defaultCurrencyIndex) {
+            const newRate = currency.convertRate / oldDefaultRate
+            form.setValue(
+              `availableCurrencies.${index}.convertRate`,
+              Number(newRate.toFixed(4))
+            )
+          }
+        })
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(availableCurrencies)])
+  }, [currencies, defaultCurrency, form])
+
+  // Disable editing exchange rate for default currency
+  const isDefaultCurrency = (index: number) =>
+    currencies[index]?.code === defaultCurrency
 
   return (
-    <Card id={id}>
+    <Card id={id} className='transition-all duration-300 hover:shadow-md'>
       <CardHeader>
-        <CardTitle>Currencies</CardTitle>
+        <CardTitle className='flex items-center gap-2'>
+          <DollarSign className='w-5 h-5' />
+          Site Currencies
+        </CardTitle>
+        <CardDescription>
+          Configure the currencies available for transactions
+        </CardDescription>
       </CardHeader>
-      <CardContent className='space-y-4'>
-        <div className='space-y-4'>
+      <CardContent className='space-y-6'>
+        <div className='space-y-6'>
           {fields.map((field, index) => (
-            <div key={field.id} className='flex   gap-2'>
-              <FormField
-                control={form.control}
-                name={`availableCurrencies.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    {' '}
-                    {index == 0 && <FormLabel>Name</FormLabel>}
-                    <FormControl>
-                      <Input {...field} placeholder='Name' />
-                    </FormControl>
-                    <FormMessage>
-                      {errors.availableCurrencies?.[index]?.name?.message}
-                    </FormMessage>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`availableCurrencies.${index}.code`}
-                render={({ field }) => (
-                  <FormItem>
-                    {index == 0 && <FormLabel>Code</FormLabel>}
-                    <FormControl>
-                      <Input {...field} placeholder='Code' />
-                    </FormControl>
-                    <FormMessage>
-                      {errors.availableCurrencies?.[index]?.code?.message}
-                    </FormMessage>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`availableCurrencies.${index}.symbol`}
-                render={({ field }) => (
-                  <FormItem>
-                    {index == 0 && <FormLabel>Symbol</FormLabel>}
-                    <FormControl>
-                      <Input {...field} placeholder='Symbol' />
-                    </FormControl>
-                    <FormMessage>
-                      {errors.availableCurrencies?.[index]?.symbol?.message}
-                    </FormMessage>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name={`availableCurrencies.${index}.convertRate`}
-                render={({ field }) => (
-                  <FormItem>
-                    {index == 0 && <FormLabel>Convert Rate</FormLabel>}
-                    <FormControl>
-                      <Input {...field} placeholder='Convert Rate' />
-                    </FormControl>
-                    <FormMessage>
-                      {
-                        errors.availableCurrencies?.[index]?.convertRate
-                          ?.message
-                      }
-                    </FormMessage>
-                  </FormItem>
-                )}
-              />
-              <div>
-                {index == 0 && <div>Action</div>}
-                <Button
-                  type='button'
-                  disabled={fields.length === 1}
-                  variant='outline'
-                  className={index == 0 ? 'mt-2' : ''}
-                  onClick={() => {
-                    remove(index)
-                  }}
-                >
-                  <TrashIcon className='w-4 h-4' />
-                </Button>
+            <div
+              key={field.id}
+              className='flex gap-4 p-6 rounded-lg border bg-card hover:shadow-sm transition-all duration-200'
+            >
+              <div className='mt-2 text-muted-foreground'>
+                <GripVertical className='w-5 h-5' />
               </div>
+              <div className='flex-1 space-y-6'>
+                <div className='grid gap-6 md:grid-cols-2'>
+                  <FormField
+                    control={form.control}
+                    name={`availableCurrencies.${index}.name`}
+                    render={({ field }) => (
+                      <FormItem>
+                        {index === 0 && <FormLabel>Currency Name</FormLabel>}
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder='e.g., US Dollar, Euro, Canadian Dollar'
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The display name of the currency
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name={`availableCurrencies.${index}.code`}
+                    render={({ field }) => (
+                      <FormItem>
+                        {index === 0 && <FormLabel>Currency Code</FormLabel>}
+                        <FormControl>
+                          <Input {...field} placeholder='e.g., USD, EUR, CAD' />
+                        </FormControl>
+                        <FormDescription>
+                          The ISO currency code (e.g., USD)
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className='grid gap-6 md:grid-cols-2'>
+                  <FormField
+                    control={form.control}
+                    name={`availableCurrencies.${index}.symbol`}
+                    render={({ field }) => (
+                      <FormItem>
+                        {index === 0 && <FormLabel>Currency Symbol</FormLabel>}
+                        <FormControl>
+                          <Input {...field} placeholder='e.g., $, €, £' />
+                        </FormControl>
+                        <FormDescription>
+                          The symbol used to display prices
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name={`availableCurrencies.${index}.convertRate`}
+                    render={({ field }) => (
+                      <FormItem>
+                        {index === 0 && <FormLabel>Exchange Rate</FormLabel>}
+                        <FormControl>
+                          <Input
+                            type='number'
+                            step='0.0001'
+                            {...field}
+                            disabled={isDefaultCurrency(index)}
+                            placeholder='e.g., 1.0000'
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          {isDefaultCurrency(index)
+                            ? 'Base currency always has exchange rate of 1'
+                            : 'Exchange rate relative to base currency'}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className='flex items-center space-x-4'>
+                  <FormItem className='flex flex-row items-center space-x-3 space-y-0'>
+                    <FormControl>
+                      <Checkbox
+                        checked={defaultCurrency === currencies[index]?.code}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            form.setValue(
+                              'defaultCurrency',
+                              currencies[index]?.code
+                            )
+                          } else if (
+                            defaultCurrency === currencies[index]?.code
+                          ) {
+                            // If unchecking the default, set the first available currency as default
+                            const firstAvailable = currencies.find(
+                              (c, i) => i !== index && c.code
+                            )
+                            form.setValue(
+                              'defaultCurrency',
+                              firstAvailable?.code || currencies[0]?.code
+                            )
+                          }
+                        }}
+                        // Disable unchecking if this is the only currency or the only one with a code
+                        disabled={currencies.filter((c) => c.code).length === 1}
+                      />
+                    </FormControl>
+                    <div className='space-y-1 leading-none'>
+                      <FormLabel>Default Currency</FormLabel>
+                      <FormDescription>
+                        Set as the default currency for new visitors
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                </div>
+              </div>
+
+              <Button
+                type='button'
+                variant='outline'
+                size='icon'
+                className='mt-8'
+                onClick={() => {
+                  if (defaultCurrency === currencies[index]?.code) {
+                    // If removing the default, set the first remaining currency as default
+                    const firstRemaining = currencies.find(
+                      (c, i) => i !== index && c.code
+                    )
+                    form.setValue('defaultCurrency', firstRemaining?.code || '')
+                  }
+                  remove(index)
+                }}
+                disabled={fields.length === 1}
+                title={
+                  fields.length === 1
+                    ? 'Cannot remove last currency'
+                    : 'Remove currency'
+                }
+              >
+                <TrashIcon className='w-4 h-4' />
+              </Button>
             </div>
           ))}
 
           <Button
             type='button'
-            variant={'outline'}
+            variant='outline'
+            size='sm'
             onClick={() =>
               append({ name: '', code: '', symbol: '', convertRate: 1 })
             }
           >
+            <PlusCircle className='w-4 h-4 mr-2' />
             Add Currency
           </Button>
         </div>
-
-        <FormField
-          control={control}
-          name='defaultCurrency'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Default Currency</FormLabel>
-              <FormControl>
-                <Select
-                  value={field.value || ''}
-                  onValueChange={(value) => field.onChange(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select a currency' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableCurrencies
-                      .filter((x) => x.code)
-                      .map((lang, index) => (
-                        <SelectItem key={index} value={lang.code}>
-                          {lang.name} ({lang.code})
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage>{errors.defaultCurrency?.message}</FormMessage>
-            </FormItem>
-          )}
-        />
       </CardContent>
     </Card>
   )

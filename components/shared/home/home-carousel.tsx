@@ -94,7 +94,7 @@ export function HomeCarousel({ items }: { items: ICarousel[] }) {
               key={index}
               className={cn(
                 'h-2 rounded-full transition-all duration-300',
-                current === index ? 'w-8 bg-primary' : 'w-2 bg-primary/50'
+                current === index ? 'w-8 bg-gray-600' : 'w-2 bg-gray-500/70'
               )}
               onClick={() => api?.scrollTo(index)}
               aria-label={`Go to slide ${index + 1}`}

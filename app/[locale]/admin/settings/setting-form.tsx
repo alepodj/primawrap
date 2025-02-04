@@ -18,7 +18,7 @@ import CommonForm from './common-form'
 import CarouselForm from './carousel-form'
 import HeaderMenuForm from './header-menu-form'
 
-const SettingForm = ({ setting }: { setting: ISettingInput }) => {
+export default function SettingForm({ setting }: { setting: ISettingInput }) {
   const { setSetting } = useSetting()
 
   const form = useForm<ISettingInput>({
@@ -48,32 +48,36 @@ const SettingForm = ({ setting }: { setting: ISettingInput }) => {
   return (
     <Form {...form}>
       <form
-        className='space-y-4'
+        className='relative space-y-6'
         method='post'
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <SiteInfoForm id='setting-site-info' form={form} />
-        <CommonForm id='setting-common' form={form} />
-        <HeaderMenuForm id='setting-header-menus' form={form} />
-        <CarouselForm id='setting-carousels' form={form} />
-        <LanguageForm id='setting-languages' form={form} />
-        <CurrencyForm id='setting-currencies' form={form} />
-        <PaymentMethodForm id='setting-payment-methods' form={form} />
-        <DeliveryDateForm id='setting-delivery-dates' form={form} />
-
-        <div>
-          <Button
-            type='submit'
-            size='lg'
-            disabled={isSubmitting}
-            className='w-full mb-24'
-          >
-            {isSubmitting ? 'Submitting...' : `Save Setting`}
-          </Button>
+        <div className='space-y-6'>
+          <SiteInfoForm id='setting-site-info' form={form} />
+          <CommonForm id='setting-common' form={form} />
+          <HeaderMenuForm id='setting-header-menus' form={form} />
+          <CarouselForm id='setting-carousels' form={form} />
+          <LanguageForm id='setting-languages' form={form} />
+          <CurrencyForm id='setting-currencies' form={form} />
+          <PaymentMethodForm id='setting-payment-methods' form={form} />
+          <DeliveryDateForm id='setting-delivery-dates' form={form} />
         </div>
+        <div className='fixed bottom-0 right-0 left-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 border-t'>
+          <div className='max-w-7xl mx-auto px-4'>
+            <div className='flex justify-end py-4'>
+              <Button
+                type='submit'
+                size='lg'
+                disabled={isSubmitting}
+                className='min-w-[200px]'
+              >
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className='h-24' /> {/* Spacer for fixed button */}
       </form>
     </Form>
   )
 }
-
-export default SettingForm

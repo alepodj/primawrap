@@ -1,98 +1,121 @@
 'use client'
-import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
+  Globe,
+  DollarSign,
   CreditCard,
-  Currency,
-  ImageIcon,
+  Truck,
   Info,
-  Languages,
-  Package,
-  SettingsIcon,
+  Sliders,
   Menu,
+  Image as ImageIcon,
 } from 'lucide-react'
-
 import { useEffect, useState } from 'react'
 
-const SettingNav = () => {
-  const [active, setActive] = useState('')
+const items = [
+  {
+    href: '#setting-site-info',
+    label: 'Site Info',
+    icon: Info,
+  },
+  {
+    href: '#setting-common',
+    label: 'Common Settings',
+    icon: Sliders,
+  },
+  {
+    href: '#setting-header-menus',
+    label: 'Header Menus',
+    icon: Menu,
+  },
+  {
+    href: '#setting-carousels',
+    label: 'Carousels',
+    icon: ImageIcon,
+  },
+  {
+    href: '#setting-languages',
+    label: 'Languages',
+    icon: Globe,
+  },
+  {
+    href: '#setting-currencies',
+    label: 'Currencies',
+    icon: DollarSign,
+  },
+  {
+    href: '#setting-payment-methods',
+    label: 'Payment Methods',
+    icon: CreditCard,
+  },
+  {
+    href: '#setting-delivery-dates',
+    label: 'Delivery Dates',
+    icon: Truck,
+  },
+]
+
+export default function SettingNav() {
+  const [activeSection, setActiveSection] = useState('')
 
   useEffect(() => {
-    const sections = document.querySelectorAll('div[id^="setting-"]')
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActive(entry.target.id)
+            setActiveSection(entry.target.id)
           }
         })
       },
-      { threshold: 0.6, rootMargin: '0px 0px -40% 0px' }
+      {
+        rootMargin: '-80px 0px -80% 0px',
+        threshold: 0,
+      }
     )
+
+    const sections = document.querySelectorAll('[id^="setting-"]')
     sections.forEach((section) => observer.observe(section))
+
     return () => observer.disconnect()
   }, [])
-  const handleScroll = (id: string) => {
-    const section = document.getElementById(id)
-    if (section) {
-      const top = section.offsetTop - 16 // 20px above the section
-      window.scrollTo({ top, behavior: 'smooth' })
+
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    e.preventDefault()
+    const id = href.replace('#', '')
+    const element = document.getElementById(id)
+    if (element) {
+      const yOffset = -80
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset
+      window.scrollTo({ top: y, behavior: 'smooth' })
     }
   }
 
   return (
-    <div>
-      <h1 className='h1-bold'>Setting</h1>
-      <nav className='flex md:flex-col gap-2 md:fixed mt-4 flex-wrap'>
-        {[
-          { name: 'Site Info', hash: 'setting-site-info', icon: <Info /> },
-          {
-            name: 'Common Settings',
-            hash: 'setting-common',
-            icon: <SettingsIcon />,
-          },
-          {
-            name: 'Header Menus',
-            hash: 'setting-header-menus',
-            icon: <Menu />,
-          },
-          {
-            name: 'Carousels',
-            hash: 'setting-carousels',
-            icon: <ImageIcon />,
-          },
-          { name: 'Languages', hash: 'setting-languages', icon: <Languages /> },
-          {
-            name: 'Currencies',
-            hash: 'setting-currencies',
-            icon: <Currency />,
-          },
-          {
-            name: 'Payment Methods',
-            hash: 'setting-payment-methods',
-            icon: <CreditCard />,
-          },
-          {
-            name: 'Delivery Dates',
-            hash: 'setting-delivery-dates',
-            icon: <Package />,
-          },
-        ].map((item) => (
-          <Button
-            onClick={() => handleScroll(item.hash)}
-            key={item.hash}
-            variant={active === item.hash ? 'outline' : 'ghost'}
-            className={`justify-start ${
-              active === item.hash ? '' : 'border border-transparent'
-            }`}
+    <nav className='space-y-1'>
+      {items.map((item) => {
+        const Icon = item.icon
+        const isActive = activeSection === item.href.replace('#', '')
+        return (
+          <a
+            key={item.href}
+            href={item.href}
+            onClick={(e) => scrollToSection(e, item.href)}
+            className={cn(
+              'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors',
+              'hover:bg-accent hover:text-accent-foreground',
+              'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary',
+              isActive && 'bg-accent text-accent-foreground'
+            )}
           >
-            {item.icon}
-            {item.name}
-          </Button>
-        ))}
-      </nav>
-    </div>
+            <Icon className={cn('w-4 h-4', isActive && 'text-primary')} />
+            {item.label}
+          </a>
+        )
+      })}
+    </nav>
   )
 }
-
-export default SettingNav
