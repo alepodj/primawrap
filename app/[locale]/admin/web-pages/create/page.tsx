@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import WebPageForm from '../web-page-form'
+import WebPageForm from './web-page-form'
 
 export const metadata: Metadata = {
   title: 'Create WebPage',

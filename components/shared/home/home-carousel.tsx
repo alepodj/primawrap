@@ -16,20 +16,25 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ICarousel } from '@/types'
 import { useTranslations } from 'next-intl'
+import styles from './home-carousel.module.css'
 
 export function HomeCarousel({ items }: { items: ICarousel[] }) {
   const [api, setApi] = React.useState<CarouselApi>()
   const [current, setCurrent] = React.useState(0)
 
-  const plugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: false })
+  const autoplay = React.useRef(
+    Autoplay({
+      delay: 3000,
+      stopOnInteraction: false,
+      stopOnMouseEnter: true,
+      rootNode: (emblaRoot) => emblaRoot.parentElement,
+    })
   )
+
   const t = useTranslations('Locale')
 
   React.useEffect(() => {
-    if (!api) {
-      return
-    }
+    if (!api) return
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap())
@@ -40,10 +45,8 @@ export function HomeCarousel({ items }: { items: ICarousel[] }) {
     <div className='relative'>
       <Carousel
         dir='ltr'
-        plugins={[plugin.current]}
+        plugins={[autoplay.current]}
         className='w-full mx-auto'
-        onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
         setApi={setApi}
         opts={{
           loop: true,
@@ -93,12 +96,18 @@ export function HomeCarousel({ items }: { items: ICarousel[] }) {
             <button
               key={index}
               className={cn(
-                'h-2 rounded-full transition-all duration-300',
+                'h-2 rounded-full transition-all duration-300 relative overflow-hidden',
                 current === index ? 'w-8 bg-gray-600' : 'w-2 bg-gray-500/70'
               )}
               onClick={() => api?.scrollTo(index)}
               aria-label={`Go to slide ${index + 1}`}
-            />
+            >
+              {current === index && (
+                <div className={styles.embla__progress}>
+                  <div className={styles.embla__progress__bar} />
+                </div>
+              )}
+            </button>
           ))}
         </div>
       </div>

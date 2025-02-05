@@ -49,11 +49,11 @@ const defaultSetting: ISettingInput = {
     },
     {
       name: 'About Us',
-      href: '/page/about-us',
+      href: '/about-us',
     },
     {
       name: 'Help',
-      href: '/page/help',
+      href: '/help',
     },
   ],
   carousels: [

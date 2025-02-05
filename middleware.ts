@@ -17,6 +17,8 @@ const publicPages = [
   '/forgot-password',
   '/reset-password',
   '/maintenance',
+  '/about-us',
+  '/help',
 ]
 
 // Pages that should be accessible during maintenance mode

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 
 import { getWebPageById } from '@/lib/actions/web-page.actions'
 import Link from 'next/link'
-import WebPageForm from '../web-page-form'
+import WebPageForm from '../create/web-page-form'
 
 type UpdateWebPageProps = {
   params: Promise<{
