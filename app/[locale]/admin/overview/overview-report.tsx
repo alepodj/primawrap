@@ -87,7 +87,7 @@ export default function OverviewReport() {
         <CalendarDateRangePicker defaultDate={date} setDate={setDate} />
       </div>
       <div className='space-y-4'>
-        <div className='grid gap-4  grid-cols-2 lg:grid-cols-4'>
+        <div className='grid gap-4 grid-cols-2 lg:grid-cols-4'>
           <Card>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>
@@ -162,7 +162,7 @@ export default function OverviewReport() {
           </Card>
         </div>
 
-        <div className='grid gap-4 md:grid-cols-2'>
+        <div className='grid gap-4 lg:grid-cols-2'>
           <Card>
             <CardHeader>
               <CardTitle>How much you&apos;re earning</CardTitle>
@@ -186,7 +186,7 @@ export default function OverviewReport() {
           </Card>
         </div>
 
-        <div className='grid gap-4 md:grid-cols-2'>
+        <div className='grid gap-4 lg:grid-cols-2'>
           <Card>
             <CardHeader>
               <CardTitle>Best-Selling Categories</CardTitle>

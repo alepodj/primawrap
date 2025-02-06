@@ -4,7 +4,9 @@ import Image from 'next/image'
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
+import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 const testimonials = [
   {
@@ -49,7 +51,92 @@ const testimonials = [
     rating: 5,
     text: "While running my small business, I have always shopped local for my supplies. This is one of the BEST packaging stores in the area, and even if it was 2-3 hours away...  I WOULD STILL SHOP THERE! I absolutely a 'tactile' shopper, and buying online for customer touch points is HARD. I LOVE that (before pandemic) I could go in and feel all the textures, thickness and quality before making a purchase. They only stock high-quality, so if you are online shopping, rest-assured that you are getting a quality product from them. Bracelet boxes, merch sleeves, all gift bags, cello bags, elastic wraps, larger gift/hat/storage boxes are all top quality. There is a little bit of everything. So thankful for their attentive staff, and always leave there feeling like a valued and supported customer.",
   },
+  {
+    name: 'Marian Brohman',
+    company: '',
+    image: '/images/testimonials/testimonial7.png',
+    rating: 5,
+    text: 'Prima wrap has a wide selection of gift packaging and more. Customer service is outstanding! Kelly has guided me with purchases and was very helpful with sharing her ideas. Love Prina Wrap! Highly recommended!',
+  },
+  {
+    name: 'G*I* Jane',
+    company: 'Local Guide',
+    image: '/images/testimonials/testimonial8.png',
+    rating: 5,
+    text: 'Wonderful staff! Over the top service! Wide variety of products and fair pricing! Thank you Sarah and Kelly you guys are amazing!',
+  },
+  {
+    name: 'Patricia Haftar',
+    company: '',
+    image: '/images/testimonials/testimonial9.png',
+    rating: 5,
+    text: 'Great help for Crystal clear bags !',
+  },
+  {
+    name: 'Wendy Jeckell',
+    company: 'Local Guide',
+    image: '/images/testimonials/testimonial10.png',
+    rating: 5,
+    text: 'This is probably the best customer service I have ever had!! Kelly was so helpful! Get prices too . . . Will definitely be returning!!',
+  },
+  {
+    name: 'Carrie Abbey',
+    company: '',
+    image: '/images/testimonials/testimonial11.png',
+    rating: 5,
+    text: 'Great place to get packaging materials. Staff is super friendly and the prices are very reasonable.',
+  },
+  {
+    name: 'Michael Cook',
+    company: 'Local Guide',
+    image: '/images/testimonials/testimonial12.png',
+    rating: 5,
+    text: 'Best place to get all kinds of gift  paper boxes cello wrap bows and lots more! Very friendly and knowledgeable staff.',
+  },
+  {
+    name: 'Karen',
+    company: 'Local Guide',
+    image: '/images/testimonials/testimonial13.png',
+    rating: 5,
+    text: 'I love this place. Helpful staff and so much to choose from.',
+  },
+  {
+    name: 'Heather Straker',
+    company: 'Local Guide',
+    image: '/images/testimonials/testimonial14.png',
+    rating: 5,
+    text: 'Great service...had exactly what we needed for our wrapping supplies.',
+  },
 ]
+
+const TestimonialText = ({ text }: { text: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const t = useTranslations('Locale')
+
+  const shouldTruncate = text.length > 200
+  const truncatedText = shouldTruncate ? `${text.slice(0, 200)}...` : text
+
+  return (
+    <div className='relative'>
+      <p
+        className={cn(
+          'text-gray-700 italic mb-4',
+          !isExpanded && shouldTruncate && 'line-clamp-4'
+        )}
+      >
+        &quot;{isExpanded ? text : truncatedText}&quot;
+      </p>
+      {shouldTruncate && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className='text-primary hover:text-primary/80 text-sm font-medium transition-colors'
+        >
+          {isExpanded ? t('Read Less') : t('Read More')}
+        </button>
+      )}
+    </div>
+  )
+}
 
 const Testimonial = () => {
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -84,7 +171,7 @@ const Testimonial = () => {
             <div key={index} className='flex-[0_0_50%] min-w-0 px-2'>
               <div className='flex flex-col md:flex-row overflow-hidden h-full'>
                 <div className='w-full md:w-2/5 relative p-4 flex md:items-start items-center justify-center'>
-                  <div className='relative w-40 h-40 rounded-full overflow-hidden'>
+                  <div className='relative w-40 h-40 ml-14 rounded-full overflow-hidden'>
                     <Image
                       src={testimonial.image}
                       alt={testimonial.name}
@@ -102,9 +189,7 @@ const Testimonial = () => {
                       />
                     ))}
                   </div>
-                  <p className='text-gray-700 italic mb-4'>
-                    &quot;{testimonial.text}&quot;
-                  </p>
+                  <TestimonialText text={testimonial.text} />
                   <h3 className='text-xl font-semibold text-gray-800 mb-1'>
                     {testimonial.name}
                   </h3>

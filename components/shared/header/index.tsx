@@ -16,10 +16,10 @@ export default async function Header() {
     <header className='bg-gradient-to-tl from-slate-700 to-slate-900 dark:from-slate-800 dark:to-slate-950 text-white'>
       <div className='px-2'>
         <div className='flex items-center justify-between'>
-          <div className='flex items-center'>
+          <div className='flex items-center md:w-auto w-full'>
             <Link
               href='/'
-              className='flex items-center m-1 transition-opacity hover:opacity-80'
+              className='flex items-center m-1 transition-opacity hover:opacity-80 md:ml-0 mx-auto'
             >
               <Image
                 src={site.logo}
@@ -35,12 +35,17 @@ export default async function Header() {
             </Link>
           </div>
 
-          <div className='hidden md:block flex-1 max-w-xl'>
+          <div className='hidden xl:block flex-1 max-w-xl'>
             <Search />
           </div>
-          <Menu />
+          <div className='hidden md:block'>
+            <Menu />
+          </div>
+          <div className='md:hidden'>
+            <Menu />
+          </div>
         </div>
-        <div className='md:hidden block py-2'>
+        <div className='xl:hidden block py-2'>
           <Search />
         </div>
       </div>

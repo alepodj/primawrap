@@ -3,14 +3,14 @@
 import Image from 'next/image'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Container, Box } from '@mui/material'
-import ContactForm from './components/ContactForm'
-import TeamMember from './components/TeamMember'
-import Testimonial from './components/Testimonial'
-import ClientCarousel from './components/ClientCarousel'
-import ProjectCarousel from './components/ProjectCarousel'
-import SocialLinks from './components/SocialLinks'
-import MapView from './components/MapView'
-import ContactInfo from './components/ContactInfo'
+import ContactForm from './components/contact-form'
+import TeamMember from './components/team-member'
+import Testimonial from './components/testimonial'
+import ClientCarousel from './components/client-carousel'
+import ProjectCarousel from './components/project-carousel'
+import SocialLinks from './components/social-links'
+import MapView from './components/map-view'
+import ContactInfo from './components/contact-info'
 
 export default function AboutPage() {
   return (
@@ -32,7 +32,7 @@ export default function AboutPage() {
       <div className='w-full p-10 shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2)]'>
         <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
           <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-            Our Clients and Customers
+            Our Clients
           </span>
           <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
         </h2>
@@ -152,13 +152,13 @@ export default function AboutPage() {
         <div className='w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]'>
           <div className='max-w-1xl mx-auto'>
             <div className='grid grid-cols-1 md:grid-cols-3'>
-              <div className='flex justify-center items-start'>
+              <div className='flex justify-center items-start mt-8'>
                 <SocialLinks />
               </div>
-              <div className='flex justify-center items-start'>
+              <div className='flex justify-center items-start mt-8'>
                 <MapView />
               </div>
-              <div className='flex justify-center items-start'>
+              <div className='flex justify-center items-start mt-8'>
                 <ContactInfo />
               </div>
             </div>

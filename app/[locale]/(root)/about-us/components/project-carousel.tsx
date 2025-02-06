@@ -29,7 +29,6 @@ const ProjectCarousel = () => {
     '/images/store/store5.jpg',
     '/images/store/store6.jpg',
     '/images/store/store7.jpg',
-    '/images/store/store8.jpg',
   ]
 
   return (

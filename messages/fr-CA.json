@@ -223,6 +223,19 @@
     "Can't find the email? Check your spam folder or click the button above to send a new verification email": "Vous ne trouvez pas le courriel? Vérifiez votre dossier spam ou cliquez sur le bouton ci-dessus pour envoyer un nouveau courriel de vérification",
     "Last sent": "Dernier envoi",
     "Resend Verification Email": "Renvoyer le Courriel de Vérification",
-    "Terms of Service": "Conditions d'Utilisation"
+    "Terms of Service": "Conditions d'Utilisation",
+    "Read More": "Lire Plus",
+    "Read Less": "Lire Moins",
+    "Guest User": "Utilisateur Invité",
+    "Sign in to your account": "Se connecter à votre compte",
+    "Preferences": "Préférences",
+    "Language": "Langue",
+    "Currency": "Devise",
+    "Theme": "Thème",
+    "Account": "Compte",
+    "Company": "Entreprise",
+    "Support": "Support",
+    "Legal": "Légal",
+    "items": "articles"
   }
 }

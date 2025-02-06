@@ -12,7 +12,16 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { SignOut } from '@/lib/actions/user.actions'
 import { cn } from '@/lib/utils'
-import { ChevronDownIcon } from 'lucide-react'
+import {
+  ChevronDownIcon,
+  User,
+  ShoppingBag,
+  LayoutDashboard,
+  LogOut,
+  LogIn,
+  UserPlus,
+  KeyRound,
+} from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 
@@ -48,15 +57,24 @@ export default async function UserButton() {
             </DropdownMenuLabel>
             <DropdownMenuGroup>
               <Link className='w-full' href='/account'>
-                <DropdownMenuItem>{t('Your account')}</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <User className='mr-2 h-4 w-4' />
+                  {t('Your account')}
+                </DropdownMenuItem>
               </Link>
               <Link className='w-full' href='/account/orders'>
-                <DropdownMenuItem>{t('Your orders')}</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <ShoppingBag className='mr-2 h-4 w-4' />
+                  {t('Your orders')}
+                </DropdownMenuItem>
               </Link>
 
               {session.user.role?.toLowerCase() === 'admin' && (
                 <Link className='w-full' href='/admin/overview'>
-                  <DropdownMenuItem>{t('Admin')}</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <LayoutDashboard className='mr-2 h-4 w-4' />
+                    {t('Admin')}
+                  </DropdownMenuItem>
                 </Link>
               )}
             </DropdownMenuGroup>
@@ -66,6 +84,7 @@ export default async function UserButton() {
                   className='w-full py-4 px-2 h-4 justify-start'
                   variant='ghost'
                 >
+                  <LogOut className='mr-2 h-4 w-4' />
                   {t('Sign out')}
                 </Button>
               </form>
@@ -76,9 +95,13 @@ export default async function UserButton() {
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Link
-                  className={cn(buttonVariants(), 'w-full')}
+                  className={cn(
+                    buttonVariants(),
+                    'w-full flex items-center gap-2'
+                  )}
                   href='/sign-in'
                 >
+                  <LogIn className='h-4 w-4' />
                   {t('Sign in')}
                 </Link>
               </DropdownMenuItem>
@@ -86,13 +109,15 @@ export default async function UserButton() {
             <Separator />
             <DropdownMenuLabel>
               <div className='font-normal space-y-2'>
-                <div>
+                <div className='flex items-center gap-2'>
+                  <UserPlus className='h-4 w-4' />
                   {t('New Customer')}?{' '}
                   <Link href='/sign-up' className='user-menu-link'>
                     {t('Sign up')}
                   </Link>
                 </div>
-                <div>
+                <div className='flex items-center gap-2'>
+                  <KeyRound className='h-4 w-4' />
                   {t('Forgot Password')}?{' '}
                   <Link href='/forgot-password' className='user-menu-link'>
                     {t('Reset it')}

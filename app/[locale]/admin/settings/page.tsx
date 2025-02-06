@@ -37,11 +37,11 @@ const SettingPage = () => {
   return (
     <div className='max-w-7xl mx-auto px-4'>
       <h1 className='text-3xl font-bold mb-6 mt-8'>Site Settings</h1>
-      <div className='grid grid-cols-12 gap-4 py-4'>
-        <div className='col-span-12 md:col-span-2'>
+      <div className='grid grid-cols-12 gap-4'>
+        <div className='col-span-12 nav:col-span-2 sticky top-0 nav:top-[5.5rem] h-fit z-40 nav:pt-4'>
           <SettingNav />
         </div>
-        <main className='col-span-12 md:col-span-10'>
+        <main className='col-span-12 nav:col-span-10 py-4 relative z-0'>
           <div className='space-y-6'>
             <div className='flex items-center justify-between'>
               <div>

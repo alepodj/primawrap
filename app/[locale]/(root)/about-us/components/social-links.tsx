@@ -32,12 +32,6 @@ const socialLinks = [
 const SocialLinks = () => {
   return (
     <div className='text-center'>
-      <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
-            <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-              Conect With Us
-            </span>
-            <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
-          </h2>
       <div className='flex flex-col items-center space-y-4'>
         {socialLinks.map((social) => {
           const Icon = social.icon
