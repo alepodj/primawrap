@@ -39,22 +39,6 @@ export default function Footer() {
         <div>
           <div className='max-w-7xl mx-auto py-2 px-2 flex flex-col items-center space-y-2'>
             <div className='flex items-center space-x-2 flex-wrap md:flex-nowrap'>
-              <Link
-                href='/'
-                className='transition-opacity hover:opacity-80 w-[150px] shrink-0'
-              >
-                <Image
-                  src='/icons/prima-wrap.png'
-                  alt='PrimaWrap Logo'
-                  width={150}
-                  height={150}
-                  priority
-                  style={{
-                    maxWidth: '100%',
-                    height: 'auto',
-                  }}
-                />
-              </Link>
               <Select
                 value={locale}
                 onValueChange={(value) => {
@@ -119,57 +103,102 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className='p-2'>
-        <div className='flex justify-center gap-4 text-sm'>
-          <Link href='/page/conditions-of-use' className='footer-link'>
-            {t('Conditions of Use')}
-          </Link>
-          <Link href='/page/privacy-policy' className='footer-link'>
-            {t('Privacy Notice')}
-          </Link>
-          <Link href='/page/help' className='footer-link'>
-            {t('Help')}
-          </Link>
-          <Link href='/page/blog' className='footer-link'>
-            {t('Blog')}
-          </Link>
-          <Link href='/page/careers' className='footer-link'>
-            {t('Careers')}
-          </Link>
-        </div>
-        <div className='p-2'>
-          <div className='flex justify-center gap-4 text-sm'>
-            <Link href='/page/about-us' className='footer-link'>
-              {t('About name', { name: site.name })}
-            </Link>
-            <Link href='/page/shipping' className='footer-link'>
-              {t('Shipping Rates & Policies')}
-            </Link>
-            <Link href='/page/returns-policy' className='footer-link'>
-              {t('Returns & Replacements')}
-            </Link>
+      <div className='max-w-7xl mx-auto p-8'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-8'>
+          <div className='space-y-4'>
+            <h3 className='text-lg font-semibold text-white/90'>Company</h3>
+            <div className='flex flex-col space-y-2'>
+              <Link
+                href='/about-us'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('About Us')}
+              </Link>
+              <Link
+                href='/page/careers'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Careers')}
+              </Link>
+              <Link
+                href='/page/blog'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Blog')}
+              </Link>
+            </div>
+          </div>
+
+          <div className='space-y-4'>
+            <h3 className='text-lg font-semibold text-white/90'>Support</h3>
+            <div className='flex flex-col space-y-2'>
+              <Link
+                href='/page/help'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Help')}
+              </Link>
+              <Link
+                href='/page/shipping'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Shipping Rates & Policies')}
+              </Link>
+              <Link
+                href='/page/returns-policy'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Returns & Replacements')}
+              </Link>
+            </div>
+          </div>
+
+          <div className='space-y-4'>
+            <h3 className='text-lg font-semibold text-white/90'>Legal</h3>
+            <div className='flex flex-col space-y-2'>
+              <Link
+                href='/page/privacy-policy'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Privacy Notice')}
+              </Link>
+              <Link
+                href='/page/conditions-of-use'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Conditions of Use')}
+              </Link>
+              <Link
+                href='/page/terms-of-service'
+                className='footer-link hover:translate-x-1 transition-transform'
+              >
+                {t('Terms of Service')}
+              </Link>
+            </div>
           </div>
         </div>
-        <div className='mt-2 flex justify-center text-center text-sm'>
-          <Link
-            href='https://www.google.ca/search?q=%2B1+%28905%29+704-0087'
-            target='_blank'
-            className='footer-link'
-          >
-            {site.phone}
-          </Link>
-        </div>
-        <div className='mt-2 flex justify-center text-center text-sm'>
-          <Link
-            href='https://g.co/kgs/J8oFq6L'
-            target='_blank'
-            className='footer-link'
-          >
-            {site.address}
-          </Link>
-        </div>
-        <div className='flex mt-2 justify-center text-sm'>
-          <p> © {t(site.copyright)}</p>
+
+        <div className='border-t border-white/10 pt-8'>
+          <div className='flex flex-col md:flex-row items-center justify-between gap-4'>
+            <div className='flex items-center gap-4'>
+              <Link
+                href='https://www.google.ca/search?q=%2B1+%28905%29+704-0087'
+                target='_blank'
+                className='footer-link hover:text-primary transition-colors'
+              >
+                {site.phone}
+              </Link>
+              <span className='text-white/20'>|</span>
+              <Link
+                href='https://g.co/kgs/J8oFq6L'
+                target='_blank'
+                className='footer-link hover:text-primary transition-colors'
+              >
+                {site.address}
+              </Link>
+            </div>
+            <p className='text-sm text-white/60'> © {t(site.copyright)}</p>
+          </div>
         </div>
       </div>
     </footer>
