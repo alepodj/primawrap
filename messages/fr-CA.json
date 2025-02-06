@@ -236,6 +236,8 @@
     "Company": "Entreprise",
     "Support": "Support",
     "Legal": "Légal",
-    "items": "articles"
+    "items": "articles",
+    "Signing out": "Se déconnecter",
+    "Menu": "Menu"
   }
 }

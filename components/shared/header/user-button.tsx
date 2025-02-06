@@ -1,4 +1,4 @@
-import { auth } from '@/auth'
+'use client'
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
@@ -21,13 +21,63 @@ import {
   LogIn,
   UserPlus,
   KeyRound,
+  Loader2,
 } from 'lucide-react'
-import { getTranslations } from 'next-intl/server'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
+import { useFormStatus } from 'react-dom'
+import { Session } from 'next-auth'
+import { toast } from '@/hooks/use-toast'
 
-export default async function UserButton() {
-  const t = await getTranslations('Locale')
-  const session = await auth()
+export default function UserButton({ session }: { session: Session | null }) {
+  const t = useTranslations('Locale')
+
+  async function handleSignOut() {
+    try {
+
+      const result = await SignOut()
+
+      if (result.redirect) {
+        toast({
+          title: 'Signing out...',
+          description: 'You will be redirected in 3 seconds.',
+        })
+
+        setTimeout(() => {
+          window.location.href = result.redirect
+        }, 3)
+      }
+    } catch {
+      toast({
+        title: 'Error',
+        description: 'Failed to sign out. Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const SignOutButton = () => {
+    const { pending } = useFormStatus()
+    return (
+      <Button
+        className='w-full py-4 px-2 h-4 justify-start'
+        variant='ghost'
+        disabled={pending}
+      >
+        {pending ? (
+          <>
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+            {t('Signing out')}
+          </>
+        ) : (
+          <>
+            <LogOut className='mr-2 h-4 w-4' />
+            {t('Sign out')}
+          </>
+        )}
+      </Button>
+    )
+  }
 
   return (
     <div className='flex gap-2 items-center'>
@@ -79,14 +129,8 @@ export default async function UserButton() {
               )}
             </DropdownMenuGroup>
             <DropdownMenuItem className='p-0 mb-1'>
-              <form action={SignOut} className='w-full'>
-                <Button
-                  className='w-full py-4 px-2 h-4 justify-start'
-                  variant='ghost'
-                >
-                  <LogOut className='mr-2 h-4 w-4' />
-                  {t('Sign out')}
-                </Button>
+              <form action={handleSignOut} className='w-full'>
+                <SignOutButton />
               </form>
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,120 +1,191 @@
+'use client'
+
 import * as React from 'react'
 import Link from 'next/link'
-import { X, ChevronRight, UserCircle, MenuIcon } from 'lucide-react'
+import {
+  ChevronRight,
+  UserCircle,
+  MenuIcon,
+  LogOut,
+  Loader2,
+  ShoppingBag,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { SignOut } from '@/lib/actions/user.actions'
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer'
-import { auth } from '@/auth'
-import { getLocale, getTranslations } from 'next-intl/server'
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { getDirection } from '@/i18n-config'
-import { Separator } from '@radix-ui/react-select'
+import { toast } from '@/hooks/use-toast'
+import { useFormStatus } from 'react-dom'
+import { useSession } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
+import { Separator } from '@/components/ui/separator'
 
-export default async function Sidebar({
-  categories,
-}: {
+interface SidebarProps {
   categories: string[]
-}) {
-  const session = await auth()
+  locale: string
+}
 
-  const locale = await getLocale()
-
-  const t = await getTranslations('Locale')
+const SignOutButton = () => {
+  const { pending } = useFormStatus()
+  const t = useTranslations('Locale')
   return (
-    <Drawer direction={getDirection(locale) === 'rtl' ? 'right' : 'left'}>
-      <DrawerTrigger className='header-button flex items-center !p-2  '>
-        <MenuIcon className='h-5 w-5 mr-1' />
-        {t('All')}
-      </DrawerTrigger>
-      <DrawerContent className='w-[350px] mt-0 top-0'>
-        <div className='flex flex-col h-full'>
-          {/* User Sign In Section */}
-          <div className='dark bg-gradient-to-tl from-slate-700 to-slate-900 rounded-lg text-foreground flex items-center justify-between absolute inset-x-0 top-0 h-16 '>
-            <DrawerHeader>
-              <DrawerTitle className='flex items-center '>
-                <UserCircle className='h-6 w-6 mr-2' />
-                {session ? (
-                  <DrawerClose asChild>
-                    <Link href='/account'>
-                      <span className='text-lg font-semibold '>
-                        {t('Hello')}, {session.user.name}
-                      </span>
-                    </Link>
-                  </DrawerClose>
-                ) : (
-                  <DrawerClose asChild>
-                    <Link href='/sign-in'>
-                      <span className='text-lg font-semibold'>
-                        {t('Hello')}, {t('sign in')}
-                      </span>
-                    </Link>
-                  </DrawerClose>
-                )}
-              </DrawerTitle>
-              <DrawerDescription></DrawerDescription>
-            </DrawerHeader>
-            <DrawerClose asChild>
-              <Button variant='ghost' size='icon' className='mr-2'>
-                <X className='h-5 w-5' />
-                <span className='sr-only'>Close</span>
-              </Button>
-            </DrawerClose>
-          </div>
+    <Button
+      className='w-full justify-start text-base px-2 h-12'
+      variant='ghost'
+      disabled={pending}
+    >
+      {pending ? (
+        <>
+          <Loader2 className='mr-3 h-5 w-5 animate-spin' />
+          {t('Signing out')}
+        </>
+      ) : (
+        <>
+          <LogOut className='mr-3 h-5 w-5' />
+          {t('Sign out')}
+        </>
+      )}
+    </Button>
+  )
+}
 
-          {/* Shop By Category */}
-          <div className='flex-1 overflow-y-auto'>
-            <div className='p-4 border-b mt-10'>
-              <h2 className='text-lg font-semibold'>{t('Shop By Category')}</h2>
-            </div>
-            <nav className='flex flex-col'>
-              {categories.map((category) => (
-                <DrawerClose asChild key={category}>
-                  <Link
-                    href={`/search?category=${category}`}
-                    className={`flex items-center justify-between item-button`}
-                  >
-                    <span>{category}</span>
-                    <ChevronRight className='h-4 w-4' />
-                  </Link>
-                </DrawerClose>
-              ))}
-            </nav>
-          </div>
-          <Separator />
-          {/* Setting and Help */}
-          <div className='border-t flex flex-col '>
-            <div className='p-4'>
-              <h2 className='text-lg font-semibold'>{t('Help & Settings')}</h2>
-            </div>
-            <DrawerClose asChild>
-              <Link href='/account' className='item-button'>
-                {t('Your account')}
-              </Link>
-            </DrawerClose>{' '}
-            {session ? (
-              <form action={SignOut} className='w-full'>
-                <Button
-                  className='w-full justify-start item-button text-base'
-                  variant='ghost'
-                >
-                  {t('Sign out')}
-                </Button>
-              </form>
+export default function Sidebar({ categories = [], locale }: SidebarProps) {
+  const t = useTranslations('Locale')
+  const { data: session } = useSession()
+  const side = getDirection(locale) === 'rtl' ? 'right' : 'left'
+
+  // Debug log to check categories
+  React.useEffect(() => {
+    console.log('Sidebar categories:', categories)
+  }, [categories])
+
+  async function handleSignOut() {
+    try {
+      const result = await SignOut()
+      if (result.redirect) {
+        toast({
+          title: 'Signing out',
+          description: 'You will be redirected in 3 seconds.',
+        })
+        setTimeout(() => {
+          window.location.href = result.redirect
+        }, 3000)
+      }
+    } catch {
+      toast({
+        title: 'Error',
+        description: 'Failed to sign out. Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant='ghost'
+          className='header-button flex items-center gap-2 h-12 text-base'
+        >
+          <MenuIcon className='h-5 w-5' />
+          {t('All')}
+        </Button>
+      </SheetTrigger>
+      <SheetContent
+        side={side}
+        className='flex flex-col w-full sm:w-[300px] p-0 bg-gradient-to-tl from-slate-700 to-slate-900 text-white border-white/10'
+      >
+        <SheetHeader className='pt-6 px-6'>
+          <SheetTitle className='text-white sr-only'>{t('Menu')}</SheetTitle>
+        </SheetHeader>
+
+        {/* User Greeting */}
+        <div className='px-6 pb-6 flex items-center gap-4'>
+          <UserCircle className='h-8 w-8' />
+          <span className='text-lg font-medium'>
+            {t('Hello')}, {session ? session.user.name : t('sign in')}
+          </span>
+        </div>
+
+        <Separator className='bg-white/10' />
+
+        {/* Categories Section */}
+        <div className='px-6 py-4 flex-1 overflow-y-auto'>
+          <h2 className='text-lg font-semibold mb-4'>
+            {t('Shop By Category')}
+          </h2>
+          <div className='flex flex-col gap-2'>
+            {Array.isArray(categories) && categories.length > 0 ? (
+              categories.map((category) => (
+                <div key={category}>
+                  <SheetClose asChild>
+                    <Link
+                      href={`/search?category=${encodeURIComponent(category)}`}
+                      className='flex items-center justify-between py-3 px-2 hover:bg-white/10 rounded-md transition-colors'
+                    >
+                      <span className='text-base'>{category}</span>
+                      <ChevronRight className='h-5 w-5' />
+                    </Link>
+                  </SheetClose>
+                </div>
+              ))
             ) : (
-              <Link href='/sign-in' className='item-button'>
-                {t('Sign in')}
-              </Link>
+              <div className='text-sm text-white/60'>
+                {t('No categories available')}
+              </div>
             )}
           </div>
         </div>
-      </DrawerContent>
-    </Drawer>
+
+        {/* Account Section */}
+        <div className='mt-auto w-full'>
+          <Separator className='bg-white/10' />
+          <div className='p-4 flex flex-col gap-2'>
+            {session ? (
+              <>
+                <SheetClose asChild>
+                  <Link
+                    href='/account'
+                    className='w-full justify-start text-base px-2 h-12 hover:bg-white/10 rounded-md transition-colors flex items-center'
+                  >
+                    <UserCircle className='mr-3 h-5 w-5 flex-shrink-0' />
+                    <span>{t('Your account')}</span>
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link
+                    href='/account/orders'
+                    className='w-full justify-start text-base px-2 h-12 hover:bg-white/10 rounded-md transition-colors flex items-center'
+                  >
+                    <ShoppingBag className='mr-3 h-5 w-5 flex-shrink-0' />
+                    <span>{t('Your orders')}</span>
+                  </Link>
+                </SheetClose>
+                <form action={handleSignOut} className='w-full'>
+                  <SignOutButton />
+                </form>
+              </>
+            ) : (
+              <SheetClose asChild>
+                <Link
+                  href='/sign-in'
+                  className='w-full justify-start text-base px-2 h-12 hover:bg-white/10 rounded-md transition-colors flex items-center'
+                >
+                  <LogOut className='mr-3 h-5 w-5 flex-shrink-0' />
+                  <span>{t('Sign in')}</span>
+                </Link>
+              </SheetClose>
+            )}
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }

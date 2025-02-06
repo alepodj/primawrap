@@ -14,7 +14,6 @@ import { UserSignUpSchema, UserUpdateSchema } from '../validator'
 import { connectToDatabase } from '../db'
 import User, { IUser } from '../db/models/user.model'
 import { formatError } from '../utils'
-import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { getSetting } from './setting.actions'
@@ -309,8 +308,13 @@ export const SignInWithGoogle = async () => {
 }
 
 export const SignOut = async () => {
-  const redirectTo = await signOut({ redirect: false })
-  redirect(redirectTo.redirect)
+  try {
+    await signOut({ redirect: false })
+    return { redirect: '/' }
+  } catch (error) {
+    console.error('Server-side sign out error:', error)
+    throw error
+  }
 }
 
 // GET

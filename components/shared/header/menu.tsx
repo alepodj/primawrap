@@ -1,3 +1,5 @@
+'use client'
+
 import {
   EllipsisVertical,
   Home,
@@ -22,6 +24,7 @@ import CurrencySwitcher from './currency-switcher'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useSession } from 'next-auth/react'
 
 interface NavItemProps {
   href: string
@@ -49,6 +52,8 @@ const NavItem = ({ href, icon, label, onClick, className }: NavItemProps) => (
 
 const Menu = ({ forAdmin = false }: { forAdmin?: boolean }) => {
   const t = useTranslations('Locale')
+  const { data: session } = useSession()
+
   return (
     <div className='flex justify-end'>
       <nav className='md:flex gap-3 hidden w-full'>
@@ -57,7 +62,7 @@ const Menu = ({ forAdmin = false }: { forAdmin?: boolean }) => {
           <CurrencySwitcher />
         </div>
         <ThemeSwitcher />
-        <UserButton />
+        <UserButton session={session} />
         {forAdmin ? null : <CartButton />}
       </nav>
       <nav className='md:hidden'>
@@ -75,7 +80,7 @@ const Menu = ({ forAdmin = false }: { forAdmin?: boolean }) => {
                   <User className='w-8 h-8 text-white' />
                 </div>
                 <div>
-                  <UserButton />
+                  <UserButton session={session} />
                 </div>
               </SheetTitle>
             </SheetHeader>

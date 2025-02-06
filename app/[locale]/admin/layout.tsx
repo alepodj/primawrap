@@ -11,12 +11,15 @@ import LanguageSwitcher from '@/components/shared/header/language-switcher'
 import CurrencySwitcher from '@/components/shared/header/currency-switcher'
 import ThemeSwitcher from '@/components/shared/header/theme-switcher'
 import UserButton from '@/components/shared/header/user-button'
+import { auth } from '@/auth'
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await auth()
+
   return (
     <>
       <div className='flex flex-col min-h-screen'>
@@ -69,7 +72,7 @@ export default async function AdminLayout({
                 <CurrencySwitcher />
                 <ThemeSwitcher />
               </div>
-              <UserButton />
+              <UserButton session={session} />
             </div>
           </div>
         </div>

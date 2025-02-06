@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 
-export default function LoadingPage() {
+export default function RootLoading() {
   const t = useTranslations('Locale')
 
   return (

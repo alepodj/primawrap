@@ -1,5 +1,5 @@
 'use client'
-import { redirect, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
 
@@ -18,15 +18,16 @@ import {
 import { useForm } from 'react-hook-form'
 import { IUserSignIn } from '@/types'
 import {
-  signInWithCredentials,
   resendVerificationEmail,
   checkEmailVerification,
 } from '@/lib/actions/user.actions'
 import { toast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserSignInSchema } from '@/lib/validator'
-import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { useTranslations } from 'next-intl'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { Loader2 } from 'lucide-react'
 
 export default function CredentialsSignInForm() {
   const {
@@ -37,6 +38,7 @@ export default function CredentialsSignInForm() {
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null)
   const [isResending, setIsResending] = useState(false)
+  const [isSigningIn, setIsSigningIn] = useState(false)
   const [lastResent, setLastResent] = useState<Date | null>(null)
   const t = useTranslations('Locale')
   const form = useForm<IUserSignIn>({
@@ -46,8 +48,13 @@ export default function CredentialsSignInForm() {
       password: '',
     },
   })
+  const router = useRouter()
 
-  const { control, handleSubmit } = form
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = form
 
   const handleResendVerification = async () => {
     if (!unverifiedEmail || isResending) return
@@ -84,6 +91,12 @@ export default function CredentialsSignInForm() {
 
   const onSubmit = async (data: IUserSignIn) => {
     try {
+      setIsSigningIn(true)
+      toast({
+        title: 'Verifying',
+        description: 'Checking your credentials',
+      })
+
       // Check if email is verified
       const verificationCheck = await checkEmailVerification(data.email)
 
@@ -96,24 +109,40 @@ export default function CredentialsSignInForm() {
           description: verificationCheck.error,
           variant: 'destructive',
         })
+        setIsSigningIn(false)
         return
       }
 
       setUnverifiedEmail(null)
-      await signInWithCredentials({
+      const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
+        redirect: false,
       })
-      redirect(callbackUrl)
-    } catch (error) {
-      if (isRedirectError(error)) {
-        throw error
+
+      if (result?.error) {
+        toast({
+          title: 'Error',
+          description: 'Invalid email or password',
+          variant: 'destructive',
+        })
+        setIsSigningIn(false)
+        return
       }
+
+      toast({
+        title: 'Success',
+        description: 'Signed in successfully',
+      })
+      router.push(callbackUrl)
+      router.refresh()
+    } catch {
       toast({
         title: 'Error',
-        description: 'Invalid email or password',
+        description: 'Something went wrong',
         variant: 'destructive',
       })
+      setIsSigningIn(false)
     }
   }
 
@@ -129,7 +158,11 @@ export default function CredentialsSignInForm() {
               <FormItem className='w-full'>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder='Enter email address' {...field} />
+                  <Input
+                    placeholder='Enter email address'
+                    {...field}
+                    disabled={isSigningIn}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -147,6 +180,7 @@ export default function CredentialsSignInForm() {
                     type='password'
                     placeholder='Enter password'
                     {...field}
+                    disabled={isSigningIn}
                   />
                 </FormControl>
                 <FormMessage />
@@ -163,7 +197,20 @@ export default function CredentialsSignInForm() {
           />
 
           <div className='space-y-4'>
-            <Button type='submit'>Sign In</Button>
+            <Button
+              type='submit'
+              disabled={isSigningIn || isSubmitting}
+              className='w-full'
+            >
+              {isSigningIn ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  Signing in
+                </>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
             {unverifiedEmail && (
               <div className='p-6 bg-blue-50 rounded-lg mt-4 border border-blue-100'>
                 <div className='flex flex-col items-center text-center'>
@@ -221,7 +268,7 @@ export default function CredentialsSignInForm() {
                               d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                             />
                           </svg>
-                          Sending...
+                          Sending
                         </span>
                       ) : (
                         'Resend Verification Email'
@@ -230,11 +277,12 @@ export default function CredentialsSignInForm() {
                     <p className='text-xs text-blue-500'>
                       {lastResent
                         ? `${t('Last sent')}: ${lastResent.toLocaleTimeString()}`
-                        : t("Can't find the email? Check your spam folder or click the button above to send a new verification email")}
+                        : t(
+                            "Can't find the email? Check your spam folder or click the button above to send a new verification email"
+                          )}
                     </p>
                   </div>
                 </div>
-
               </div>
             )}
           </div>
@@ -243,16 +291,13 @@ export default function CredentialsSignInForm() {
             <Link href={`/${locale}/page/conditions-of-use`}>
               {t('Conditions of Use')}
             </Link>{' '}
-
             {t('and')}{' '}
-            <Link href={`/${locale}/page/privacy-policy`}>{t('Privacy Notice')}</Link>
-
+            <Link href={`/${locale}/page/privacy-policy`}>
+              {t('Privacy Notice')}
+            </Link>
           </div>
         </div>
-
       </form>
-
-
     </Form>
   )
 }

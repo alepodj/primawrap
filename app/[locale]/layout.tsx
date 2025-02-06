@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google'
 import '../globals.css'
+import '../nprogress.css'
 import ClientProviders from '@/components/shared/client-providers'
 import { getDirection } from '@/i18n-config'
 import { NextIntlClientProvider } from 'next-intl'
@@ -8,6 +9,9 @@ import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
 import { getSetting } from '@/lib/actions/setting.actions'
 import { cookies } from 'next/headers'
+import { NavigationProgress } from '@/components/shared/navigation-progress'
+import { SessionProvider } from 'next-auth/react'
+import { auth } from '@/auth'
 
 const interSans = Inter({
   variable: '--font-inter-sans',
@@ -38,6 +42,7 @@ export default async function AppLayout({
   const setting = await getSetting()
   const currencyCookie = (await cookies()).get('currency')
   const currency = currencyCookie ? currencyCookie.value : 'CAD'
+  const session = await auth()
 
   const { locale } = await params
   // Ensure that the incoming `locale` is valid
@@ -54,11 +59,18 @@ export default async function AppLayout({
       suppressHydrationWarning
     >
       <body className={`min-h-screen ${interSans.variable} antialiased`}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <ClientProviders setting={{ ...setting, currency }}>
-            {children}
-          </ClientProviders>
-        </NextIntlClientProvider>
+        <SessionProvider
+          session={session}
+          refetchInterval={0}
+          refetchOnWindowFocus={true}
+        >
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <ClientProviders setting={{ ...setting, currency }}>
+              <NavigationProgress />
+              {children}
+            </ClientProviders>
+          </NextIntlClientProvider>
+        </SessionProvider>
       </body>
     </html>
   )
