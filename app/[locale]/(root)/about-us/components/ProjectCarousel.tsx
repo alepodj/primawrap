@@ -1,83 +1,72 @@
 'use client'
 
-import { useState } from 'react'
-import { Box, IconButton, Grid } from '@mui/material'
+import * as React from 'react'
 import Image from 'next/image'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
+import useEmblaCarousel from 'embla-carousel-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const ProjectCarousel = () => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: 'start',
+    slidesToScroll: 3,
+    skipSnaps: false,
+  })
+
+  const scrollPrev = React.useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
+
+  const scrollNext = React.useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
+
   const projects = [
-    '/images/project1.jpg',
-    '/images/project2.jpg',
-    '/images/project3.jpg',
-    '/images/project4.jpg',
-    '/images/project5.jpg',
-    '/images/project6.jpg',
+    '/images/store/store1.jpg',
+    '/images/store/store2.jpg',
+    '/images/store/store3.jpg',
+    '/images/store/store4.jpg',
+    '/images/store/store5.jpg',
+    '/images/store/store6.jpg',
+    '/images/store/store7.jpg',
+    '/images/store/store8.jpg',
   ]
 
-  const [startIndex, setStartIndex] = useState(0)
-
-  const handlePrevious = () => {
-    setStartIndex((prev) => Math.max(0, prev - 3))
-  }
-
-  const handleNext = () => {
-    setStartIndex((prev) => Math.min(projects.length - 3, prev + 3))
-  }
-
   return (
-    <Box sx={{ position: 'relative', px: 6 }}>
-      <IconButton
-        onClick={handlePrevious}
-        disabled={startIndex === 0}
-        sx={{
-          position: 'absolute',
-          left: 0,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: 1,
-        }}
-      >
-        <ArrowBackIosNewIcon />
-      </IconButton>
+    <div className='w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]'>
+      <div className='relative'>
+        <div className='overflow-hidden' ref={emblaRef}>
+          <div className='flex'>
+            {projects.map((project, index) => (
+              <div key={index} className='flex-[0_0_33.333%] min-w-0'>
+                <div className='h-64 md:h-80 lg:h-96 relative'>
+                  <Image
+                    src={project}
+                    alt={`Project ${index + 1}`}
+                    fill
+                    className='object-cover'
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      <Grid container spacing={2}>
-        {projects.slice(startIndex, startIndex + 3).map((project, index) => (
-          <Grid item xs={12} md={4} key={startIndex + index}>
-            <Box
-              sx={{
-                height: '250px',
-                position: 'relative',
-                borderRadius: 2,
-                overflow: 'hidden',
-              }}
-            >
-              <Image
-                src={project}
-                alt={`Project ${startIndex + index + 1}`}
-                fill
-                style={{ objectFit: 'cover' }}
-              />
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
+        <button
+          className='absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 shadow-lg hover:bg-white transition-colors z-10'
+          onClick={scrollPrev}
+        >
+          <ChevronLeft className='h-6 w-6' />
+        </button>
 
-      <IconButton
-        onClick={handleNext}
-        disabled={startIndex >= projects.length - 3}
-        sx={{
-          position: 'absolute',
-          right: 0,
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: 1,
-        }}
-      >
-        <ArrowForwardIosIcon />
-      </IconButton>
-    </Box>
+        <button
+          className='absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/80 shadow-lg hover:bg-white transition-colors z-10'
+          onClick={scrollNext}
+        >
+          <ChevronRight className='h-6 w-6' />
+        </button>
+      </div>
+    </div>
   )
 }
 

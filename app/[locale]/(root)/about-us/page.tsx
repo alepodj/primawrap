@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
-import { Container, Box, Grid } from '@mui/material'
+import { Container, Box } from '@mui/material'
 import ContactForm from './components/ContactForm'
 import TeamMember from './components/TeamMember'
 import Testimonial from './components/Testimonial'
@@ -15,7 +15,7 @@ import ContactInfo from './components/ContactInfo'
 export default function AboutPage() {
   return (
     <div className='about-page overflow-x-hidden'>
-      {/* Section 2: Company Brand Banner */}
+      {/* Section 1: Company Brand Banner */}
       <div className='relative w-full'>
         <div className='flex aspect-[16/6] items-center justify-center relative shadow-lg'>
           <Image
@@ -28,77 +28,143 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 3: Client Carousel */}
-      <div className='w-full my-16'>
-        <h2 className='text-4xl font-bold text-center mb-8'>Our Clients</h2>
+      {/* Section 2: Client Carousel */}
+      <div className='w-full p-10 shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2)]'>
+        <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
+          <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
+            Our Clients and Customers
+          </span>
+          <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
+        </h2>
         <ClientCarousel />
       </div>
 
-      {/* Section 4: Company Info */}
-      <Container maxWidth='md' sx={{ my: 8 }}>
-        <div className='text-center'>
-          <h2 className='text-4xl font-bold mb-6'>About Our Company</h2>
-          <p className='text-lg mb-6'>
-            We are a dedicated team of professionals committed to delivering
-            exceptional products and services to our clients. With years of
-            experience in the industry, we have built a reputation for
-            excellence and innovation.
-          </p>
-          <h3 className='text-3xl font-bold mt-8 mb-4'>Our Mission</h3>
-          <p className='text-lg'>
-            To provide outstanding value and service while maintaining the
-            highest standards of quality and professionalism in everything we
-            do.
-          </p>
-        </div>
-      </Container>
-
-      {/* Section 5: Project Carousel */}
-      <Box sx={{ my: 8 }}>
-        <h2 className='text-4xl font-bold text-center mb-8'>Our Projects</h2>
+      {/* Section 3: Project Carousel */}
+      <Box sx={{ my: 0 }}>
+        {/* <h2 className='text-4xl font-bold text-center mb-8 text-gray-700'>
+          Our Projects
+        </h2> */}
         <ProjectCarousel />
       </Box>
 
-      {/* Section 6: Meet the Team */}
-      <Container maxWidth='lg' sx={{ my: 8 }}>
-        <h2 className='text-4xl font-bold text-center mb-8'>Meet the Team</h2>
-        <Grid container spacing={4}>
-          <TeamMember />
-        </Grid>
-      </Container>
-
-      {/* Section 7: Testimonials */}
-      <Container maxWidth='lg' sx={{ my: 8 }}>
-        <h2 className='text-4xl font-bold text-center mb-8'>
-          What Our Clients Say
-        </h2>
-        <Grid container spacing={4}>
-          <Testimonial />
-        </Grid>
-      </Container>
-
-      {/* Section 8: Contact Form */}
-      <Container maxWidth='md' sx={{ my: 8 }}>
-        <h2 className='text-4xl font-bold text-center mb-8'>Contact Us</h2>
-        <ContactForm />
-      </Container>
-
-      {/* Section 9: Footer Info */}
-      <Box sx={{ bgcolor: 'background.paper', py: 8 }}>
-        <Container maxWidth='lg'>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={4}>
-              <SocialLinks />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <MapView />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <ContactInfo />
-            </Grid>
-          </Grid>
+      {/* Section 4: Company Info */}
+      <div className='w-full bg-pink-50/80 py-10 shadow-lg'>
+        <Container maxWidth='md'>
+          <div className='text-center'>
+            <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
+              <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
+                Our Company
+              </span>
+              <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
+            </h2>
+            <p className='text-xl mb-6 text-gray-600 text-justify'>
+              Prima Wrap is your premier destination for all gift packaging
+              needs. From elegant printed bags and boxes to luxurious gift wrap,
+              ribbons, and bows, we offer a comprehensive selection of packaging
+              solutions. We proudly feature exclusive collections by David
+              Tutura™ and Victoria Lynn™, bringing designer quality to your
+              special occasions. With our head office strategically located in
+              Niagara-on-the-Lake, we serve customers across Ontario, from
+              Toronto and Mississauga to the beautiful Niagara Falls region.
+            </p>
+            <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
+              <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
+                Our Mission
+              </span>
+              <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
+            </h2>
+            <p className='text-xl text-gray-600 text-justify'>
+              To elevate every gift-giving moment by providing exceptional
+              packaging solutions that combine quality, creativity, and
+              elegance, while delivering outstanding service to our valued
+              customers across Canada. Through our in-house capabilities
+              including logo stamping and customization services, we eliminate
+              intermediaries to offer cost-effective solutions without
+              compromising on quality. Our commitment to maintaining direct
+              control over production ensures both competitive pricing and
+              exceptional craftsmanship for our customers.
+            </p>
+          </div>
         </Container>
-      </Box>
+      </div>
+
+      {/* Section 5: Meet the Team */}
+      <div className='shadow-2xl py-4 shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2)]'>
+        <Container maxWidth='lg' sx={{ my: 4 }}>
+          <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
+            <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
+              Meet the Team
+            </span>
+            <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
+          </h2>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 pt-4'>
+            <TeamMember />
+          </div>
+        </Container>
+      </div>
+      {/* Section 6: Testimonials */}
+      <div className='w-full bg-pink-50/80 py-10 shadow-lg'>
+        <Container maxWidth='lg'>
+          <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
+            <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
+              Testimonials
+            </span>
+            <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
+          </h2>
+          <div className='flex items-center justify-center gap-2 mb-8'>
+            <span className='text-2xl font-bold text-gray-800'>4.7</span>
+            <div className='flex gap-1'>
+              <span className='text-yellow-400'>★</span>
+              <span className='text-yellow-400'>★</span>
+              <span className='text-yellow-400'>★</span>
+              <span className='text-yellow-400'>★</span>
+              <div className='relative inline-flex'>
+                <span className='text-gray-300'>★</span>
+                <div
+                  className='absolute top-0 left-0 overflow-hidden'
+                  style={{ width: '70%' }}
+                >
+                  <span className='text-yellow-400'>★</span>
+                </div>
+              </div>
+            </div>
+            <span className='text-gray-600'>(61 reviews)</span>
+          </div>
+          <Testimonial />
+        </Container>
+      </div>
+
+      {/* Section 7: Contact Form */}
+      <div className='p-10 shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2)]'>
+        <Container maxWidth='md' sx={{ my: 0 }}>
+          <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
+            <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
+              Contact Us
+            </span>
+            <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
+          </h2>
+          <ContactForm />
+        </Container>
+      </div>
+
+      {/* Section 8: Footer Info */}
+      <div className='w-full bg-gray-100 py-10'>
+        <div className='w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]'>
+          <div className='max-w-1xl mx-auto'>
+            <div className='grid grid-cols-1 md:grid-cols-3'>
+              <div className='flex justify-center items-start'>
+                <SocialLinks />
+              </div>
+              <div className='flex justify-center items-start'>
+                <MapView />
+              </div>
+              <div className='flex justify-center items-start'>
+                <ContactInfo />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

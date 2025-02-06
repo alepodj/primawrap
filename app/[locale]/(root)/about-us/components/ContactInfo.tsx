@@ -1,35 +1,51 @@
 'use client'
 
-import { Box, Typography, Stack } from '@mui/material'
-import EmailIcon from '@mui/icons-material/Email'
-import PhoneIcon from '@mui/icons-material/Phone'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
+import { Mail, Phone, MapPin } from 'lucide-react'
 
 const ContactInfo = () => {
   return (
-    <Box>
-      <Typography variant='h6' gutterBottom>
-        Contact Information
-      </Typography>
-      <Stack spacing={2}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <EmailIcon color='primary' />
-          <Typography variant='body2'>Email: contact@example.com</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <PhoneIcon color='primary' />
-          <Typography variant='body2'>Phone: +1 (555) 123-4567</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <LocationOnIcon color='primary' />
-          <Typography variant='body2'>
-            Address: 123 Business Street
+    <div className='text-center'>
+      <h2 className='text-4xl font-bold text-center mb-8 text-gray-800 relative'>
+        <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
+          Contact Information
+        </span>
+        <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
+      </h2>
+      <div className='space-y-6'>
+        <div className='flex flex-col items-center gap-2'>
+          <div className='w-10 h-10 flex items-center justify-center rounded-full bg-primary/10'>
+            <Mail className='w-5 h-5 text-primary' />
+          </div>
+          <a
+            href='mailto:info@primawrap.com'
+            className='text-gray-600 hover:text-primary transition-colors'
+          >
+            info@primawrap.com
+          </a>
+        </div>
+        <div className='flex flex-col items-center gap-2'>
+          <div className='w-10 h-10 flex items-center justify-center rounded-full bg-primary/10'>
+            <Phone className='w-5 h-5 text-primary' />
+          </div>
+          <a
+            href='tel:+19057040087'
+            className='text-gray-600 hover:text-primary transition-colors'
+          >
+            +1 (905) 704-0087
+          </a>
+        </div>
+        <div className='flex flex-col items-center gap-2'>
+          <div className='w-10 h-10 flex items-center justify-center rounded-full bg-primary/10'>
+            <MapPin className='w-5 h-5 text-primary' />
+          </div>
+          <address className='text-gray-600 not-italic text-center'>
+            360 York Rd, Niagara-on-the-Lake,
             <br />
-            City, State 12345
-          </Typography>
-        </Box>
-      </Stack>
-    </Box>
+            ON L0S 1J0, Canada
+          </address>
+        </div>
+      </div>
+    </div>
   )
 }
 

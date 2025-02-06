@@ -65,7 +65,7 @@ const ClientCarousel = () => {
             key={index}
             className='flex-[0_0_33.333%] min-w-0 px-4 md:flex-[0_0_25%] lg:flex-[0_0_20%]'
           >
-            <div className='h-40 md:h-48 lg:h-56 relative rounded-lg bg-white p-6 shadow-sm'>
+            <div className='h-40 md:h-48 lg:h-56 relative rounded-lg p-6'>
               <Image
                 src={client}
                 alt={`Client ${index + 1}`}
