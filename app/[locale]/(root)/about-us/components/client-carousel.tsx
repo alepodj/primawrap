@@ -59,18 +59,18 @@ const ClientCarousel = () => {
       className='w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden'
       ref={emblaRef}
     >
-      <div className='flex px-4 md:px-8 lg:px-16'>
+      <div className='flex px-2 sm:px-4 md:px-8 lg:px-16'>
         {clients.map((client, index) => (
           <div
             key={index}
-            className='flex-[0_0_33.333%] min-w-0 px-4 md:flex-[0_0_25%] lg:flex-[0_0_20%]'
+            className='flex-[0_0_50%] min-w-0 px-2 sm:flex-[0_0_33.333%] sm:px-4 md:flex-[0_0_25%] lg:flex-[0_0_20%]'
           >
-            <div className='h-40 md:h-48 lg:h-56 relative rounded-lg p-6'>
+            <div className='h-32 sm:h-40 md:h-48 lg:h-56 relative rounded-lg p-2 sm:p-6'>
               <Image
                 src={client}
                 alt={`Client ${index + 1}`}
                 fill
-                className='object-contain p-4'
+                className='object-contain p-2 sm:p-4'
               />
             </div>
           </div>
