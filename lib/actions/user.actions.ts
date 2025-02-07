@@ -52,13 +52,19 @@ export async function registerUser(
     const verificationToken = crypto.randomBytes(32).toString('hex')
     const verificationTokenExpiry = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
 
-    // Create user with verification token
+    // Create user with verification token and optional fields
     await User.create({
       ...user,
       password: await bcrypt.hash(user.password, 5),
       verificationToken,
       verificationTokenExpiry,
       emailVerified: false,
+      phone: userSignUp.phone,
+      role: userSignUp.role || 'User',
+      addresses: userSignUp.addresses?.map((addr) => ({
+        ...addr,
+        _id: new ObjectId().toString(),
+      })),
     })
 
     // Send verification email with callbackUrl
@@ -231,9 +237,33 @@ export async function updateUser(user: z.infer<typeof UserUpdateSchema>) {
     await connectToDatabase()
     const dbUser = await User.findById(user._id)
     if (!dbUser) throw new Error('User not found')
+
+    // Update basic fields
     dbUser.name = user.name
     dbUser.email = user.email
     dbUser.role = user.role
+    dbUser.phone = user.phone
+
+    // Update addresses - ensure each address has an _id
+    dbUser.addresses = user.addresses.map((addr) => ({
+      ...addr,
+      _id: addr._id || new ObjectId().toString(),
+    }))
+
+    // Ensure only one address is default
+    if (dbUser.addresses?.length > 0) {
+      const defaultAddresses = dbUser.addresses.filter((addr) => addr.isDefault)
+      if (defaultAddresses.length === 0) {
+        dbUser.addresses[0].isDefault = true
+      } else if (defaultAddresses.length > 1) {
+        // If multiple defaults found, keep only the first one as default
+        defaultAddresses.slice(1).forEach((addr) => {
+          const address = dbUser.addresses.find((a) => a._id === addr._id)
+          if (address) address.isDefault = false
+        })
+      }
+    }
+
     const updatedUser = await dbUser.save()
     revalidatePath('/admin/users')
     return {
@@ -242,6 +272,7 @@ export async function updateUser(user: z.infer<typeof UserUpdateSchema>) {
       data: JSON.parse(JSON.stringify(updatedUser)),
     }
   } catch (error) {
+    console.error('Error updating user:', error)
     return { success: false, message: formatError(error) }
   }
 }

@@ -176,6 +176,27 @@ export const UserUpdateSchema = z.object({
   name: UserName,
   email: Email,
   role: UserRole,
+  phone: z
+    .string()
+    .min(10, { message: 'Phone number must be at least 10 digits' })
+    .max(15, { message: 'Phone number must be at most 15 digits' })
+    .regex(/^[0-9+\-\s()]*$/, { message: 'Invalid phone number format' })
+    .optional(),
+  addresses: z
+    .array(
+      z.object({
+        _id: z.string().optional(),
+        fullName: z.string().min(1, 'Full name is required'),
+        street: z.string().min(1, 'Street is required'),
+        city: z.string().min(1, 'City is required'),
+        province: z.string().min(1, 'Province is required'),
+        postalCode: z.string().min(1, 'Postal code is required'),
+        country: z.string().min(1, 'Country is required'),
+        phone: z.string().min(1, 'Phone number is required'),
+        isDefault: z.boolean().default(false),
+      })
+    )
+    .default([]),
 })
 
 // User Phone Schema
@@ -229,6 +250,28 @@ export const UserSignUpSchema = z
     email: Email,
     password: Password,
     confirmPassword: z.string(),
+    phone: z
+      .string()
+      .min(10, { message: 'Phone number must be at least 10 digits' })
+      .max(15, { message: 'Phone number must be at most 15 digits' })
+      .regex(/^[0-9+\-\s()]*$/, { message: 'Invalid phone number format' })
+      .optional(),
+    role: z.string().min(1, 'Role is required').default('User'),
+    addresses: z
+      .array(
+        z.object({
+          _id: z.string().optional(),
+          fullName: z.string().min(1, 'Full name is required'),
+          street: z.string().min(1, 'Street is required'),
+          city: z.string().min(1, 'City is required'),
+          province: z.string().min(1, 'Province is required'),
+          postalCode: z.string().min(1, 'Postal code is required'),
+          country: z.string().min(1, 'Country is required'),
+          phone: z.string().min(1, 'Phone number is required'),
+          isDefault: z.boolean().default(false),
+        })
+      )
+      .default([]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

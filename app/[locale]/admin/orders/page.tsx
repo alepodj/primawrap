@@ -1,7 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-
-import { auth } from '@/auth'
 import DeleteDialog from '@/components/shared/delete-dialog'
 import Pagination from '@/components/shared/pagination'
 import { Button } from '@/components/ui/button'
@@ -27,10 +25,6 @@ export default async function OrdersPage(props: {
   const searchParams = await props.searchParams
 
   const { page = '1' } = searchParams
-
-  const session = await auth()
-  if (session?.user.role !== 'Admin')
-    throw new Error('Admin permission required')
 
   const orders = await getAllOrders({
     page: Number(page),

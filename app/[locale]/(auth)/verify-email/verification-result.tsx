@@ -69,7 +69,7 @@ export default function VerificationResult({
           <p className='text-muted-foreground text-left'>
             {success ? (
               <>
-                {t('Your email has been verified successfully')}
+                {t('Your email has been verified successfully')} <br />
                 {t('You can now sign in to your account')}
               </>
             ) : (

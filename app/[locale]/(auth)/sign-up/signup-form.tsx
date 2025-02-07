@@ -130,7 +130,7 @@ export default function SignUpForm() {
       </CardHeader>
       <CardContent>
         <p className='text-sm text-muted-foreground'>
-          {t('We sent you a verification link')}
+          {t('We sent you a verification link')} <br />
           {t('Please check your email to verify your account')}
         </p>
       </CardContent>

@@ -56,6 +56,23 @@ export default auth((req) => {
     return NextResponse.redirect(newUrl)
   }
 
+  // Check for admin routes and role
+  const isAdminRoute =
+    pathname.startsWith(`/${routing.defaultLocale}/admin`) ||
+    pathname.startsWith('/admin')
+
+  // Check role from session
+  if (
+    isAdminRoute &&
+    (!req.auth?.user?.role || req.auth.user.role !== 'Admin')
+  ) {
+    console.log('Access denied - User role:', req.auth?.user?.role)
+    // Redirect non-admin users to home page
+    const url = new URL(req.url)
+    const newUrl = new URL(`/${routing.defaultLocale}`, url.origin)
+    return NextResponse.redirect(newUrl)
+  }
+
   return response
 })
 

@@ -12,6 +12,7 @@ import CurrencySwitcher from '@/components/shared/header/currency-switcher'
 import ThemeSwitcher from '@/components/shared/header/theme-switcher'
 import UserButton from '@/components/shared/header/user-button'
 import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
 
 export default async function AdminLayout({
   children,
@@ -20,6 +21,11 @@ export default async function AdminLayout({
 }) {
   const session = await auth()
 
+  //If middleware is not working, this will redirect to home page
+  if (session?.user.role !== 'Admin')
+    // throw new Error('Admin permission required')
+    redirect('/')
+    
   return (
     <>
       <div className='flex flex-col min-h-screen'>

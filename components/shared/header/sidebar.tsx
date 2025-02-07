@@ -61,11 +61,6 @@ export default function Sidebar({ categories = [], locale }: SidebarProps) {
   const { data: session } = useSession()
   const side = getDirection(locale) === 'rtl' ? 'right' : 'left'
 
-  // Debug log to check categories
-  React.useEffect(() => {
-    console.log('Sidebar categories:', categories)
-  }, [categories])
-
   async function handleSignOut() {
     try {
       const result = await SignOut()
