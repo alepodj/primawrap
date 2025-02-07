@@ -16,6 +16,12 @@ const publicPages = [
   '/verify-email',
   '/forgot-password',
   '/reset-password',
+  '/about-us',
+  '/contact-us',
+  '/privacy-policy',
+  '/conditions-of-use',
+  '/help',
+  '/terms-of-service',
 ]
 
 const intlMiddleware = createMiddleware(routing)

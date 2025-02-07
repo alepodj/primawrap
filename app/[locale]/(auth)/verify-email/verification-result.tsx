@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 function CountdownRedirect({
   locale,
@@ -16,7 +17,7 @@ function CountdownRedirect({
 }) {
   const [countdown, setCountdown] = useState(10)
   const router = useRouter()
-
+  const t = useTranslations('Locale')
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
@@ -30,7 +31,7 @@ function CountdownRedirect({
 
   return (
     <p className='text-sm text-muted-foreground mt-2'>
-      Redirecting to sign in page in {countdown} seconds...
+      {t('Redirecting to sign in page in')} {countdown} {t('seconds')}
     </p>
   )
 }
@@ -46,6 +47,7 @@ export default function VerificationResult({
   locale: string
   callbackUrl?: string
 }) {
+  const t = useTranslations('Locale')
   return (
     <div className='w-full'>
       <Card className='text-center'>
@@ -58,20 +60,23 @@ export default function VerificationResult({
             )}
           </div>
           <CardTitle className='text-2xl'>
-            {success ? 'Email Verification Successful!' : 'Verification Failed'}
+            {success
+              ? t('Email Verification Successful!')
+              : t('Verification Failed')}
           </CardTitle>
         </CardHeader>
         <CardContent className='space-y-4'>
           <p className='text-muted-foreground text-left'>
             {success ? (
               <>
-                Your email has been verified successfully. You can now sign in
-
-                to your account.
+                {t('Your email has been verified successfully')}
+                {t('You can now sign in to your account')}
               </>
             ) : (
               error ||
-              'The verification link is invalid or has expired. Please request a new verification link.'
+              t(
+                'The verification link is invalid or has expired, please request a new verification link'
+              )
             )}
           </p>
           <div className='flex flex-col gap-2'>
@@ -80,12 +85,13 @@ export default function VerificationResult({
               className='mx-auto'
             >
               <Button variant='default'>
-                {success ? 'Sign In to Your Account' : 'Back to Sign In'}
+                {success ? t('Sign In to Your Account') : t('Back to Sign In')}
               </Button>
             </Link>
+
             {!success && (
               <Link href={`/${locale}/sign-up`} className='mx-auto'>
-                <Button variant='outline'>Create New Account</Button>
+                <Button variant='outline'>{t('Create New Account')}</Button>
               </Link>
             )}
           </div>

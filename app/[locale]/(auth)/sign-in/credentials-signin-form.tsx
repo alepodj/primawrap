@@ -66,24 +66,29 @@ export default function CredentialsSignInForm() {
       if (res.success) {
         setLastResent(new Date())
         toast({
-          title: 'Verification Email Sent',
-          description:
-            'Please check your inbox and spam folder for the verification link.',
+          title: t('Verification Email Sent'),
+          description: t(
+            'Please check your inbox and spam folder for the verification link'
+          ),
         })
+
+
       } else {
         toast({
-          title: 'Error',
+          title: t('Error'),
           description:
-            res.error || 'Failed to send verification email. Please try again.',
+            res.error || t('Failed to send verification email, please try again'),
           variant: 'destructive',
         })
+
       }
     } catch {
       toast({
-        title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        title: t('Error'),
+        description: t('Something went wrong, please try again'),
         variant: 'destructive',
       })
+
     } finally {
       setIsResending(false)
     }
@@ -93,9 +98,10 @@ export default function CredentialsSignInForm() {
     try {
       setIsSigningIn(true)
       toast({
-        title: 'Verifying',
-        description: 'Checking your credentials',
+        title: t('Verifying'),
+        description: t('Checking your credentials'),
       })
+
 
       // Check if email is verified
       const verificationCheck = await checkEmailVerification(data.email)
@@ -105,10 +111,11 @@ export default function CredentialsSignInForm() {
           setUnverifiedEmail(data.email)
         }
         toast({
-          title: 'Error',
+          title: t('Error'),
           description: verificationCheck.error,
           variant: 'destructive',
         })
+
         setIsSigningIn(false)
         return
       }
@@ -122,26 +129,29 @@ export default function CredentialsSignInForm() {
 
       if (result?.error) {
         toast({
-          title: 'Error',
-          description: 'Invalid email or password',
+          title: t('Error'),
+          description: t('Invalid email or password'),
           variant: 'destructive',
         })
+
         setIsSigningIn(false)
         return
       }
 
       toast({
-        title: 'Success',
-        description: 'Signed in successfully',
+        title: t('Success'),
+        description: t('Signed in successfully'),
       })
       router.push(callbackUrl)
       router.refresh()
+
     } catch {
       toast({
-        title: 'Error',
-        description: 'Something went wrong',
+        title: t('Error'),
+        description: t('Something went wrong'),
         variant: 'destructive',
       })
+
       setIsSigningIn(false)
     }
   }
@@ -156,10 +166,10 @@ export default function CredentialsSignInForm() {
             name='email'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t('Email')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Enter email address'
+                    placeholder={t('Enter email address')}
                     {...field}
                     disabled={isSigningIn}
                   />
@@ -174,11 +184,11 @@ export default function CredentialsSignInForm() {
             name='password'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('Password')}</FormLabel>
                 <FormControl>
                   <Input
                     type='password'
-                    placeholder='Enter password'
+                    placeholder={t('Enter password')}
                     {...field}
                     disabled={isSigningIn}
                   />
@@ -189,10 +199,11 @@ export default function CredentialsSignInForm() {
                     href={`/${locale}/forgot-password`}
                     className='text-primary hover:underline'
                   >
-                    Forgot Password?
+                    {t('Forgot Password')}?
                   </Link>
                 </div>
               </FormItem>
+
             )}
           />
 
@@ -205,12 +216,14 @@ export default function CredentialsSignInForm() {
               {isSigningIn ? (
                 <>
                   <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  Signing in
+                  {t('Signing in')}
                 </>
+
               ) : (
-                'Sign In'
+                t('Sign In')
               )}
             </Button>
+
             {unverifiedEmail && (
               <div className='p-6 bg-blue-50 rounded-lg mt-4 border border-blue-100'>
                 <div className='flex flex-col items-center text-center'>
@@ -231,14 +244,17 @@ export default function CredentialsSignInForm() {
                     </svg>
                   </div>
                   <p className='text-blue-700 font-semibold text-lg mb-2'>
-                    Email Verification Required
+                    {t('Email Verification Required')}
                   </p>
                   <p className='text-sm text-blue-600 mb-4'>
-                    We noticed your email address ({unverifiedEmail})
-                    hasn&apos;t been verified yet. Please check your inbox for
-                    the verification email and click the link to verify your
-                    account
+                    {t('We noticed your email address')} ({unverifiedEmail})
+
+                    {t("hasn't been verified yet")}. {t("Please check your inbox for")}
+                    {t("the verification email and click the link to verify your")}
+                    {t("account")}
                   </p>
+
+
                   <div className='space-y-3'>
                     <Button
                       type='button'
@@ -268,8 +284,9 @@ export default function CredentialsSignInForm() {
                               d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                             />
                           </svg>
-                          Sending
+                          {t('Sending')}
                         </span>
+
                       ) : (
                         'Resend Verification Email'
                       )}
@@ -288,11 +305,12 @@ export default function CredentialsSignInForm() {
           </div>
           <div className='text-sm'>
             {t('By signing in, you agree to')} {site.name}&apos;s{' '}
-            <Link href={`/${locale}/page/conditions-of-use`}>
+            <Link className='user-menu-link !text-primary' href={`/${locale}/page/conditions-of-use`}>
               {t('Conditions of Use')}
             </Link>{' '}
             {t('and')}{' '}
-            <Link href={`/${locale}/page/privacy-policy`}>
+            <Link className='user-menu-link !text-primary' href={`/${locale}/page/privacy-policy`}>
+
               {t('Privacy Notice')}
             </Link>
           </div>

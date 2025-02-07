@@ -20,6 +20,7 @@ import { useParams, useSearchParams } from 'next/navigation'
 import { CountdownRedirect } from '@/components/ui/countdown-redirect'
 import { ForgotPasswordSchema } from '@/lib/validator'
 import type { ForgotPasswordForm } from '@/types'
+import { useTranslations } from 'next-intl'
 
 export default function ForgotPasswordForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -36,6 +37,8 @@ export default function ForgotPasswordForm() {
     },
   })
 
+  const t = useTranslations('Locale')
+
   const onSubmit = async (data: ForgotPasswordForm) => {
     try {
       setIsSubmitting(true)
@@ -44,22 +47,25 @@ export default function ForgotPasswordForm() {
       if (response.success) {
         setEmailSent(true)
         toast({
-          title: 'Email Sent',
+          title: t('Email Sent'),
           description: response.message,
         })
+
       } else {
         toast({
-          title: 'Error',
+          title: t('Error'),
           description: response.error,
           variant: 'destructive',
         })
       }
+
     } catch {
       toast({
-        title: 'Error',
-        description: 'Something went wrong. Please try again.',
+        title: t('Error'),
+        description: t('Something went wrong, please try again'),
         variant: 'destructive',
       })
+
     } finally {
       setIsSubmitting(false)
     }
@@ -70,20 +76,21 @@ export default function ForgotPasswordForm() {
       <div className='space-y-4 text-center'>
         <h2 className='text-lg font-semibold'>Check Your Email</h2>
         <p className='text-muted-foreground'>
-          We&apos;ve sent password reset instructions to your email address.
-          Please check your inbox and spam folder.
+          {t("We've sent password reset instructions to your email address")}
+          {t('Please check your inbox and spam folder')}
         </p>
         <div className='space-y-2'>
+
           <Button
             variant='outline'
             className='w-full'
             onClick={() => setEmailSent(false)}
           >
-            Try a different email
+            {t('Try a different email')}
           </Button>
           <Link href={`/${locale}/sign-in`}>
             <Button variant='link' className='w-full'>
-              Back to Sign In
+              {t('Back to Sign In')}
             </Button>
           </Link>
           <CountdownRedirect locale={locale} />
@@ -100,10 +107,10 @@ export default function ForgotPasswordForm() {
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('Email')}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='Enter your email address'
+                  placeholder={t('Enter your email address')}
                   type='email'
                   {...field}
                 />
@@ -113,11 +120,11 @@ export default function ForgotPasswordForm() {
           )}
         />
         <Button type='submit' className='w-full' disabled={isSubmitting}>
-          {isSubmitting ? 'Sending...' : 'Reset Password'}
+          {isSubmitting ? t('Sending') : t('Reset Password')}
         </Button>
         <div className='text-center'>
           <Link href={`/${locale}/sign-in`}>
-            <Button variant='link'>Back to Sign In</Button>
+            <Button variant='link'>{t('Back to Sign In')}</Button>
           </Link>
         </div>
       </form>

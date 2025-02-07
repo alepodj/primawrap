@@ -16,10 +16,12 @@ import { generateId, round2 } from '@/lib/utils'
 import RatingSummary from '@/components/shared/product/rating-summary'
 import ReviewList from './review-list'
 import { auth } from '@/auth'
+import { getTranslations } from 'next-intl/server'
 
 export async function generateMetadata(props: {
   params: Promise<{ slug: string }>
 }) {
+
   const params = await props.params
   const product = await getProductBySlug(params.slug)
   if (!product) {
@@ -52,7 +54,7 @@ export default async function ProductDetails(props: {
   })
 
   const session = await auth()
-
+  const t = await getTranslations('Locale')
   return (
     <div>
       <AddToBrowsingHistory id={product._id} category={product.category} />
@@ -65,10 +67,11 @@ export default async function ProductDetails(props: {
           <div className='flex w-full flex-col gap-2 md:p-5 col-span-2'>
             <div className='flex flex-col gap-3'>
               <p className='p-medium-16 rounded-full bg-grey-500/10   text-grey-500'>
-                Brand {product.brand} {product.category}
+                {t('Brand')} {product.brand} {product.category}
               </p>
               <h1 className='font-bold text-lg lg:text-xl'>{product.name}</h1>
               <RatingSummary
+
                 avgRating={product.avgRating}
                 numReviews={product.numReviews}
                 asPopover
@@ -95,7 +98,7 @@ export default async function ProductDetails(props: {
             </div>
             <Separator className='my-2' />
             <div className='flex flex-col gap-2'>
-              <p className='p-bold-20 text-grey-600'>Description:</p>
+              <p className='p-bold-20 text-grey-600'>{t('Description')}:</p>
               <p className='p-medium-16 lg:p-regular-18'>
                 {product.description}
               </p>
@@ -108,14 +111,16 @@ export default async function ProductDetails(props: {
 
                 {product.countInStock > 0 && product.countInStock <= 3 && (
                   <div className='text-destructive font-bold'>
-                    {`Only ${product.countInStock} left in stock - order soon`}
+                    {t('Only {count} left in stock - order soon', { count: product.countInStock })}
                   </div>
+
                 )}
                 {product.countInStock !== 0 ? (
-                  <div className='text-green-700 text-xl'>In Stock</div>
+                  <div className='text-green-700 text-xl'>{t('In Stock')}</div>
                 ) : (
-                  <div className='text-destructive text-xl'>Out of Stock</div>
+                  <div className='text-destructive text-xl'>{t('Out of Stock')}</div>
                 )}
+
                 {product.countInStock !== 0 && (
                   <div className='flex justify-center items-center'>
                     <AddToCart
@@ -143,17 +148,19 @@ export default async function ProductDetails(props: {
 
       <section className='mt-10'>
         <h2 className='h2-bold mb-2' id='reviews'>
-          Customer Reviews
+          {t('Customer Reviews')}
         </h2>
         <ReviewList product={product} userId={session?.user.id} />
       </section>
 
+
       <section className='mt-10'>
         <ProductSlider
           products={relatedProducts.data}
-          title={`Best Sellers in ${product.category}`}
+          title={t('Best Sellers in {category}', { category: product.category })}
         />
       </section>
+
 
       <section>
         <BrowsingHistoryList className='mt-10' />

@@ -2,13 +2,14 @@ import { getSetting } from '@/lib/actions/setting.actions'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-
+import { getTranslations } from 'next-intl/server'
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   const { site } = await getSetting()
+  const t = await getTranslations('Locale')
   return (
     <div className='flex flex-col min-h-screen highlight-link'>
       <main className='flex-1 flex items-center justify-center'>
@@ -37,21 +38,18 @@ export default async function AuthLayout({
             className='!footer-link !text-white'
             href='/page/conditions-of-use'
           >
-            Conditions of Use
+            {t('Conditions of Use')}
           </Link>
           <Link
             className='!footer-link !text-white'
             href='/page/privacy-policy'
           >
-            {' '}
-            Privacy Notice
+            {t('Privacy Notice')}
           </Link>
           <Link className='!footer-link !text-white' href='/page/help'>
-            {' '}
-            Help{' '}
+            {t('Help')}
           </Link>
         </div>
-
         <div>
           <p className='flex justify-center text-sm text-white'>
             © {site.copyright}

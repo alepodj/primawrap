@@ -25,6 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Eye, EyeOff } from 'lucide-react'
 import { Progress } from '@/components/ui/progress'
 import { Info } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const signUpDefaultValues = {
   name: '',
@@ -34,11 +35,12 @@ const signUpDefaultValues = {
 }
 
 function PasswordStrengthIndicator({ password }: { password: string }) {
+  const t = useTranslations('Locale')
   const requirements = [
-    { regex: /.{8,}/, text: 'At least 8 characters' },
-    { regex: /[A-Z]/, text: 'One uppercase letter' },
-    { regex: /[a-z]/, text: 'One lowercase letter' },
-    { regex: /[0-9]/, text: 'One number' },
+    { regex: /.{8,}/, text: t('At least 8 characters') },
+    { regex: /[A-Z]/, text: t('One uppercase letter') },
+    { regex: /[a-z]/, text: t('One lowercase letter') },
+    { regex: /[0-9]/, text: t('One number') },
     { regex: /[^A-Za-z0-9]/, text: 'One special character' },
   ]
 
@@ -56,7 +58,7 @@ function PasswordStrengthIndicator({ password }: { password: string }) {
       <div className='text-xs text-muted-foreground'>
         <div className='flex items-center gap-1'>
           <Info className='h-3 w-3' />
-          <span>Password must contain:</span>
+          <span>{t('Password must contain')}:</span>
         </div>
         <ul className='ml-4 list-disc'>
           {requirements.map(({ text }, index) => (
@@ -89,7 +91,7 @@ export default function SignUpForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const currentLocale = typeof locale === 'string' ? locale : 'en-CA'
-
+  const t = useTranslations('Locale')
   const form = useForm<IUserSignUp>({
     resolver: zodResolver(UserSignUpSchema),
     defaultValues: signUpDefaultValues,
@@ -103,7 +105,7 @@ export default function SignUpForm() {
       const res = await registerUser(data, callbackUrl)
       if (!res.success) {
         toast({
-          title: 'Error',
+          title: t('Error'),
           description: res.error,
           variant: 'destructive',
         })
@@ -112,8 +114,8 @@ export default function SignUpForm() {
       setIsRegistered(true)
     } catch {
       toast({
-        title: 'Error',
-        description: 'Something went wrong',
+        title: t('Error'),
+        description: t('Something went wrong'),
         variant: 'destructive',
       })
     } finally {
@@ -124,12 +126,12 @@ export default function SignUpForm() {
   const formContent = isRegistered ? (
     <Card>
       <CardHeader>
-        <CardTitle>Check your email</CardTitle>
+        <CardTitle>{t('Check your email')}</CardTitle>
       </CardHeader>
       <CardContent>
         <p className='text-sm text-muted-foreground'>
-          We sent you a verification link. Please check your email to verify
-          your account.
+          {t('We sent you a verification link')}
+          {t('Please check your email to verify your account')}
         </p>
       </CardContent>
     </Card>
@@ -143,9 +145,9 @@ export default function SignUpForm() {
             name='name'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>{t('Full Name')}</FormLabel>
                 <FormControl>
-                  <Input placeholder='Enter name' {...field} />
+                  <Input placeholder={t('Enter name')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -157,9 +159,9 @@ export default function SignUpForm() {
             name='email'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t('Email')}</FormLabel>
                 <FormControl>
-                  <Input placeholder='Enter email address' {...field} />
+                  <Input placeholder={t('Enter email address')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -171,13 +173,13 @@ export default function SignUpForm() {
             name='password'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('Password')}</FormLabel>
                 <FormControl>
                   <div className='space-y-2'>
                     <div className='relative'>
                       <Input
                         type={showPassword ? 'text' : 'password'}
-                        placeholder='Enter password'
+                        placeholder={t('Enter password')}
                         {...field}
                       />
                       <Button
@@ -206,12 +208,12 @@ export default function SignUpForm() {
             name='confirmPassword'
             render={({ field }) => (
               <FormItem className='w-full'>
-                <FormLabel>Confirm Password</FormLabel>
+                <FormLabel>{t('Confirm Password')}</FormLabel>
                 <FormControl>
                   <div className='relative'>
                     <Input
                       type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder='Confirm Password'
+                      placeholder={t('Confirm Password')}
                       {...field}
                     />
                     <Button
@@ -237,29 +239,43 @@ export default function SignUpForm() {
           />
           <div>
             <Button type='submit' disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Sign Up'}
+              {isSubmitting ? t('Sending') : t('Sign Up')}
             </Button>
           </div>
           <div className='text-sm'>
-            By creating an account, you agree to {site.name}&apos;s{' '}
-            <Link href='/page/conditions-of-use'>Conditions of Use</Link> and{' '}
-            <Link href='/page/privacy-policy'> Privacy Notice. </Link>
+            {t('By creating an account, you agree to')} {site.name}&apos;s{' '}
+            <Link
+              className='user-menu-link !text-primary'
+              href='/page/conditions-of-use'
+            >
+              {t('Conditions of Use')}
+            </Link>{' '}
+            {t('and')}{' '}
+            <Link
+              className='user-menu-link !text-primary'
+              href='/page/privacy-policy'
+            >
+              {t('Privacy Notice')}.{' '}
+            </Link>
           </div>
           <Separator className='mb-4' />
           <div className='text-sm space-y-2'>
             <div>
-              Already have an account?{' '}
+              {t('Already have an account?')}{' '}
               <Link
-                className='link'
+                className='user-menu-link !text-primary'
                 href={`/${currentLocale}/sign-in?callbackUrl=${callbackUrl}`}
               >
-                Sign In
+                {t('Sign In')}
               </Link>
             </div>
             <div>
-              Forgot your password?{' '}
-              <Link className='link' href={`/${currentLocale}/forgot-password`}>
-                Reset it here
+              {t('Forgot your password?')}{' '}
+              <Link
+                className='user-menu-link !text-primary'
+                href={`/${currentLocale}/forgot-password`}
+              >
+                {t('Reset it here')}
               </Link>
             </div>
           </div>

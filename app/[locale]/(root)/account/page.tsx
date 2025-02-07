@@ -4,27 +4,31 @@ import { Home, PackageCheckIcon, User } from 'lucide-react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import React from 'react'
+import { getTranslations } from 'next-intl/server'
 
 const PAGE_TITLE = 'Your Account'
 export const metadata: Metadata = {
   title: PAGE_TITLE,
 }
-export default function AccountPage() {
+export default async function AccountPage() {
+  const t = await getTranslations('Locale')
   return (
     <div>
-      <h1 className='h1-bold py-4'>{PAGE_TITLE}</h1>
+      <h1 className='h1-bold py-4'>{t(PAGE_TITLE)}</h1>
       <div className='grid md:grid-cols-3 gap-4 items-stretch'>
         <Card>
           <Link href='/account/orders'>
+
             <CardContent className='flex items-start gap-4 p-6'>
               <div>
                 <PackageCheckIcon className='w-12 h-12' />
               </div>
               <div>
-                <h2 className='text-xl font-bold'>Orders</h2>
+                <h2 className='text-xl font-bold'>{t('Orders')}</h2>
                 <p className='text-muted-foreground'>
-                  See orders, details, download invoice or buy again
+                  {t('See orders, details, download invoice or buy again')}
                 </p>
+
               </div>
             </CardContent>
           </Link>
@@ -37,10 +41,11 @@ export default function AccountPage() {
                 <User className='w-12 h-12' />
               </div>
               <div>
-                <h2 className='text-xl font-bold'>Login & security</h2>
+                <h2 className='text-xl font-bold'>{t('Login & security')}</h2>
                 <p className='text-muted-foreground'>
-                  Manage name, password, email and mobile number
+                  {t('Manage name, password, email and mobile number')}
                 </p>
+
               </div>
             </CardContent>
           </Link>
@@ -53,10 +58,11 @@ export default function AccountPage() {
                 <Home className='w-12 h-12' />
               </div>
               <div>
-                <h2 className='text-xl font-bold'>Addresses</h2>
+                <h2 className='text-xl font-bold'>{t('Addresses')}</h2>
                 <p className='text-muted-foreground'>
-                  Edit, remove or set default address
+                  {t('Edit, remove or set default address')}
                 </p>
+
               </div>
             </CardContent>
           </Link>

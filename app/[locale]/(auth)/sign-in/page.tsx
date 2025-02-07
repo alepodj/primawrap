@@ -10,6 +10,7 @@ import CredentialsSignInForm from './credentials-signin-form'
 import { GoogleSignInForm } from './google-signin-form'
 import { Button } from '@/components/ui/button'
 import { getSetting } from '@/lib/actions/setting.actions'
+import { getTranslations } from 'next-intl/server'
 
 export const metadata: Metadata = {
   title: 'Sign In',
@@ -21,10 +22,12 @@ export default async function SignInPage(props: {
   }>
 }) {
   const searchParams = await props.searchParams
+  const t = await getTranslations('Locale')
   const { site } = await getSetting()
   const { callbackUrl = '/' } = searchParams
   const session = await auth()
   if (session) {
+
     return redirect(callbackUrl)
   }
 
@@ -33,10 +36,11 @@ export default async function SignInPage(props: {
       <Card>
         <CardHeader>
           <CardTitle className='text-2xl text-center'>
-            Sign In to {site.name}
+            {t('Sign In to')} {site.name}
           </CardTitle>
         </CardHeader>
         <CardContent>
+
           <div>
             <CredentialsSignInForm />
             <SeparatorWithOr />
@@ -46,13 +50,13 @@ export default async function SignInPage(props: {
           </div>
         </CardContent>
       </Card>
-      <SeparatorWithOr>New to {site.name}?</SeparatorWithOr>
+      <SeparatorWithOr>{t('New to')} {site.name}?</SeparatorWithOr>
 
       <Link
         href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
         className='!block'
       >
-        <Button className='w-full'>Create your {site.name} account</Button>
+        <Button className='w-full'>{t('Create your')} {site.name} {t('account')}</Button>
       </Link>
     </div>
   )

@@ -1,4 +1,3 @@
-'use client'
 
 import Image from 'next/image'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
@@ -11,8 +10,10 @@ import ProjectCarousel from './components/project-carousel'
 import SocialLinks from './components/social-links'
 import MapView from './components/map-view'
 import ContactInfo from './components/contact-info'
+import { getTranslations } from 'next-intl/server'
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const t = await getTranslations('Locale')
   return (
     <div className='about-page overflow-x-hidden'>
       {/* Section 1: Company Brand Banner */}
@@ -32,7 +33,7 @@ export default function AboutPage() {
       <div className='w-full p-4 sm:p-10 shadow-[inset_0_-4px_12px_rgba(0,0,0,0.2)]'>
         <h2 className='text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800 relative'>
           <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-            Our Clients
+            {t('Our Clients')}
           </span>
           <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
         </h2>
@@ -53,36 +54,26 @@ export default function AboutPage() {
           <div className='text-center px-4 sm:px-0'>
             <h2 className='text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800 relative'>
               <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-                Our Company
+                {t('Our Company')}
               </span>
               <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
             </h2>
             <p className='text-base sm:text-xl mb-6 text-gray-600 text-justify'>
-              Prima Wrap is your premier destination for all gift packaging
-              needs. From elegant printed bags and boxes to luxurious gift wrap,
-              ribbons, and bows, we offer a comprehensive selection of packaging
-              solutions. We proudly feature exclusive collections by David
-              Tutura™ and Victoria Lynn™, bringing designer quality to your
-              special occasions. With our head office strategically located in
-              Niagara-on-the-Lake, we serve customers across Ontario, from
-              Toronto and Mississauga to the beautiful Niagara Falls region.
+              {t('Prima Wrap is your premier destination for all gift packaging needs')}. 
+              {t('From elegant printed bags and boxes to luxurious gift wrap, ribbons, and bows, we offer a comprehensive selection of packaging solutions')}.
+              {t('We proudly feature exclusive collections and bring designer quality to your special occasions')}.
+              {t('With our head office strategically located in Niagara-on-the-Lake, we serve customers across Ontario, from Toronto and Mississauga to the beautiful Niagara Falls region')}.
             </p>
             <h2 className='text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800 relative'>
               <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-                Our Mission
+                {t('Our Mission')}
               </span>
               <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
             </h2>
             <p className='text-base sm:text-xl text-gray-600 text-justify'>
-              To elevate every gift-giving moment by providing exceptional
-              packaging solutions that combine quality, creativity, and
-              elegance, while delivering outstanding service to our valued
-              customers across Canada. Through our in-house capabilities
-              including logo stamping and customization services, we eliminate
-              intermediaries to offer cost-effective solutions without
-              compromising on quality. Our commitment to maintaining direct
-              control over production ensures both competitive pricing and
-              exceptional craftsmanship for our customers.
+              {t('To elevate every gift-giving moment by providing exceptional packaging solutions that combine quality, creativity, and elegance, while delivering outstanding service to our valued customers across Canada')}. 
+              {t('Through our in-house capabilities including logo stamping and customization services, we eliminate intermediaries to offer cost-effective solutions without compromising on quality')}.
+              {t('Our commitment to maintaining direct control over production ensures both competitive pricing and exceptional craftsmanship for our customers')}.
             </p>
           </div>
         </Container>
@@ -93,7 +84,7 @@ export default function AboutPage() {
         <Container maxWidth='lg' sx={{ my: 4 }}>
           <h2 className='text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800 relative'>
             <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-              Meet the Team
+              {t('Meet the Team')}
             </span>
             <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
           </h2>
@@ -108,7 +99,7 @@ export default function AboutPage() {
           <div className='px-4 sm:px-0'>
             <h2 className='text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800 relative'>
               <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-                Testimonials
+                {t('Testimonials')}
               </span>
               <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
             </h2>
@@ -143,7 +134,7 @@ export default function AboutPage() {
         <Container maxWidth='md' sx={{ my: 0 }}>
           <h2 className='text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-8 text-gray-800 relative'>
             <span className='bg-gradient-to-r text-gray-700/80 text-gray-700 bg-clip-text'>
-              Contact Us
+              {t('Contact Us')}
             </span>
             <div className='absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-primary rounded-full'></div>
           </h2>

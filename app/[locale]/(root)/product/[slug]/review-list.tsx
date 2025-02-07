@@ -288,10 +288,11 @@ export default function ReviewList({
                 {t('Please')}{' '}
                 <Link
                   href={`/sign-in?callbackUrl=/product/${product.slug}`}
-                  className='highlight-link'
+                  className='user-menu-link text-primary'
                 >
                   {t('sign in')}
                 </Link>{' '}
+
                 {t('to write a review')}
               </div>
             )}
