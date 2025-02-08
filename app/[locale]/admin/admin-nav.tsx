@@ -11,6 +11,7 @@ import {
   Users,
   FileText,
   Settings,
+  HardDrive,
 } from 'lucide-react'
 import { SheetClose } from '@/components/ui/sheet'
 
@@ -44,6 +45,11 @@ const links = [
     title: 'Pages',
     href: '/admin/web-pages',
     icon: FileText,
+  },
+  {
+    title: 'Storage',
+    href: '/admin/storage',
+    icon: HardDrive,
   },
   {
     title: 'Settings',

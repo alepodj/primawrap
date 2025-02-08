@@ -11,7 +11,7 @@ const config: Config = withUt({
   theme: {
     extend: {
       screens: {
-        nav: '1330px',
+        nav: '1444px',
       },
       colors: {
         background: 'hsl(var(--background))',

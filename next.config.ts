@@ -1,16 +1,30 @@
+import createNextIntlPlugin from 'next-intl/plugin'
 import type { NextConfig } from 'next'
-import withNextIntl from 'next-intl/plugin'
 
-const nextConfig: NextConfig = withNextIntl()({
+const withNextIntl = createNextIntlPlugin()
+
+const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: (process.env.NEXT_BODY_SIZE_LIMIT || '1mb') as
+        | '1mb'
+        | '2mb'
+        | '4mb'
+        | '10mb'
+        | '16mb'
+        | '32mb'
+        | '64mb',
+    },
+  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'utfs.io',
+        hostname: '**.public.blob.vercel-storage.com',
         port: '',
       },
     ],
   },
-})
+}
 
-export default nextConfig
+export default withNextIntl(nextConfig)
