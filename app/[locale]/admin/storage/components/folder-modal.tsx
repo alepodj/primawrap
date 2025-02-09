@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -69,6 +70,9 @@ export default function FolderModal({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t('Create New Folder')}</DialogTitle>
+          <DialogDescription>
+            {t('Enter a name for the new folder')}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className='space-y-4'>

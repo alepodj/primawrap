@@ -414,6 +414,19 @@
     "Moving": "Moviendo",
     "Deleting": "Eliminando",
     "Processing files": "Procesando archivos",
-    "Checking file sizes and duplicates": "Revisando tamaños de archivos y duplicados"
+    "Checking file sizes and duplicates": "Revisando tamaños de archivos y duplicados",
+    "Drop files here or click to select": "Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos",
+    "File already exists": "El archivo ya existe",
+    "File already exists at this location": "El archivo ya existe en esta ubicación",
+    "File already exists at this location, do you want to replace it?": "El archivo ya existe en esta ubicación, ¿quieres reemplazarlo?",
+    "Replace": "Reemplazar",
+    "Skip": "Omitir",
+    "Rename file": "Renombrar archivo",
+    "Override": "Sobrescribir",
+    "Duplicate Files Found": "Archivos Duplicados Encontrados",
+    "Duplicate Files Found, do you want to replace them?": "Archivos Duplicados Encontrados, ¿quieres reemplazarlos?",
+    "Some files already exist, what would you like to do?": "Algunos archivos ya existen, ¿qué quieres hacer?",
+    "Enter a new name for the file": "Introduce un nuevo nombre para el archivo",
+    "Enter a name for the new folder": "Introduce un nombre para la nueva carpeta"
   }
 }

@@ -417,6 +417,19 @@
     "Moving": "Moving",
     "Deleting": "Deleting",
     "Processing files": "Processing files",
-    "Checking file sizes and duplicates": "Checking file sizes and duplicates"
+    "Checking file sizes and duplicates": "Checking file sizes and duplicates",
+    "Drop files here or click to select": "Drop files here or click to select",
+    "File already exists": "File already exists",
+    "File already exists at this location": "File already exists at this location",
+    "File already exists at this location, do you want to replace it?": "File already exists at this location, do you want to replace it?",
+    "Replace": "Replace",
+    "Skip": "Skip",
+    "Rename file": "Rename file",
+    "Override": "Override",
+    "Duplicate Files Found": "Duplicate Files Found",
+    "Duplicate Files Found, do you want to replace them?": "Duplicate Files Found, do you want to replace them?",
+    "Some files already exist, what would you like to do?": "Some files already exist, what would you like to do?",
+    "Enter a new name for the file": "Enter a new name for the file",
+    "Enter a name for the new folder": "Enter a name for the new folder"
   }
 }

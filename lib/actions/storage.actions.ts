@@ -48,8 +48,24 @@ export async function checkDuplicate(
   path: string
 ): Promise<{ exists: boolean; suggestions?: string[] }> {
   try {
-    const { blobs } = await list({ prefix: path, token })
-    const exists = blobs.some((blob) => blob.pathname === `${path}/${filename}`)
+    console.log('Checking duplicate:', { filename, path }) // Debug log
+    const fullPath = path ? `${path}/${filename}` : filename
+    console.log('Full path:', fullPath) // Debug log
+
+    const { blobs } = await list({ token })
+    console.log(
+      'Found blobs:',
+      blobs.map((b) => b.pathname)
+    ) // Debug log
+
+    // Check if any blob matches the full path exactly
+    const exists = blobs.some((blob) => {
+      const matches = blob.pathname === fullPath
+      if (matches) {
+        console.log('Found matching blob:', blob.pathname)
+      }
+      return matches
+    })
 
     if (exists) {
       // Generate name suggestions if duplicate found
@@ -84,15 +100,16 @@ export async function uploadFiles(formData: FormData): Promise<UploadResult> {
 
     for (const file of files) {
       let filename = file.name
+      let finalPath = `${path}/${filename}`
 
-      // Check for duplicates if not overriding
+      // Check for duplicates
       if (onDuplicate !== 'override') {
         const { exists, suggestions } = await checkDuplicate(filename, path)
         if (exists) {
           if (onDuplicate === 'skip') {
             continue
           } else if (onDuplicate === 'rename' && suggestions) {
-            // Use first available suggestion
+            // Try each suggestion until we find one that doesn't exist
             for (const suggestion of suggestions) {
               const { exists: suggestionExists } = await checkDuplicate(
                 suggestion,
@@ -100,6 +117,7 @@ export async function uploadFiles(formData: FormData): Promise<UploadResult> {
               )
               if (!suggestionExists) {
                 filename = suggestion
+                finalPath = `${path}/${filename}`
                 break
               }
             }
@@ -107,9 +125,11 @@ export async function uploadFiles(formData: FormData): Promise<UploadResult> {
         }
       }
 
-      const blob = await put(`${path}/${filename}`, file, {
+      // Upload the file
+      const blob = await put(finalPath, file, {
         access: 'public',
         token,
+        addRandomSuffix: false,
       })
 
       uploadedFiles.push({
@@ -123,6 +143,7 @@ export async function uploadFiles(formData: FormData): Promise<UploadResult> {
     revalidatePath('/admin/storage')
     return { success: true, files: uploadedFiles }
   } catch (error) {
+    console.error('Upload error:', error)
     return { success: false, error: formatError(error) }
   }
 }

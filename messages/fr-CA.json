@@ -414,6 +414,19 @@
     "Moving": "Déplacement",
     "Deleting": "Suppression",
     "Processing files": "Traitement des fichiers",
-    "Checking file sizes and duplicates": "Vérification des tailles des fichiers et des doublons"
+    "Checking file sizes and duplicates": "Vérification des tailles des fichiers et des doublons",
+    "Drop files here or click to select": "Glissez-déposez des fichiers ici, ou cliquez pour sélectionner des fichiers",
+    "File already exists": "Le fichier existe déjà",
+    "File already exists at this location": "Le fichier existe déjà à cet emplacement",
+    "File already exists at this location, do you want to replace it?": "Le fichier existe déjà à cet emplacement, voulez-vous le remplacer?",
+    "Replace": "Remplacer",
+    "Skip": "Omettre",
+    "Rename file": "Renommer le fichier",
+    "Override": "Substituer",
+    "Duplicate Files Found": "Fichiers Duplicés Trouvés",
+    "Duplicate Files Found, do you want to replace them?": "Fichiers Duplicés Trouvés, voulez-vous les remplacer?",
+    "Some files already exist, what would you like to do?": "Certains fichiers existent déjà, que voulez-vous faire?",
+    "Enter a new name for the file": "Saisissez un nouveau nom pour le fichier",
+    "Enter a name for the new folder": "Saisissez un nom pour le nouveau dossier"
   }
 }

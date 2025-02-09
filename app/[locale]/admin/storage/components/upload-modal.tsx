@@ -7,13 +7,16 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { useTranslations } from 'next-intl'
 import { Upload, X, AlertCircle, Loader2 } from 'lucide-react'
 import { checkDuplicate, uploadFiles } from '@/lib/actions/storage.actions'
-import { cn, formatBytes } from '@/lib/utils'
+import { cn, formatBytes, formatError } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 
 interface UploadModalProps {
   isOpen: boolean
@@ -21,11 +24,15 @@ interface UploadModalProps {
   currentPath: string
 }
 
+type FileStatus = 'pending' | 'uploading' | 'success' | 'error' | 'duplicate'
+type DuplicateAction = 'rename' | 'override' | 'skip'
+
 interface FileWithStatus {
   file: File
-  status: 'pending' | 'duplicate' | 'uploading' | 'success' | 'error'
-  duplicateAction?: 'rename' | 'override' | 'skip'
+  status: FileStatus
+  progress?: number
   error?: string
+  duplicateAction?: DuplicateAction
 }
 
 // Convert server's bodySizeLimit (e.g., "10mb") to bytes
@@ -62,8 +69,16 @@ export default function UploadModal({
   currentPath,
 }: UploadModalProps) {
   const [files, setFiles] = useState<FileWithStatus[]>([])
-  const [isUploading, setIsUploading] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [duplicateAction, setDuplicateAction] = useState<DuplicateAction>()
+  const [showDuplicateDialog, setShowDuplicateDialog] = useState(false)
+  const [showRenameDialog, setShowRenameDialog] = useState(false)
+  const [fileToRename, setFileToRename] = useState<{
+    file: File
+    index: number
+  } | null>(null)
+  const [newFileName, setNewFileName] = useState('')
   const { toast } = useToast()
   const t = useTranslations('Locale')
 
@@ -72,6 +87,7 @@ export default function UploadModal({
       setIsProcessing(true)
       const newFiles: FileWithStatus[] = []
       const oversizedFiles: string[] = []
+      let totalSize = 0
 
       try {
         for (const file of acceptedFiles) {
@@ -81,11 +97,36 @@ export default function UploadModal({
             continue
           }
 
+          // Add to total size
+          totalSize += file.size
+
+          // Check for duplicates - use full path for checking
+          const fullPath = currentPath
+            ? `${currentPath}/${file.name}`
+            : file.name
+          console.log('Checking duplicate for path:', fullPath) // Debug log
           const { exists } = await checkDuplicate(file.name, currentPath)
+
+          if (exists) {
+            console.log('Duplicate found:', file.name) // Debug log
+          }
+
           newFiles.push({
             file,
             status: exists ? 'duplicate' : 'pending',
           })
+        }
+
+        // Check total size
+        if (totalSize > MAX_FILE_SIZE) {
+          toast({
+            title: t('Upload Error'),
+            description: t('Total file size exceeds the limit of {limit}', {
+              limit: formattedMaxSize,
+            }),
+            variant: 'destructive',
+          })
+          return
         }
 
         // Show error for oversized files
@@ -118,47 +159,34 @@ export default function UploadModal({
   })
 
   const handleUpload = async () => {
+    if (files.length === 0) return
+
+    // Check if there are any duplicates that haven't been handled
+    const hasDuplicates = files.some(
+      (f) => f.status === 'duplicate' && !f.duplicateAction
+    )
+    if (hasDuplicates && !duplicateAction) {
+      setShowDuplicateDialog(true)
+      return
+    }
+
     setIsUploading(true)
-
     try {
-      // Group files by their duplicate action
-      const fileGroups = {
-        rename: files.filter((f) => f.duplicateAction === 'rename'),
-        override: files.filter((f) => f.duplicateAction === 'override'),
-        skip: files.filter((f) => f.duplicateAction === 'skip'),
-        normal: files.filter(
-          (f) => f.status === 'pending' || !f.duplicateAction
-        ),
-      }
+      // Filter out skipped files
+      const filesToUpload = files.filter((f) => f.duplicateAction !== 'skip')
 
-      let totalSize = 0
-      const allFilesToUpload = Object.values(fileGroups).flat()
-
-      // Calculate total size
-      allFilesToUpload.forEach((f) => {
-        totalSize += f.file.size
-      })
-
-      // Check total size
-      if (totalSize > MAX_FILE_SIZE) {
-        throw new Error(
-          t('Total file size exceeds the limit of {limit}', {
-            limit: formattedMaxSize,
-          })
-        )
-      }
-
-      // Upload each group with its respective options
-      for (const [action, groupFiles] of Object.entries(fileGroups)) {
-        if (groupFiles.length === 0) continue
-
+      for (const fileWithStatus of filesToUpload) {
         const formData = new FormData()
-        groupFiles.forEach((f) => formData.append('files', f.file))
         formData.append('path', currentPath)
-        formData.append('onDuplicate', action as 'rename' | 'override' | 'skip')
+        formData.append('files', fileWithStatus.file)
+
+        // Set the duplicate action from either individual file or global setting
+        const action = fileWithStatus.duplicateAction || duplicateAction
+        if (action) {
+          formData.append('onDuplicate', action)
+        }
 
         const result = await uploadFiles(formData)
-
         if (!result.success) {
           toast({
             title: t('Upload Error'),
@@ -170,24 +198,51 @@ export default function UploadModal({
       }
 
       toast({
-        title: t('Upload Complete'),
+        title: t('Success'),
         description: t('Files uploaded successfully'),
       })
-
-      setFiles([]) // Clear files after successful upload
+      setFiles([])
       onClose()
     } catch (error) {
       toast({
         title: t('Upload Error'),
-        description:
-          error instanceof Error
-            ? error.message
-            : t('An error occurred while uploading files'),
+        description: formatError(error),
         variant: 'destructive',
       })
     } finally {
       setIsUploading(false)
+      setDuplicateAction(undefined)
     }
+  }
+
+  const handleRename = (index: number) => {
+    const file = files[index]
+    setFileToRename({ file: file.file, index })
+    setNewFileName(file.file.name)
+    setShowRenameDialog(true)
+  }
+
+  const handleRenameSubmit = () => {
+    if (!fileToRename || !newFileName) return
+
+    setFiles((prev) =>
+      prev.map((file, i) =>
+        i === fileToRename.index
+          ? {
+              ...file,
+              file: new File([fileToRename.file], newFileName, {
+                type: fileToRename.file.type,
+              }),
+              duplicateAction: 'rename',
+              status: 'pending',
+            }
+          : file
+      )
+    )
+
+    setShowRenameDialog(false)
+    setFileToRename(null)
+    setNewFileName('')
   }
 
   const removeFile = (index: number) => {
@@ -218,7 +273,102 @@ export default function UploadModal({
       <DialogContent className='sm:max-w-[600px]'>
         <DialogHeader>
           <DialogTitle>{t('Upload Files')}</DialogTitle>
+          <DialogDescription>
+            {t('Drop files here or click to select')}
+          </DialogDescription>
         </DialogHeader>
+
+        {/* Rename Dialog */}
+        <Dialog open={showRenameDialog} onOpenChange={setShowRenameDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('Rename File')}</DialogTitle>
+              <DialogDescription>
+                {t('Enter a new name for the file')}
+              </DialogDescription>
+            </DialogHeader>
+            <div className='grid gap-4'>
+              <div className='grid gap-2'>
+                <Label>{t('New Name')}</Label>
+                <Input
+                  value={newFileName}
+                  onChange={(e) => setNewFileName(e.target.value)}
+                  placeholder={t('Enter new name')}
+                />
+              </div>
+              <div className='flex justify-end gap-2'>
+                <Button
+                  variant='outline'
+                  onClick={() => {
+                    setShowRenameDialog(false)
+                    setFileToRename(null)
+                    setNewFileName('')
+                  }}
+                >
+                  {t('Cancel')}
+                </Button>
+                <Button
+                  onClick={handleRenameSubmit}
+                  disabled={!newFileName.trim()}
+                >
+                  {t('Rename')}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Duplicate Dialog */}
+        <Dialog
+          open={showDuplicateDialog}
+          onOpenChange={setShowDuplicateDialog}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t('Duplicate Files Found')}</DialogTitle>
+              <DialogDescription>
+                {t('Some files already exist, what would you like to do?')}
+              </DialogDescription>
+            </DialogHeader>
+            <div className='grid gap-4'>
+              <Button
+                variant='outline'
+                onClick={() => {
+                  // For rename, we need to handle each file individually
+                  const duplicateFiles = files.filter(
+                    (f) => f.status === 'duplicate' && !f.duplicateAction
+                  )
+                  if (duplicateFiles.length > 0) {
+                    handleRename(files.indexOf(duplicateFiles[0]))
+                  }
+                  setShowDuplicateDialog(false)
+                }}
+              >
+                {t('Rename')}
+              </Button>
+              <Button
+                variant='outline'
+                onClick={() => {
+                  setDuplicateAction('override')
+                  setShowDuplicateDialog(false)
+                  handleUpload()
+                }}
+              >
+                {t('Override')}
+              </Button>
+              <Button
+                variant='outline'
+                onClick={() => {
+                  setDuplicateAction('skip')
+                  setShowDuplicateDialog(false)
+                  handleUpload()
+                }}
+              >
+                {t('Skip')}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <div
           {...getRootProps()}
@@ -281,7 +431,7 @@ export default function UploadModal({
                         <Button
                           size='sm'
                           variant='outline'
-                          onClick={() => handleDuplicateAction(index, 'rename')}
+                          onClick={() => handleRename(index)}
                         >
                           {t('Rename')}
                         </Button>
