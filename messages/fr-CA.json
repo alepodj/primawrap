@@ -427,6 +427,16 @@
     "Duplicate Files Found, do you want to replace them?": "Fichiers Duplicés Trouvés, voulez-vous les remplacer?",
     "Some files already exist, what would you like to do?": "Certains fichiers existent déjà, que voulez-vous faire?",
     "Enter a new name for the file": "Saisissez un nouveau nom pour le fichier",
-    "Enter a name for the new folder": "Saisissez un nom pour le nouveau dossier"
+    "Enter a name for the new folder": "Saisissez un nom pour le nouveau dossier",
+    "Select Files": "Sélectionner des Fichiers",
+    "Select Folder": "Sélectionner un Dossier",
+    "Drag and drop files or folders here": "Glissez-déposez des fichiers ou des dossiers ici",
+    "Drop files or folders here, or click to select": "Glissez-déposez des fichiers ou des dossiers ici, ou cliquez pour sélectionner",
+    "Folder renamed successfully": "Dossier renommé avec succès",
+    "Error renaming folder": "Erreur lors de la renommation du dossier",
+    "An error occurred while renaming the folder": "Une erreur est survenue lors de la renommation du dossier",
+    "Folder has been renamed successfully": "Le dossier a été renommé avec succès",
+    "Rename Folder": "Renommer le Dossier",
+    "Enter a new name for the folder": "Saisissez un nouveau nom pour le dossier"
   }
 }

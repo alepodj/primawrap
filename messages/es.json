@@ -427,6 +427,16 @@
     "Duplicate Files Found, do you want to replace them?": "Archivos Duplicados Encontrados, ¿quieres reemplazarlos?",
     "Some files already exist, what would you like to do?": "Algunos archivos ya existen, ¿qué quieres hacer?",
     "Enter a new name for the file": "Introduce un nuevo nombre para el archivo",
-    "Enter a name for the new folder": "Introduce un nombre para la nueva carpeta"
+    "Enter a name for the new folder": "Introduce un nombre para la nueva carpeta",
+    "Select Files": "Seleccionar Archivos",
+    "Select Folder": "Seleccionar Carpeta",
+    "Drag and drop files or folders here": "Arrastra y suelta archivos o carpetas aquí",
+    "Drop files or folders here, or click to select": "Arrastra y suelta archivos o carpetas aquí, o haz clic para seleccionar archivos o carpetas",
+    "Folder renamed successfully": "Carpeta renombrada exitosamente",
+    "Error renaming folder": "Error al renombrar la carpeta",
+    "An error occurred while renaming the folder": "Ocurrió un error al renombrar la carpeta",
+    "Folder has been renamed successfully": "La carpeta ha sido renombrada exitosamente",
+    "Rename Folder": "Renombrar Carpeta",
+    "Enter a new name for the folder": "Introduce un nuevo nombre para la carpeta"
   }
 }

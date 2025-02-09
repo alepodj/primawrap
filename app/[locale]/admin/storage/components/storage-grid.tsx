@@ -12,6 +12,8 @@ import {
   Copy,
   Pencil,
   Trash,
+  Loader2,
+  FolderInput,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -34,6 +36,8 @@ import { useToast } from '@/hooks/use-toast'
 import { BlobFile, deleteFiles } from '@/lib/actions/storage.actions'
 import { formatBytes } from '@/lib/utils'
 import RenameModal from './rename-modal'
+import RenameFolderModal from './rename-folder-modal'
+import MoveModal from './move-modal'
 import { cn } from '@/lib/utils'
 
 interface StorageGridProps {
@@ -51,9 +55,15 @@ export default function StorageGrid({
 }: StorageGridProps) {
   const [selectedFile, setSelectedFile] = useState<BlobFile | null>(null)
   const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set())
+  const [selectedItems, setSelectedItems] = useState<
+    { type: 'file' | 'folder'; path: string }[]
+  >([])
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false)
+  const [isRenameFolderModalOpen, setIsRenameFolderModalOpen] = useState(false)
+  const [isMoveModalOpen, setIsMoveModalOpen] = useState(false)
+  const [selectedFolder, setSelectedFolder] = useState<string>('')
   const router = useRouter()
   const { toast } = useToast()
   const t = useTranslations('Locale')
@@ -61,6 +71,11 @@ export default function StorageGrid({
   const handleFolderClick = (folder: string) => {
     const newPath = currentPath ? `${currentPath}/${folder}` : folder
     router.push(`/admin/storage?path=${newPath}`)
+  }
+
+  const handleFolderRename = (folder: string) => {
+    setSelectedFolder(folder)
+    setIsRenameFolderModalOpen(true)
   }
 
   const handleCopyUrl = (file: BlobFile) => {
@@ -112,6 +127,22 @@ export default function StorageGrid({
       }
       return newSelection
     })
+
+    setSelectedItems((prev) => {
+      const isSelected = prev.some((item) => item.path === file.pathname)
+      if (isSelected) {
+        return prev.filter((item) => item.path !== file.pathname)
+      } else {
+        return [...prev, { type: 'file', path: file.pathname }]
+      }
+    })
+  }
+
+  // Clear selection helper
+  const clearSelection = () => {
+    setSelectedFiles(new Set())
+    setSelectedItems([])
+    setSelectedFile(null)
   }
 
   if (error) {
@@ -132,17 +163,17 @@ export default function StorageGrid({
 
   return (
     <>
-      {selectedFiles.size > 0 && (
+      {selectedItems.length > 0 && (
         <div className='flex items-center justify-between mb-4 p-2 bg-accent rounded-lg'>
           <span>
-            {t('Selected')} {selectedFiles.size} {t('files')}
+            {t('Selected')} {selectedItems.length} {t('items')}
           </span>
           <div className='flex gap-2'>
-            <Button
-              variant='outline'
-              onClick={() => setSelectedFiles(new Set())}
-            >
+            <Button variant='outline' onClick={clearSelection}>
               {t('Clear Selection')}
+            </Button>
+            <Button variant='outline' onClick={() => setIsMoveModalOpen(true)}>
+              {t('Move Selected')}
             </Button>
             <Button
               variant='destructive'
@@ -158,11 +189,46 @@ export default function StorageGrid({
         {folders.map((folder) => (
           <div
             key={folder}
-            onClick={() => handleFolderClick(folder)}
             className='group flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-accent transition-colors'
           >
             <Folder className='h-8 w-8 text-blue-500' />
-            <span className='flex-1 truncate'>{folder}</span>
+            <span
+              className='flex-1 truncate'
+              onClick={() => handleFolderClick(folder)}
+            >
+              {folder}
+            </span>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant='ghost'
+                  className='h-8 w-8 p-0 opacity-0 group-hover:opacity-100'
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreHorizontal className='h-4 w-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem onClick={() => handleFolderRename(folder)}>
+                  <Pencil className='h-4 w-4 mr-2' />
+                  {t('Rename')}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setSelectedItems([
+                      {
+                        type: 'folder',
+                        path: currentPath ? `${currentPath}/${folder}` : folder,
+                      },
+                    ])
+                    setIsMoveModalOpen(true)
+                  }}
+                >
+                  <FolderInput className='h-4 w-4 mr-2' />
+                  {t('Move')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         ))}
 
@@ -174,12 +240,16 @@ export default function StorageGrid({
             <div
               key={file.pathname}
               className={cn(
-                'group flex items-center gap-3 p-3 border rounded-lg',
+                'group flex items-center gap-3 p-3 border rounded-lg cursor-pointer',
                 isSelected && 'border-primary bg-accent'
               )}
               onClick={(e) => {
                 // Only toggle selection if not clicking dropdown or its children
-                if (!(e.target as HTMLElement).closest('.dropdown-trigger')) {
+                if (
+                  !e.defaultPrevented &&
+                  !(e.target as HTMLElement).closest('.dropdown-trigger')
+                ) {
+                  e.preventDefault()
                   toggleFileSelection(file)
                 }
               }}
@@ -202,17 +272,24 @@ export default function StorageGrid({
                   <Button
                     variant='ghost'
                     className='h-8 w-8 p-0 opacity-0 group-hover:opacity-100 dropdown-trigger'
+                    onClick={(e) => e.preventDefault()}
                   >
                     <MoreHorizontal className='h-4 w-4' />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align='end'>
-                  <DropdownMenuItem onClick={() => handleCopyUrl(file)}>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handleCopyUrl(file)
+                    }}
+                  >
                     <Copy className='h-4 w-4 mr-2' />
                     {t('Copy URL')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault()
                       setSelectedFile(file)
                       setIsRenameModalOpen(true)
                     }}
@@ -221,8 +298,19 @@ export default function StorageGrid({
                     {t('Rename')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setSelectedItems([{ type: 'file', path: file.pathname }])
+                      setIsMoveModalOpen(true)
+                    }}
+                  >
+                    <FolderInput className='h-4 w-4 mr-2' />
+                    {t('Move')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
                     className='text-destructive'
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault()
                       setSelectedFile(file)
                       setIsDeleteDialogOpen(true)
                     }}
@@ -244,31 +332,25 @@ export default function StorageGrid({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {selectedFiles.size > 0
-                ? t('Are you sure you want to delete these files?')
-                : t('Are you sure you want to delete this file?')}
+              {selectedItems.length > 0
+                ? t('Are you sure you want to delete these items?')
+                : t('Are you sure you want to delete this item?')}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {selectedFiles.size > 0
+              {selectedItems.length > 0
                 ? t(
-                    'This action cannot be undone, the selected files will be permanently deleted'
+                    'This action cannot be undone, the selected items will be permanently deleted'
                   )
                 : t(
-                    'This action cannot be undone, the file will be permanently deleted'
+                    'This action cannot be undone, the item will be permanently deleted'
                   )}
             </AlertDialogDescription>
             <div className='mt-4 max-h-[200px] overflow-y-auto space-y-2 rounded-lg border p-2'>
-              {selectedFile ? (
-                <span className='text-sm block'>
-                  {selectedFile.pathname.split('/').pop()}
+              {selectedItems.map((item) => (
+                <span key={item.path} className='text-sm block'>
+                  {item.path.split('/').pop()}
                 </span>
-              ) : (
-                Array.from(selectedFiles).map((path) => (
-                  <span key={path} className='text-sm block'>
-                    {path.split('/').pop()}
-                  </span>
-                ))
-              )}
+              ))}
             </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -283,7 +365,14 @@ export default function StorageGrid({
               className='bg-destructive hover:bg-destructive/90'
               disabled={isDeleting}
             >
-              {isDeleting ? t('Deleting') : t('Delete')}
+              {isDeleting ? (
+                <span className='inline-flex items-center gap-2'>
+                  <Loader2 className='h-4 w-4 animate-spin' />
+                  {t('Deleting')}
+                </span>
+              ) : (
+                t('Delete')
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -299,6 +388,28 @@ export default function StorageGrid({
           file={selectedFile}
         />
       )}
+
+      {selectedFolder && (
+        <RenameFolderModal
+          isOpen={isRenameFolderModalOpen}
+          onClose={() => {
+            setIsRenameFolderModalOpen(false)
+            setSelectedFolder('')
+          }}
+          folder={selectedFolder}
+          currentPath={currentPath}
+        />
+      )}
+
+      <MoveModal
+        isOpen={isMoveModalOpen}
+        onClose={() => {
+          setIsMoveModalOpen(false)
+          clearSelection()
+        }}
+        selectedItems={selectedItems}
+        currentPath={currentPath}
+      />
     </>
   )
 }

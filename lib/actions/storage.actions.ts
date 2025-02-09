@@ -42,6 +42,12 @@ interface ListResult {
   folders?: string[]
 }
 
+interface MoveResult {
+  success: boolean
+  error?: string
+  movedCount: number
+}
+
 // Check if a file exists at the given path
 export async function checkDuplicate(
   filename: string,
@@ -306,7 +312,7 @@ export async function renameFile(
 
     // 3. Upload to new path
     console.log('Uploading to new path:', newPath)
-    const newBlob = await put(newPath, file, {
+    await put(newPath, file, {
       access: 'public',
       token,
       addRandomSuffix: false,
@@ -341,8 +347,8 @@ export async function renameFile(
     return {
       success: true,
       file: {
-        url: newBlob.url,
-        pathname: newBlob.pathname,
+        url: newPath,
+        pathname: newPath,
         size: file.size,
         uploadedAt: new Date(),
       },
@@ -417,5 +423,195 @@ export async function createFolder(
   } catch (error) {
     console.error('Folder creation error:', error)
     return { success: false, error: formatError(error) }
+  }
+}
+
+// Rename folder
+export async function renameFolder(
+  oldPath: string,
+  newPath: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    // 1. List ALL files in the folder and subfolders
+    const { blobs } = await list({ prefix: oldPath, token })
+
+    console.log(
+      'Files to move:',
+      blobs.map((b) => b.pathname)
+    )
+
+    // 2. For each file, create a new blob with updated path
+    for (const blob of blobs) {
+      // Calculate new path by replacing old folder prefix with new folder name
+      const relativePath = blob.pathname.slice(oldPath.length)
+      const newFilePath = newPath + relativePath
+
+      console.log(`Moving ${blob.pathname} to ${newFilePath}`)
+
+      // Download and re-upload with new path
+      const response = await fetch(blob.url)
+      const content = await response.blob()
+
+      await put(newFilePath, content, {
+        access: 'public',
+        token,
+        addRandomSuffix: false,
+      })
+    }
+
+    // 3. Verify all files were copied
+    const { blobs: newBlobs } = await list({ prefix: newPath, token })
+    if (newBlobs.length !== blobs.length) {
+      throw new Error('Not all files were copied successfully')
+    }
+
+    // 4. Delete old files only after successful copy
+    for (const blob of blobs) {
+      await del(blob.pathname, { token })
+    }
+
+    // 5. Verify old files are gone
+    const { blobs: oldBlobs } = await list({ prefix: oldPath, token })
+    if (oldBlobs.length > 0) {
+      console.warn(
+        'Some old files remain:',
+        oldBlobs.map((b) => b.pathname)
+      )
+    }
+
+    revalidatePath('/admin/storage')
+    return { success: true }
+  } catch (error) {
+    console.error('Folder rename error:', error)
+    return { success: false, error: formatError(error) }
+  }
+}
+
+export async function moveItems(
+  items: { type: 'file' | 'folder'; path: string }[],
+  destinationPath: string
+): Promise<MoveResult> {
+  try {
+    console.log('Starting move operation:', { items, destinationPath })
+    let movedCount = 0
+    const errors: string[] = []
+
+    for (const item of items) {
+      try {
+        if (item.type === 'file') {
+          // Move single file
+          const fileName = item.path.split('/').pop()
+          if (!fileName) {
+            throw new Error(`Invalid file path: ${item.path}`)
+          }
+
+          const newPath = destinationPath
+            ? `${destinationPath}/${fileName}`
+            : fileName
+
+          console.log(`Moving file from ${item.path} to ${newPath}`)
+
+          // Get file content
+          const { blobs } = await list({ prefix: item.path, token })
+          const file = blobs.find((b) => b.pathname === item.path)
+
+          if (!file) {
+            throw new Error(`File not found: ${item.path}`)
+          }
+
+          // Download and re-upload to new location
+          const response = await fetch(file.url)
+          const content = await response.blob()
+
+          await put(newPath, content, {
+            access: 'public',
+            token,
+            addRandomSuffix: false,
+          })
+
+          // Verify the new file exists
+          const { blobs: checkBlobs } = await list({
+            prefix: newPath,
+            token,
+          })
+
+          if (!checkBlobs.some((b) => b.pathname === newPath)) {
+            throw new Error(`Failed to create new file: ${newPath}`)
+          }
+
+          // Delete old file after successful move
+          await del(item.path, { token })
+          movedCount++
+        } else {
+          // Move folder and its contents
+          const folderName = item.path.split('/').pop()
+          if (!folderName) {
+            throw new Error(`Invalid folder path: ${item.path}`)
+          }
+
+          const newBasePath = destinationPath
+            ? `${destinationPath}/${folderName}`
+            : folderName
+
+          console.log(`Moving folder from ${item.path} to ${newBasePath}`)
+
+          // List all files in folder
+          const { blobs } = await list({ prefix: item.path, token })
+          console.log(
+            'Files to move:',
+            blobs.map((b) => b.pathname)
+          )
+
+          // Move each file maintaining folder structure
+          for (const blob of blobs) {
+            const relativePath = blob.pathname.slice(item.path.length + 1)
+            const newPath =
+              newBasePath + (relativePath ? `/${relativePath}` : '')
+
+            console.log(`Moving file from ${blob.pathname} to ${newPath}`)
+
+            const response = await fetch(blob.url)
+            const content = await response.blob()
+
+            await put(newPath, content, {
+              access: 'public',
+              token,
+              addRandomSuffix: false,
+            })
+
+            // Verify the new file exists before deleting the old one
+            const { blobs: checkBlobs } = await list({
+              prefix: newPath,
+              token,
+            })
+
+            if (checkBlobs.some((b) => b.pathname === newPath)) {
+              await del(blob.pathname, { token })
+              movedCount++
+            } else {
+              throw new Error(`Failed to move file: ${blob.pathname}`)
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`Error moving ${item.path}:`, error)
+        errors.push(`Failed to move ${item.path}: ${formatError(error)}`)
+      }
+    }
+
+    revalidatePath('/admin/storage')
+
+    if (errors.length > 0) {
+      return {
+        success: false,
+        error: errors.join('. '),
+        movedCount,
+      }
+    }
+
+    return { success: true, movedCount }
+  } catch (error) {
+    console.error('Move operation error:', error)
+    return { success: false, error: formatError(error), movedCount: 0 }
   }
 }

@@ -90,7 +90,16 @@ export default function UploadModal({
       let totalSize = 0
 
       try {
+        // Get existing file names in the list
+        const existingFileNames = new Set(files.map((f) => f.file.name))
+
         for (const file of acceptedFiles) {
+          // Skip if file is already in the list
+          if (existingFileNames.has(file.name)) {
+            console.log('Skipping duplicate file:', file.name) // Debug log
+            continue
+          }
+
           // Check file size
           if (file.size > MAX_FILE_SIZE) {
             oversizedFiles.push(`${file.name} (${formatBytes(file.size)})`)
@@ -100,7 +109,7 @@ export default function UploadModal({
           // Add to total size
           totalSize += file.size
 
-          // Check for duplicates - use full path for checking
+          // Check for duplicates in storage
           const fullPath = currentPath
             ? `${currentPath}/${file.name}`
             : file.name
@@ -108,13 +117,16 @@ export default function UploadModal({
           const { exists } = await checkDuplicate(file.name, currentPath)
 
           if (exists) {
-            console.log('Duplicate found:', file.name) // Debug log
+            console.log('Storage duplicate found:', file.name) // Debug log
           }
 
           newFiles.push({
             file,
             status: exists ? 'duplicate' : 'pending',
           })
+
+          // Add to tracking set
+          existingFileNames.add(file.name)
         }
 
         // Check total size
@@ -150,7 +162,7 @@ export default function UploadModal({
         setIsProcessing(false)
       }
     },
-    [currentPath, toast, t]
+    [currentPath, toast, t, files]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -479,7 +491,14 @@ export default function UploadModal({
                   )
                 }
               >
-                {isUploading ? t('Uploading') : t('Upload')}
+                {isUploading ? (
+                  <span className='inline-flex items-center gap-2'>
+                    <Loader2 className='h-4 w-4 animate-spin' />
+                    {t('Uploading')}
+                  </span>
+                ) : (
+                  t('Upload')
+                )}
               </Button>
             </div>
           </div>

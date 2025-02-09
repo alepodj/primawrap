@@ -7,27 +7,30 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useToast } from '@/hooks/use-toast'
 import { useTranslations } from 'next-intl'
-import { BlobFile, renameFile } from '@/lib/actions/storage.actions'
+import { renameFolder } from '@/lib/actions/storage.actions'
 import { Loader2 } from 'lucide-react'
 
-interface RenameModalProps {
+interface RenameFolderModalProps {
   isOpen: boolean
   onClose: () => void
-  file: BlobFile
+  folder: string
+  currentPath: string
 }
 
-export default function RenameModal({
+export default function RenameFolderModal({
   isOpen,
   onClose,
-  file,
-}: RenameModalProps) {
-  const [newName, setNewName] = useState(file.pathname.split('/').pop() || '')
+  folder,
+  currentPath,
+}: RenameFolderModalProps) {
+  const [newName, setNewName] = useState(folder)
   const [isRenaming, setIsRenaming] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -35,28 +38,22 @@ export default function RenameModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newName.trim() || newName === file.pathname.split('/').pop()) return
+    if (!newName.trim() || newName === folder) return
 
     setIsRenaming(true)
     try {
-      // Get the directory path and construct the new path
-      const dirPath = file.pathname.split('/').slice(0, -1).join('/')
-      const newPath = dirPath ? `${dirPath}/${newName.trim()}` : newName.trim()
+      const oldPath = currentPath ? `${currentPath}/${folder}` : folder
+      const newPath = currentPath
+        ? `${currentPath}/${newName.trim()}`
+        : newName.trim()
 
-      console.log('Renaming file:', {
-        oldPath: file.pathname,
-        newPath,
-        dirPath,
-      })
+      console.log('Renaming folder:', { oldPath, newPath })
 
-      const result = await renameFile(file.pathname, newPath, {
-        onDuplicate: 'cancel',
-      })
-
+      const result = await renameFolder(oldPath, newPath)
       if (result.success) {
         toast({
-          title: t('File Renamed'),
-          description: t('File has been renamed successfully'),
+          title: t('Success'),
+          description: t('Folder renamed successfully'),
         })
         router.refresh()
         onClose()
@@ -68,10 +65,10 @@ export default function RenameModal({
         })
       }
     } catch (error) {
-      console.error('Rename modal error:', error)
+      console.error('Rename folder error:', error)
       toast({
         title: t('Error'),
-        description: t('An error occurred while renaming the file'),
+        description: t('An error occurred while renaming the folder'),
         variant: 'destructive',
       })
     } finally {
@@ -83,14 +80,16 @@ export default function RenameModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('Rename File')}</DialogTitle>
+          <DialogTitle>{t('Rename Folder')}</DialogTitle>
+          <DialogDescription>
+            {t('Enter a new name for the folder')}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='space-y-2'>
-            <Label htmlFor='newName'>{t('New Name')}</Label>
+            <Label>{t('New Name')}</Label>
             <Input
-              id='newName'
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder={t('Enter new name')}
@@ -109,11 +108,7 @@ export default function RenameModal({
             </Button>
             <Button
               type='submit'
-              disabled={
-                !newName.trim() ||
-                newName === file.pathname.split('/').pop() ||
-                isRenaming
-              }
+              disabled={!newName.trim() || newName === folder || isRenaming}
             >
               {isRenaming ? (
                 <span className='inline-flex items-center gap-2'>
